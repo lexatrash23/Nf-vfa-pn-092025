@@ -42,7 +42,7 @@ Table4 %>%
                 position = "center") %>% 
   column_spec(1, width = "4cm", bold = TRUE, color = "white", background = "#4CAF50") %>% 
   row_spec(0, bold = TRUE, font_size = 14, color = "white", background = "#4CAF50") %>% 
-  footnote(general = "Table shows the top 100 rows of KBT sorted by bit score, with hyperlinks to UniProt entries.", 
+  footnote(general = "Table shows the top 10 rows of KBT sorted by bit score, with hyperlinks to UniProt entries.", 
            general_title = "Note: ", 
            footnote_as_chunk = TRUE)
 ```
