@@ -1,0 +1,65 @@
+---
+title: "Overview "
+output: 
+  html_document:
+    css: style.css 
+params:
+  VENN: NULL
+  TABLE: NULL
+  name: NULL
+---
+**`r params$name`**  
+  `r Sys.Date()`
+
+```{r setup, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+#options(repos = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+# Load packages 
+install_if_missing <- function(package) {
+  if (!require(package, character.only = TRUE)) {
+    install.packages(package, dependencies = TRUE)
+    library(package, character.only = TRUE)
+  }
+}
+
+packages <- c("png", "grid", "DT", "dplyr", "knitr", "pandoc","kableExtra", "ggplot2","ggalluvial", "shiny")
+lapply(packages, install_if_missing)
+
+```
+
+
+
+```{r, results='asis',fig.align='center'}
+Venndiagram  <- readPNG(params$VENN)
+Venndiagram <- grid.raster(Venndiagram)
+cat(" \n\n Venn diagram of Transdecoder-predicted complete ORFs with predicted signal peptide. Sequences with at least one domain in common with a ToxProt annoated protein in red(TD). Sequences with BLAST match of bitscore of at least 250 to a ToxProt annotated protein in green(TP). Sequences with Kallisto-predicted expression of at least 1 % of Total expression in yellow(KE). Sequence with at least 50% sequence coverage by mass spectrometry in blue (MS), where available  \n\n ") 
+
+```
+
+
+### Table of Transdecoder-predicted complete ORFs with predicted signal peptide from venn diagram above
+```{r , echo=FALSE}
+Uniontable <- read.csv(params$TABLE)
+datatable(
+  Uniontable,
+  options = list(
+    lengthMenu = c(5, 10, 15, 20),
+    dom = 'Blfrtip',
+    buttons = list(
+      'copy',
+      'csv',
+      list(extend = 'colvis', text = 'Column Visibility')
+    )
+  ),
+  extensions = 'Buttons'
+)
+
+
+```
+
+

@@ -1,0 +1,83 @@
+---
+title: "Metadata"
+output: 
+  html_document:
+    css: style.css
+params:
+  settings: NULL
+  notes: NULL
+  triminfo: NULL
+  name: NULL
+---
+<!-- get current date --> 
+
+**`r params$name`**  
+  `r Sys.Date()`
+```{r, echo = FALSE}
+
+# Read command line arguments
+args <- commandArgs(trailingOnly = TRUE)
+Settings <- params$settings
+Notes <- params$notes
+Trim <- params$triminfo
+
+```
+
+
+```{r setup, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+options(repos = c(CRAN = "https://cran.rstudio.com"))
+
+```
+
+```{r, echo = FALSE, message=FALSE, warning= FALSE, results = 'hide'}
+
+# Load packages 
+install_if_missing <- function(package) {
+  if (!require(package, character.only = TRUE)) {
+    install.packages(package, dependencies = TRUE)
+    library(package, character.only = TRUE)
+  }
+}
+
+packages <- c("readr", "tidyr", "knitr", "gridExtra", "kableExtra")
+lapply(packages, install_if_missing)
+```
+
+
+
+```{r}
+# Read in the files based on the provided parameters
+Settings <- read.csv(Settings)
+Notes <- readLines(Notes)
+Trim <- readLines(Trim)
+
+
+kable(Settings, format = "html") %>%
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
+                full_width = FALSE) %>%
+  column_spec(1:ncol(Settings), border_left = TRUE, border_right = TRUE) %>%
+  row_spec(0, background = "lightblue", bold = TRUE)  # Shaded header rowcat(Notes, sep="\n")
+
+```
+
+## Trimmomatic  
+```{r, results='asis'}
+cat(Trim)
+```
+
+## Notes 
+```{r, results='asis'}
+cat(Notes)
+
+```
+
+<div style="display: flex; justify-content: center; gap: 50px; margin-top: 20px;">
+  <a href="multiqc_report.html" style="text-decoration: none;">
+    <button style="background-color: #E23C2C; color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 18px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); transition: transform 0.2s ease;">
+      multiqc
+    </button>
+  </a>
+
+</div>
+

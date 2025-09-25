@@ -1,0 +1,35 @@
+---
+title: "SignalP Tables Menu"
+output: 
+  html_document:
+    css: style2.css 
+
+---
+```{r, echo=FALSE, results='hide'}
+# Read command line arguments
+args <- commandArgs(trailingOnly = TRUE)
+
+# Set variables based on passed arguments
+path <- args[1]
+Name <- args[2]
+```
+<!-- get current date --> 
+**`r Name`**
+  `r Sys.Date()`
+
+<div style="display: flex; gap: 25px; justify-content: center;">
+  <a href="V.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/Uniprot.png')`" alt="Uniprot">
+    <span>Uniprot</span>
+  </a>
+  <a href="W.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/Distinct.png')`" alt="Distinct">
+    <span>Distinct</span>
+  </a>
+  <a href="X.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/Kallisto.png')`" alt="Kallisto">
+    <span>Kallisto</span>
+  </a>
+</div>
+
+</body>

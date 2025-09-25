@@ -1,0 +1,64 @@
+---
+title: "Main Menu"
+output: 
+  html_document:
+    css: style.css 
+
+---
+<!-- get current date --> 
+<!-- In this script you only need to manually change the path to the search and download app --> 
+
+
+```{r, echo=FALSE, results='hide'}
+# Read command line arguments
+args <- commandArgs(trailingOnly = TRUE)
+
+# Set variables based on passed arguments
+path <- args[1]
+sampleURL <- args[2]
+Name <- args[3]
+
+# Build the full URL for the Search and Download button
+search_url <- paste0("https://cephalopodpsg1.shinyapps.io/Dataframe_search/?sample=", sampleURL)
+```
+
+<!-- get current date --> 
+**`r Name`**
+  `r Sys.Date()`
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Button Layout</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div style="display: flex; gap: 25px; justify-content: center;">
+  <a href="B.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/Metadata.png')`" alt="Metadata">
+    <span>Metadata</span>
+  </a>
+  <a href="C.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/Trinity.png')`" alt="Trinity">
+    <span>Trinity</span>
+  </a>
+  <a href="D.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/Transdecoder.png')`" alt="Transdecoder">
+    <span>Transdecoder</span>
+  </a>
+  <a href="E.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/SignalP.png')`" alt="Signalp">
+    <span>Signalp</span>
+  </a>
+  <a href="`r search_url`" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/SearchAndDownload.png')`" alt="Search and Download">
+    <span>Search and Download</span>
+  </a>
+  <a href="Z.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/Overview.png')`" alt="Overview">
+    <span>Overview</span>
+  </a>
+</div>
+
+</body>

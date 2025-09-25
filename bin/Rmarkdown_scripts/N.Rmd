@@ -1,0 +1,71 @@
+---
+title: "Trinity Tables Sorted by BitScore - Distinct "
+output: 
+  html_document:
+    css: style.css
+    toc: true      # Enable Table of Contents
+    toc_depth: 3 
+params:
+  Table2: NULL
+  Table3: NULL
+  name: NULL
+
+---
+<!-- get current date --> 
+**`r params$name`**  
+  `r Sys.Date()`
+
+```{r, echo = FALSE, message=FALSE, warning= FALSE, results = 'hide'}
+knitr::opts_chunk$set(echo = FALSE)
+install_if_missing <- function(package) {
+  if (!require(package, character.only = TRUE)) {
+    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/")
+    library(package, character.only = TRUE)
+  }
+}
+
+packages <- c("DT", "dplyr", "knitr", "kableExtra", "seqinr", "shiny")
+lapply(packages, install_if_missing)
+```
+
+```{r}
+#read in our distinct tables
+Table2 <- read.csv(params$Table2)
+Table3 <- read.csv(params$Table3)
+```
+
+# Top 100 Sorted by Bit Score, Distinct Transcripts
+
+```{r}
+Table2 %>%
+  kable("html", 
+        caption = "Top 100 Sorted by Bit Score, Distinct Transcripts", 
+        booktabs = TRUE, 
+        escape = FALSE) %>%  # Escape = FALSE to render HTML
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
+                full_width = FALSE, 
+                position = "center") %>% 
+  column_spec(1, width = "4cm", bold = TRUE, color = "white", background = "#4CAF50") %>% 
+  row_spec(0, bold = TRUE, font_size = 14, color = "white", background = "#4CAF50") %>% 
+  footnote(general = "Table shows the top 100 rows of KBT sorted by bit score, with hyperlinks to UniProt entries.", 
+           general_title = "Note: ", 
+           footnote_as_chunk = TRUE)
+```
+
+# Top 100 Sorted by Bit Score, Distinct Hits
+```{r}
+Table3 %>%
+  kable("html", 
+        caption = "Top 100 Sorted by Bit Score, , Distinct Transcripts", 
+        booktabs = TRUE, 
+        escape = FALSE) %>%  # Escape = FALSE to render HTML
+  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
+                full_width = FALSE, 
+                position = "center") %>% 
+  column_spec(1, width = "4cm", bold = TRUE, color = "white", background = "#4CAF50") %>% 
+  row_spec(0, bold = TRUE, font_size = 14, color = "white", background = "#4CAF50") %>% 
+  footnote(general = "Table shows the top 100 rows of KBT sorted by bit score, with hyperlinks to UniProt entries.", 
+           general_title = "Note: ", 
+           footnote_as_chunk = TRUE)
+```
+
