@@ -52,7 +52,7 @@ EOF
 // Process 1: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrinity {
 
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -69,14 +69,14 @@ process kallistoAnalysisTrinity {
 
     """
     
-    python3 Intermediate_Scripts/kallistoanalysistrinity.py ./ ${params.basename} ${kallisto_file_trinity}
+    python3 bin/Intermediate_Scripts/kallistoanalysistrinity.py ./ ${params.basename} ${kallisto_file_trinity}
     """
 }
 
 // Process 2: For kallistoanalysistrans.py dependencies:python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrans {
 
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -93,13 +93,13 @@ process kallistoAnalysisTrans {
     script:
     """
     
-    python3 Intermediate_Scripts/kallistoanalysistrans.py ./ ${params.basename} ${kallisto_file_transdecoder}
+    python3 bin/Intermediate_Scripts/kallistoanalysistrans.py ./ ${params.basename} ${kallisto_file_transdecoder}
     """
 }
 
 // Process 3: Extract Signal Sequences dependencies python biopython
 process ExtractSignalSequences {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -112,14 +112,14 @@ process ExtractSignalSequences {
     script: 
     """
     
-    python3 Intermediate_Scripts/IS2.py ${transdecoder_pep} ${mature_fasta} signalsequences.fasta
+    python3 bin/Intermediate_Scripts/IS2.py ${transdecoder_pep} ${mature_fasta} signalsequences.fasta
     """
 
 }
 
 // Process 4: Create Trinity Dataframe dependecies : R, biocmanager 
 process CreateTrinityDataframe {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -133,14 +133,14 @@ process CreateTrinityDataframe {
     script: 
     """
     
-    Rscript Intermediate_Scripts/IS1.R ${trinity_fasta} ${blastx_file} ${kallisto_csv}
+    Rscript bin/Intermediate_Scripts/IS1.R ${trinity_fasta} ${blastx_file} ${kallisto_csv}
     """
 
 }
 
 // Process 4: Create Interproscan Dataframe dependecies : R, biocmanager 
 process CreateInterproscanDataframe {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -153,14 +153,14 @@ process CreateInterproscanDataframe {
     script: 
     """
     
-    Rscript "Intermediate_Scripts/IS4.R" ${Interproscan} ${ListFile} ${PantherFile}
+    Rscript "bin/Intermediate_Scripts/IS4.R" ${Interproscan} ${ListFile} ${PantherFile}
     """
 
 }
 
 // Process 5: Create Transdecoder Dataframe dependecies : R, biocmanager 
 process CreateTransdecoderDataframe {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -176,14 +176,14 @@ process CreateTransdecoderDataframe {
     def basename = transdecoder_pep.getSimpleName()
     """
     
-    Rscript Intermediate_Scripts/IS5.R ${transdecoder_pep} ${transdecoder_cds} ${blastp_file} ${mature_fasta} ${Signalp_summary} ${signalsequences} ${Interproscan_dataframe} ${kallistotrans} ${basename}
+    Rscript bin/Intermediate_Scripts/IS5.R ${transdecoder_pep} ${transdecoder_cds} ${blastp_file} ${mature_fasta} ${Signalp_summary} ${signalsequences} ${Interproscan_dataframe} ${kallistotrans} ${basename}
     """
 
 }
 
 // Process 6: Create Interproscantoxinplotly
 process CreateInterproscanToxinPlotly {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -198,14 +198,14 @@ process CreateInterproscanToxinPlotly {
     script: 
     """
     
-    Rscript Intermediate_Scripts/IS7.R ${transdf_distinct_csv} ${Toxin_domains} ${transtoxinfasta}
+    Rscript bin/Intermediate_Scripts/IS7.R ${transdf_distinct_csv} ${Toxin_domains} ${transtoxinfasta}
     """
 
 }
 
 // Process 7: Create BUSCOgraphtranscriptome  Literally the busco provided script for visualisation
 process BUSCOtranscriptome {
-    conda "Setup/busco2.yaml"
+    conda "bin/Setup/busco2.yaml"
 
     publishDir "results/busco/transcriptome", mode: 'copy'
 
@@ -218,14 +218,14 @@ process BUSCOtranscriptome {
     script: 
     """
      
-    python3 "Intermediate_Scripts/IS6.py" -wd "${params.data}/busco_transcriptome/"
+    python3 "bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/busco_transcriptome/"
     """
 
 }
 
 // Process 8: Create BUSCOgraphtranslatome  Literally the busco provided script for visualisation
 process BUSCOtranslatome {
-    conda "Setup/busco2.yaml"
+    conda "bin/Setup/busco2.yaml"
 
     publishDir "results/busco/translatome", mode: 'copy'
 
@@ -238,7 +238,7 @@ process BUSCOtranslatome {
     script: 
     """
      
-    python3 "Intermediate_Scripts/IS6.py" -wd "${params.data}/busco_translatome/"
+    python3 "bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/busco_translatome/"
 
     """
 
@@ -246,7 +246,7 @@ process BUSCOtranslatome {
 
 // Process 9: Create TableGenerationTrinity
 process TableGenerationTrinity {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
@@ -262,14 +262,14 @@ process TableGenerationTrinity {
     script: 
     """
 	
-    Rscript "Intermediate_Scripts2/Generating_TopTables_Trinity.R" ${TBK} ${genome_id} ${species}
+    Rscript "bin/Intermediate_Scripts2/Generating_TopTables_Trinity.R" ${TBK} ${genome_id} ${species}
     """
 
 }
 
 // Process 10: Create TableGenerationTransdecoder   visualisation
 process TableGenerationTransdecoder {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
@@ -290,7 +290,7 @@ process TableGenerationTransdecoder {
     script: 
     """
 	
-    Rscript "Intermediate_Scripts2/Generating_Tables_Transdecoder_SignalP.R" ${transdf} ${genome_id} ${species}
+    Rscript "bin/Intermediate_Scripts2/Generating_Tables_Transdecoder_SignalP.R" ${transdf} ${genome_id} ${species}
     """
 
 }
@@ -298,7 +298,7 @@ process TableGenerationTransdecoder {
 
 // Process 11: Create FigureGenerationTrinity
 process FigureGenerationTrinity {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
@@ -318,7 +318,7 @@ process FigureGenerationTrinity {
     script: 
     """
 	
-    Rscript "Intermediate_Scripts2/Figure_generation_Trinity.R" ${TBK} ${colour}
+    Rscript "bin/Intermediate_Scripts2/Figure_generation_Trinity.R" ${TBK} ${colour}
 
     """
 
@@ -326,7 +326,7 @@ process FigureGenerationTrinity {
 
 // Process 12: Create FigureGenerationTransdecoder
 process FigureGenerationTransdecoder {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
@@ -346,7 +346,7 @@ process FigureGenerationTransdecoder {
     script: 
     """
 	
-    Rscript "Intermediate_Scripts2/Figure_generation_Transdecoder.R" ${transdf} ${colour}
+    Rscript "bin/Intermediate_Scripts2/Figure_generation_Transdecoder.R" ${transdf} ${colour}
 
     """
 
@@ -354,7 +354,7 @@ process FigureGenerationTransdecoder {
 
 // Process 13: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
@@ -374,7 +374,7 @@ process FigureGenerationSignalp {
     script: 
     """
 
-    Rscript "Intermediate_Scripts2/Figure_generation_SignalP.R" ${transdf} ${colour}
+    Rscript "bin/Intermediate_Scripts2/Figure_generation_SignalP.R" ${transdf} ${colour}
 
     """
 
@@ -382,7 +382,7 @@ process FigureGenerationSignalp {
 
 // Process 14: Create AddMassSpec
 process AddMassSpec {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -397,7 +397,7 @@ process AddMassSpec {
     script:
     """
 
-    Rscript "Intermediate_Scripts/IS8.R" ${transdf} ${massspecdata} "${species}" ${basename}
+    Rscript "bin/Intermediate_Scripts/IS8.R" ${transdf} ${massspecdata} "${species}" ${basename}
 
     """
 
@@ -405,7 +405,7 @@ process AddMassSpec {
 
 // Process 15: Create SkipMassSpec
 process SkipMassSpec {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -420,7 +420,7 @@ process SkipMassSpec {
     script:
     """
 
-    Rscript "Intermediate_Scripts/IS9.R" ${transdf} "${species}" ${basename}
+    Rscript "bin/Intermediate_Scripts/IS9.R" ${transdf} "${species}" ${basename}
 
     """
 
@@ -428,7 +428,7 @@ process SkipMassSpec {
 
 // Process 16: Create VennOverview
 process VennOverviewMS {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -443,7 +443,7 @@ process VennOverviewMS {
     script:
     """
 
-    Rscript "Intermediate_Scripts/IS10.R" ${filtered_massspec} "${Toxin_domains}"
+    Rscript "bin/Intermediate_Scripts/IS10.R" ${filtered_massspec} "${Toxin_domains}"
 
     """
 
@@ -451,7 +451,7 @@ process VennOverviewMS {
 
 // Process 16b: Create VennOverview
 process VennOverviewNoMS {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -466,7 +466,7 @@ process VennOverviewNoMS {
     script:
     """
     
-    Rscript "Intermediate_Scripts/IS10.R" ${filtered_nomasspec} "${Toxin_domains}"
+    Rscript "bin/Intermediate_Scripts/IS10.R" ${filtered_nomasspec} "${Toxin_domains}"
     
     """
 
@@ -474,7 +474,7 @@ process VennOverviewNoMS {
 
 // Process 17: RmarkdownA
 process RmarkdownA {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -488,14 +488,14 @@ process RmarkdownA {
     script:
     """
 
-    Rscript -e "rmarkdown::render('Rmarkdown_scripts/A.Rmd', output_dir = '.')" "Rmarkdown_scripts/" "${sampleURL}" "${params.name}"
+    Rscript -e "rmarkdown::render('bin/Rmarkdown_scripts/A.Rmd', output_dir = '.')" "Rmarkdown_scripts/" "${sampleURL}" "${params.name}"
     """
 
 }
 
 // Process 18: RmarkdownB
 process RmarkdownB {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -516,7 +516,7 @@ process RmarkdownB {
     triminfo_abs=\$(readlink -f "${triminfo}")
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/B.Rmd',
+      'bin/Rmarkdown_scripts/B.Rmd',
       output_dir='.',
       params=list(
         settings='\$settings_abs',
@@ -529,7 +529,7 @@ process RmarkdownB {
 }
 
 process RmarkdownCDEGIK {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -542,19 +542,19 @@ process RmarkdownCDEGIK {
     script:
     """
 
-    Rscript -e "rmarkdown::render('Rmarkdown_scripts/C.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
-    Rscript -e "rmarkdown::render('Rmarkdown_scripts/D.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
-    Rscript -e "rmarkdown::render('Rmarkdown_scripts/E.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
-    Rscript -e "rmarkdown::render('Rmarkdown_scripts/G.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
-    Rscript -e "rmarkdown::render('Rmarkdown_scripts/I.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
-    Rscript -e "rmarkdown::render('Rmarkdown_scripts/K.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
+    Rscript -e "rmarkdown::render('bin/Rmarkdown_scripts/C.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
+    Rscript -e "rmarkdown::render('bin/Rmarkdown_scripts/D.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
+    Rscript -e "rmarkdown::render('bin/Rmarkdown_scripts/E.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
+    Rscript -e "rmarkdown::render('bin/Rmarkdown_scripts/G.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
+    Rscript -e "rmarkdown::render('bin/Rmarkdown_scripts/I.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
+    Rscript -e "rmarkdown::render('bin/Rmarkdown_scripts/K.Rmd', output_dir = '.')" "Rmarkdown_scripts/" ${params.name}
 
 
     """
 }
 
 process RmarkdownH {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -588,7 +588,7 @@ process RmarkdownH {
     topkallisto_abs=\$(readlink -f "${topkallisto}")
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/H.Rmd',
+      'bin/Rmarkdown_scripts/H.Rmd',
       output_dir='.',
       params=list(
         kallistotop20graphtrinity='\$kallistotop20graphtrinity_abs',
@@ -609,7 +609,7 @@ process RmarkdownH {
 
 
 process RmarkdownJ {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -643,7 +643,7 @@ process RmarkdownJ {
     topkallisto_transdecoder_abs=\$(readlink -f "${topkallisto_transdecoder}")
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/J.Rmd',
+      'bin/Rmarkdown_scripts/J.Rmd',
       output_dir='.',
       params=list(
         kallistotop20graphtransdecoder='\$kallistotop20graphtransdecoder_abs',
@@ -663,7 +663,7 @@ process RmarkdownJ {
 }
 
 process RmarkdownL {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -692,7 +692,7 @@ process RmarkdownL {
     topkallisto_signalp_abs=\$(readlink -f "${topkallisto_signalp}")
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/L.Rmd',
+      'bin/Rmarkdown_scripts/L.Rmd',
       output_dir='.',
       params=list(
         alluvial5='\$alluvial5_abs',
@@ -709,7 +709,7 @@ process RmarkdownL {
 }
 
 process RmarkdownM {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -726,7 +726,7 @@ process RmarkdownM {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/M.Rmd',
+      'bin/Rmarkdown_scripts/M.Rmd',
       output_dir='.',
       params=list(
         Table1='\$Table1_abs',
@@ -737,7 +737,7 @@ process RmarkdownM {
 }
 
 process RmarkdownN {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -756,7 +756,7 @@ process RmarkdownN {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/N.Rmd',
+      'bin/Rmarkdown_scripts/N.Rmd',
       output_dir='.',
       params=list(
         Table2='\$Table2_abs',
@@ -768,7 +768,7 @@ process RmarkdownN {
 }
 
 process RmarkdownO {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -785,7 +785,7 @@ process RmarkdownO {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/O.Rmd',
+      'bin/Rmarkdown_scripts/O.Rmd',
       output_dir='.',
       params=list(
         Table4='\$Table4_abs',
@@ -796,7 +796,7 @@ process RmarkdownO {
 }
 
 process RmarkdownQ {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -813,7 +813,7 @@ process RmarkdownQ {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/Q.Rmd',
+      'bin/Rmarkdown_scripts/Q.Rmd',
       output_dir='.',
       params=list(
         Table5='\$Table5_abs',
@@ -824,7 +824,7 @@ process RmarkdownQ {
 }
 
 process RmarkdownR {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -843,7 +843,7 @@ process RmarkdownR {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/R.Rmd',
+      'bin/Rmarkdown_scripts/R.Rmd',
       output_dir='.',
       params=list(
         Table6='\$Table6_abs',
@@ -855,7 +855,7 @@ process RmarkdownR {
 }
 
 process RmarkdownS {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -872,7 +872,7 @@ process RmarkdownS {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/S.Rmd',
+      'bin/Rmarkdown_scripts/S.Rmd',
       output_dir='.',
       params=list(
         Table8='\$Table8_abs',
@@ -885,7 +885,7 @@ process RmarkdownS {
 
 
 process RmarkdownV {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -902,7 +902,7 @@ process RmarkdownV {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/V.Rmd',
+      'bin/Rmarkdown_scripts/V.Rmd',
       output_dir='.',
       params=list(
         Table9='\$Table9_abs',
@@ -913,7 +913,7 @@ process RmarkdownV {
 }
 
 process RmarkdownW {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -932,7 +932,7 @@ process RmarkdownW {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/W.Rmd',
+      'bin/Rmarkdown_scripts/W.Rmd',
       output_dir='.',
       params=list(
         Table10='\$Table10_abs',
@@ -944,7 +944,7 @@ process RmarkdownW {
 }
 
 process RmarkdownX {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -961,7 +961,7 @@ process RmarkdownX {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/X.Rmd',
+      'bin/Rmarkdown_scripts/X.Rmd',
       output_dir='.',
       params=list(
         Table12='\$Table12_abs',
@@ -972,7 +972,7 @@ process RmarkdownX {
 }
 
 process Movefilteredseq {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
@@ -989,7 +989,7 @@ process Movefilteredseq {
 
 
 process RmarkdownZ {
-    conda "Setup/VenomFlowAnalysis2.yaml"
+    conda "bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
@@ -1008,7 +1008,7 @@ process RmarkdownZ {
 
 
     Rscript -e "rmarkdown::render(
-      'Rmarkdown_scripts/Z.Rmd',
+      'bin/Rmarkdown_scripts/Z.Rmd',
       output_dir='.',
       params=list(
         VENN='\$Venn_abs',
@@ -1032,7 +1032,7 @@ params.input_interproscan = "${params.data}/*.cleaned.pep.tsv"
 params.input_signalp_summary   = "${params.data}/*_summary.signalp5"
 params.genome_id = null
 params.species = null 
-params.colour = file('Intermediate_Scripts2/color_palette.rds')
+params.colour = file('bin/Intermediate_Scripts2/color_palette.rds')
 params.ismassspecavailable = 'N'
 params.basename = null
 params.sampleURL = 'NULL'
