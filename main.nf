@@ -317,8 +317,7 @@ process FigureGenerationTrinity {
  
     script: 
     """
-    colour_abs=\$(readlink -f "${colour}")
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Trinity.R" ${TBK} '\$colour'
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Trinity.R" ${TBK} "${workflow.projectDir}/bin/Intermediate_Scripts2/color_palette.rds"
 
     """
 
