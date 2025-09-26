@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 #installing and laoding packages
 
 install_if_missing <- function(package) {
