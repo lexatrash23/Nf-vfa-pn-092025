@@ -1,4 +1,5 @@
-#load pacakages 
+#!/usr/bin/env Rscript
+#load pacakages
 
 install_if_missing <- function(package) {
   if (!require(package, character.only = TRUE)) {

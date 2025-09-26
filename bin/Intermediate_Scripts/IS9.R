@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 library(dplyr)
 args <- commandArgs(trailingOnly = TRUE)
 #list files 

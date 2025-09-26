@@ -1,3 +1,4 @@
+#!/usr/bin/env Rscript
 # Figure generations
 
 #installing and laoding packages
