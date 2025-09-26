@@ -267,7 +267,7 @@ process TableGenerationTrinity {
 
 }
 
-// Process 10: Create TableGenerationTransdecoder   visualisation
+// Process 10: Create TableGenerationTransdecoder  
 process TableGenerationTransdecoder {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -317,8 +317,8 @@ process FigureGenerationTrinity {
  
     script: 
     """
-	
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Trinity.R" ${TBK} ${colour}
+    colour_abs=\$(readlink -f "${colour}")
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Trinity.R" ${TBK} '\$colour'
 
     """
 
@@ -345,8 +345,8 @@ process FigureGenerationTransdecoder {
 
     script: 
     """
-	
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Transdecoder.R" ${transdf} ${colour}
+    colour_abs=\$(readlink -f "${colour}")
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Transdecoder.R" ${transdf} '\$colour'
 
     """
 
@@ -373,8 +373,8 @@ process FigureGenerationSignalp {
 
     script: 
     """
-
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_SignalP.R" ${transdf} ${colour}
+    colour_abs=\$(readlink -f "${colour}")
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_SignalP.R" ${transdf} '\$colour'
 
     """
 
