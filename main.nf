@@ -371,7 +371,6 @@ process FigureGenerationSignalp {
 
     script: 
     """
-    colour_abs=\$(readlink -f "${colour}")
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_SignalP.R" ${transdf} "${workflow.projectDir}/bin/Intermediate_Scripts2/color_palette.rds"
 
     """
