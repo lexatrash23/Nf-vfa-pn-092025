@@ -344,8 +344,7 @@ process FigureGenerationTransdecoder {
 
     script: 
     """
-    colour_abs=\$(readlink -f "${colour}")
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Transdecoder.R" ${transdf} '\$colour'
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Transdecoder.R" ${transdf} "${workflow.projectDir}/bin/Intermediate_Scripts2/color_palette.rds"
 
     """
 
@@ -373,7 +372,7 @@ process FigureGenerationSignalp {
     script: 
     """
     colour_abs=\$(readlink -f "${colour}")
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_SignalP.R" ${transdf} '\$colour'
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_SignalP.R" ${transdf} "${workflow.projectDir}/bin/Intermediate_Scripts2/color_palette.rds"
 
     """
 
