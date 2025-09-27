@@ -303,7 +303,7 @@ process FigureGenerationTrinity {
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
     input:
-    tuple path(TBK)
+    path(TBK)
 
     output:
     path "pie1.png", emit: pie1
@@ -330,7 +330,7 @@ process FigureGenerationTransdecoder {
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
     input:
-    tuple path(transdf)
+    path(transdf)
 
     output:
     path "pie5.png", emit: pie5
@@ -358,7 +358,7 @@ process FigureGenerationSignalp {
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
     input:
-    tuple path(transdf)
+    path(transdf)
 
     output:
     path "pie9.png", emit: pie9
