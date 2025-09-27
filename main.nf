@@ -303,7 +303,7 @@ process FigureGenerationTrinity {
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
     input:
-    tuple path(TBK), path(colour)
+    tuple path(TBK)
 
     output:
     path "pie1.png", emit: pie1
@@ -330,7 +330,7 @@ process FigureGenerationTransdecoder {
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
     input:
-    tuple path(transdf), path(colour)
+    tuple path(transdf)
 
     output:
     path "pie5.png", emit: pie5
@@ -358,7 +358,7 @@ process FigureGenerationSignalp {
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
     input:
-    tuple path(transdf), path(colour)
+    tuple path(transdf)
 
     output:
     path "pie9.png", emit: pie9
@@ -1031,7 +1031,6 @@ params.input_interproscan = "${params.data}/*.cleaned.pep.tsv"
 params.input_signalp_summary   = "${params.data}/*_summary.signalp5"
 params.genome_id = null
 params.species = null 
-params.colour = file('${workflow.projectDir}/bin/Intermediate_Scripts2/color_palette.rds')
 params.ismassspecavailable = 'N'
 params.basename = null
 params.sampleURL = 'NULL'
@@ -1131,16 +1130,11 @@ workflow {
                          .combine(species)
 
     Trans_table_data | TableGenerationTransdecoder
-    def colours = Channel.value(params.colour)
     def TBK_only = CreateTrinityDataframe.out.TBK
 
-    def Tbkfigures = TBK_only
-                     .combine(colours)
-    def Transdffigures = transdf
-                     .combine(colours)
-    Tbkfigures | FigureGenerationTrinity
-    Transdffigures | FigureGenerationTransdecoder
-    Transdffigures | FigureGenerationSignalp
+    TBK_only | FigureGenerationTrinity
+    transdf | FigureGenerationTransdecoder
+    transdf | FigureGenerationSignalp
     def basename = Channel.value(params.basename)
  
     if (params.ismassspecavailable == 'Y') {
