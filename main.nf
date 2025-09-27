@@ -185,10 +185,8 @@ process CreateTransdecoderDataframe {
 process CreateInterproscanToxinPlotly {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
-    publishDir "results/htmls", pattern: "plotly_graph.html", mode: 'copy'
-    publishDir "results/Intermediate_Scripts1_outputs", pattern: "filtered_sequences.fasta", mode: 'copy'
-
-
+    publishDir "results/htmls", pattern: "*.html", mode: 'copy'
+    publishDir "results/Intermediate_Scripts1_outputs", pattern: "*.fasta", mode: 'copy'
 
     input:
     tuple path(transdf_distinct_csv), path(Toxin_domains), path(transtoxinfasta)
@@ -970,23 +968,6 @@ process RmarkdownX {
     )"
     """
 }
-
-process Movefilteredseq {
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
-
-    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
-
-    input:
-    path (filtered_sequences)
-    
-    output:
-
-    script:
-    """
-    mv "results/htmls/filtered_sequences.fasta" "results/Intermediate_Scripts1_outputs/filtered_sequences.fasta"
-    """
-}
-
 
 process RmarkdownZ {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
