@@ -185,7 +185,10 @@ process CreateTransdecoderDataframe {
 process CreateInterproscanToxinPlotly {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
-    publishDir "results/htmls", mode: 'copy'
+    publishDir "results/htmls", pattern: "plotly_graph.html", mode: 'copy'
+    publishDir "results/Intermediate_Scripts1_outputs", pattern: "filtered_sequences.fasta", mode: 'copy'
+
+
 
     input:
     tuple path(transdf_distinct_csv), path(Toxin_domains), path(transtoxinfasta)
