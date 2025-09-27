@@ -1253,7 +1253,6 @@ workflow {
     TableGenerationTransdecoder.out.Table12
 )
 
- Movefilteredseq (CreateInterproscanToxinPlotly.out.filtered_sequences)
  
  
 }
