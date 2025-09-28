@@ -1010,7 +1010,7 @@ process Blast0Chunks {
     input:
     path (blastx0)
     path (blastp0)
-    path (blastn0), optional:true
+    path (blastn0)
     
     output:
     path "*", emit: blast0chunks
