@@ -1043,6 +1043,8 @@ params.input_blastx0_files   = "${params.data}/*_blastxunitox0.txt"
 params.input_blastp0_files   = "${params.data}/*_blastpunitox0.txt"
 params.input_interproscan = "${params.data}/*.cleaned.pep.tsv"
 params.input_signalp_summary   = "${params.data}/*_summary.signalp5"
+params.input_blastn0_files = "${params.data}/*_blastnunitox0.txt"
+
 workflow {
 
     def kallisto_file_trinity = Channel.fromPath(params.input_kallisto_trinity)
