@@ -382,8 +382,8 @@ process FigureGenerationSignalp {
 process AddMassSpec {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
-    publishDir "results/RappData/Single", pattern: *.gz, mode: 'copy'
-    publishDir "results/RappData/Combined", pattern: *.csv, mode: 'copy'
+    publishDir "results/RappData/Single", pattern: "*.gz", mode: 'copy'
+    publishDir "results/RappData/Combined", pattern: "*.csv", mode: 'copy'
 
     input:
     tuple path(transdf), path(massspecdata), val(species), val(basename)
@@ -406,8 +406,8 @@ process AddMassSpec {
 process SkipMassSpec {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
-    publishDir "results/RappData/Single", pattern: *.gz, mode: 'copy'
-    publishDir "results/RappData/Combined", pattern: *.csv, mode: 'copy'
+    publishDir "results/RappData/Single", pattern: "*.gz", mode: 'copy'
+    publishDir "results/RappData/Combined", pattern: "*.csv", mode: 'copy'
 
     input:
     tuple path(transdf), val(species), val(basename)
