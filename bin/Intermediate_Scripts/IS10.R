@@ -1,4 +1,4 @@
-
+#!/usr/bin/env Rscript
 install_if_missing <- function(package) {
   if (!require(package, character.only = TRUE)) {
     install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/")

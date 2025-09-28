@@ -382,7 +382,8 @@ process FigureGenerationSignalp {
 process AddMassSpec {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
-    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
+    publishDir "results/RappData/Single", pattern: *.gz, mode: 'copy'
+    publishDir "results/RappData/Combined", pattern: *.csv, mode: 'copy'
 
     input:
     tuple path(transdf), path(massspecdata), val(species), val(basename)
@@ -405,7 +406,8 @@ process AddMassSpec {
 process SkipMassSpec {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
-    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
+    publishDir "results/RappData/Single", pattern: *.gz, mode: 'copy'
+    publishDir "results/RappData/Combined", pattern: *.csv, mode: 'copy'
 
     input:
     tuple path(transdf), val(species), val(basename)
@@ -1000,6 +1002,34 @@ process RmarkdownZ {
     """
 }
 
+process Blast0Chunks {
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "results/RappData/Alignmentapp", mode: 'copy'
+
+    input:
+    path (blastx0)
+    path (blastp0)
+    path (blastn0), optional:true
+    
+    output:
+    path "*", emit: blast0chunks
+
+    script:
+    if (blastn0.exists()) {
+    
+    """
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts1/IS11.R" ${params.basename} ${blastx0} ${blastp0} ${blastn0}
+    """
+    
+    } else {
+    """
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts1/IS11.R" ${params.basename} ${blastx0} ${blastp0}
+    """
+    
+}
+}
+
 // Define input file patterns via parameters
 params.input_kallisto_trinity = "${params.data}/*_kalltrin.tsv"
 params.input_kallisto_trans   = "${params.data}/*_kalltrans.tsv"
@@ -1009,13 +1039,10 @@ params.input_mature_fasta   = "${params.data}/*_mature.fasta"
 params.input_trinity_fasta = "${params.data}/*_trinity.fasta"
 params.input_blastx_files   = "${params.data}/*_blastxunitox6.txt"
 params.input_blastp_files   = "${params.data}/*_blastpunitox6.txt"
+params.input_blastx0_files   = "${params.data}/*_blastxunitox0.txt"
+params.input_blastp0_files   = "${params.data}/*_blastpunitox0.txt"
 params.input_interproscan = "${params.data}/*.cleaned.pep.tsv"
 params.input_signalp_summary   = "${params.data}/*_summary.signalp5"
-params.genome_id = null
-params.species = null 
-params.ismassspecavailable = 'N'
-params.basename = null
-params.sampleURL = 'NULL'
 workflow {
 
     def kallisto_file_trinity = Channel.fromPath(params.input_kallisto_trinity)
@@ -1253,7 +1280,17 @@ workflow {
     TableGenerationTransdecoder.out.Table12
 )
 
- 
+     def blastx0txt = Channel.fromPath(params.input_blastx0_files)
+     def blastp0txt = Channel.fromPath(params.input_blastp0_files)
+     
+    if (params.input_blastn0_files != 'NULL') {
+    params.input_blastn0_files   = "${params.data}/*_blastnunitox0.txt"
+     def blastn0txt = Channel.fromPath(params.input_blastn0_files)
+    Blast0Chunks (blastx0txt,blastp0txt,blastn0txt)
+ }
+ else {
+    Blast0Chunks (blastx0txt,blastp0txt)
+}
  
 }
 
