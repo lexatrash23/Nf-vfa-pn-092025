@@ -1032,19 +1032,18 @@ process Blast0Chunks {
 }
 
 // Define input file patterns via parameters
-params.input_kallisto_trinity = "${params.data}/*_kalltrin.tsv"
-params.input_kallisto_trans   = "${params.data}/*_kalltrans.tsv"
-params.input_transdecoder_pep = "${params.data}/*_transpep.pep"
-params.input_transdecoder_cds = "${params.data}/*_transcds.cds"
-params.input_mature_fasta   = "${params.data}/*_mature.fasta"
-params.input_trinity_fasta = "${params.data}/*_trinity.fasta"
-params.input_blastx_files   = "${params.data}/*_blastxunitox6.txt"
-params.input_blastp_files   = "${params.data}/*_blastpunitox6.txt"
-params.input_blastx0_files   = "${params.data}/*_blastxunitox0.txt"
-params.input_blastp0_files   = "${params.data}/*_blastpunitox0.txt"
-params.input_interproscan = "${params.data}/*.cleaned.pep.tsv"
-params.input_signalp_summary   = "${params.data}/*_summary.signalp5"
-params.input_blastn0_files = "${params.data}/*_blastnunitox0.txt"
+params.input_kallisto_trinity = "${params.data}/kallisto/trinity/output/abundance.tsv"
+params.input_kallisto_trans   = "${params.data}/kallisto/trinity/output/abundance.tsv"
+params.input_transdecoder_pep = "${params.data}/Transdecoder/*.transdecoder.pep"
+params.input_transdecoder_cds = "${params.data}/Transdecoder/*.transdecoder.cds"
+params.input_mature_fasta   = "${params.data}/Signalp/*_mature.fasta"
+params.input_blastx_files   = "${params.data}/Blast/Blastx/*.blastx.db.6.txt"
+params.input_blastp_files   = "${params.data}/Blast/Blastp/*.blastp.db.0.txt"
+params.input_blastx0_files   = "${params.data}/Blastx/*.blastx.db.6.txt"
+params.input_blastp0_files   = "${params.data}/Blastp/*.blastp.db.6.txt"
+params.input_interproscan = "${params.data}/Interproscan/*.cleaned.pep.tsv"
+params.input_signalp_summary   = "${params.data}/Signalp/*_summary.signalp5"
+params.input_blastn0_files = "${params.data}/Blastn/*.blastn.db.0.txt"
 
 workflow {
 
@@ -1071,7 +1070,7 @@ workflow {
 
 
     def trinity_fasta = Channel 
-        .fromPath(params.input_trinity_fasta)
+        .fromPath(params.trinity_fasta)
     
     def blastx_files = Channel 
         .fromPath(params.input_blastx_files)
