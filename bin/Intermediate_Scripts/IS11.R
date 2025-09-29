@@ -10,7 +10,7 @@ blastx_file <- readLines(blastx)
 #obtain database information from blastx file
 blastx_db_line <- grep("^Database:", blastx_file)
 blastx_db_info <- blastx_file[blastx_db_line:(blastx_db_line +1)]
-writeLines(blastx_db_info, paste0(Sample, "_blastx_db_info.txt"))
+writeLines(blastx_db_info, "db_info_blastx.txt")
 
 
 #creating query chunks
@@ -22,7 +22,7 @@ blastx_query_chunks <- mapply(function(start,end) {
 }, blastx_query_starts, blastx_query_ends, SIMPLIFY=FALSE)
 
 #save chunks
-saveRDS(blastx_query_chunks, file = paste0(Sample, "_blastx.0.chunks.rds"))
+saveRDS(blastx_query_chunks, "query_chunks_blastx.rds")
 
 #read in blastp0 file
 blastp <- arg[3]
@@ -31,7 +31,7 @@ blastp_file <- readLines(blastp)
 #obtain database information from blastx file #this is going to be the same as the blastp file because it's the same database
 blastp_db_line <- grep("^Database:", blastp_file)
 blastp_db_info <- blastp_file[blastp_db_line:(blastp_db_line +1)]
-writeLines(blastp_db_info, paste0(Sample, "_blastp_db_info.txt"))
+writeLines(blastp_db_info,"db_info_blastp.txt" )
 
 #creating query chunks. Each chunk starts with Query=  and ends with effective space used..
 blastp_result_lines <- blastp_file[(blastp_db_line + 2):length(blastp_file)]
@@ -42,7 +42,7 @@ blastp_query_chunks <- mapply(function(start,end) {
 }, blastp_query_starts, blastp_query_ends, SIMPLIFY=FALSE)
 
 #save chunks
-saveRDS(blastp_query_chunks, file = paste0(Sample, "_blastp.0.chunks.rds"))
+saveRDS(blastp_query_chunks, "query_chunks_blastp.rds" )
 
 
 blastn <- if (length(arg) >= 4) arg[4] else "NULL"
@@ -56,7 +56,7 @@ blastn_file <- readLines(blastn)
 #obtain database information from blastx file #this is going to be the same as the blastp file because it's the same database
 blastn_db_line <- grep("^Database:", blastn_file)
 blastn_db_info <- blastn_file[blastn_db_line:(blastn_db_line +1)]
-writeLines(blastn_db_info, paste0(Sample, "_blastn_db_info.txt"))
+writeLines(blastn_db_info, "db_info_blastn.txt")
 
 #creating query chunks
 blastn_result_lines <- blastn_file[(blastn_db_line + 2):length(blastn_file)]
@@ -69,7 +69,7 @@ blastn_query_chunks <- mapply(function(start,end) {
 
 
 #save chunks
-saveRDS(blastn_query_chunks, file = paste0(Sample, "_blastn.0.chunks.rds"))
+saveRDS(blastn_query_chunks, "query_chunks_blastn.rds")
 } else {
     print("No blastn file provided.")
 }
