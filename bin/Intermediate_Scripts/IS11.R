@@ -10,7 +10,7 @@ blastx_file <- readLines(blastx)
 #obtain database information from blastx file
 blastx_db_line <- grep("^Database:", blastx_file)
 blastx_db_info <- blastx_file[blastx_db_line:(blastx_db_line +1)]
-writeLines(blastx_db_info, file = paste0(Sample, "_blastx_db_info.txt"))
+writeLines(blastx_db_info, paste0(Sample, "_blastx_db_info.txt"))
 
 
 #creating query chunks
@@ -31,7 +31,7 @@ blastp_file <- readLines(blastp)
 #obtain database information from blastx file #this is going to be the same as the blastp file because it's the same database
 blastp_db_line <- grep("^Database:", blastp_file)
 blastp_db_info <- blastp_file[blastp_db_line:(blastp_db_line +1)]
-writeLines(blastp_db_info, file = paste0(Sample, "_blastp_db_info.txt"))
+writeLines(blastp_db_info, paste0(Sample, "_blastp_db_info.txt"))
 
 #creating query chunks. Each chunk starts with Query=  and ends with effective space used..
 blastp_result_lines <- blastp_file[(blastp_db_line + 2):length(blastp_file)]
@@ -56,7 +56,7 @@ blastn_file <- readLines(blastn)
 #obtain database information from blastx file #this is going to be the same as the blastp file because it's the same database
 blastn_db_line <- grep("^Database:", blastn_file)
 blastn_db_info <- blastn_file[blastn_db_line:(blastn_db_line +1)]
-writeLines(blastn_db_info, file = paste0(Sample, "_blastn_db_info.txt"))
+writeLines(blastn_db_info, paste0(Sample, "_blastn_db_info.txt"))
 
 #creating query chunks
 blastn_result_lines <- blastn_file[(blastn_db_line + 2):length(blastn_file)]
