@@ -70,7 +70,6 @@ blastn_query_chunks <- mapply(function(start,end) {
 
 #save chunks
 saveRDS(blastn_query_chunks, file = paste0(Sample, "_blastn.0.chunks.rds"))
-}
-else {
+} else {
     print("No blastn file provided.")
 }
