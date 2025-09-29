@@ -4,7 +4,7 @@ arg <- commandArgs(trailingOnly = TRUE)
 # read in sample_name
 Sample <- arg[1]
 #read in blastx0 file
-blastx <- args[2]
+blastx <- arg[2]
 blastx_file <- readLines(blastx)
 
 #obtain database information from blastx file
@@ -25,7 +25,7 @@ blastx_query_chunks <- mapply(function(start,end) {
 saveRDS(blastx_query_chunks, file = paste0(Sample, "_blastx.0.chunks.rds"))
 
 #read in blastp0 file
-blastp <- args[3]
+blastp <- arg[3]
 blastp_file <- readLines(blastp)
 
 #obtain database information from blastx file #this is going to be the same as the blastp file because it's the same database
@@ -45,7 +45,7 @@ blastp_query_chunks <- mapply(function(start,end) {
 saveRDS(blastp_query_chunks, file = paste0(Sample, "_blastp.0.chunks.rds"))
 
 
-blastn <- if (length(args) >= 4) args[4] else "NULL"
+blastn <- if (length(arg) >= 4) arg[4] else "NULL"
 
 #read in blastn0 file (IF PRESENT)
 
