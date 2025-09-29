@@ -8,11 +8,10 @@ process MetadataCreation {
     publishDir "results/metadata", mode: 'copy'
 
     input:
-    tuple val(notes), val(triminfo), val(samplename), val(SRA), val(Tissue), val(Age), val(Sex), val(RNAExtractionMethod), val(LibraryPrep), val(Strandedness), val(Selection), val(Readlength)
+    tuple val(notes), val(samplename), val(SRA), val(Tissue), val(Age), val(Sex), val(RNAExtractionMethod), val(LibraryPrep), val(Strandedness), val(Selection), val(Readlength)
 
     output:
     path "notes.txt", emit: notes
-    path "triminfo.txt", emit: triminfo
     path "settings.csv", emit: settings
 
     script:
@@ -21,12 +20,7 @@ process MetadataCreation {
     cat <<EOF > "notes.txt"
 ${notes}
 EOF
-    
-    #triminfo
-
-    cat <<EOF > "triminfo.txt"
-${triminfo}
-EOF
+   
     
     #settings
 
@@ -503,7 +497,6 @@ process RmarkdownB {
     input:
     path settings
     path notes
-    path triminfo
     
     
     output:
@@ -514,7 +507,6 @@ process RmarkdownB {
 
     settings_abs=\$(readlink -f "${settings}")
     notes_abs=\$(readlink -f "${notes}")
-    triminfo_abs=\$(readlink -f "${triminfo}")
 
     Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/B.Rmd',
@@ -522,7 +514,6 @@ process RmarkdownB {
       params=list(
         settings='\$settings_abs',
         notes='\$notes_abs',
-        triminfo='\$triminfo_abs',
         name = '${params.name}'
       )
       )"
@@ -1180,7 +1171,6 @@ workflow {
     sampleurl | RmarkdownA
     
     def N = Channel.value(params.notes)
-    def T = Channel.value(params.triminfo)
     def SN = Channel.value(params.samplename)
     def R = Channel.value(params.SRA)
     def Ti = Channel.value(params.Tissue)
@@ -1191,14 +1181,13 @@ workflow {
     def SD = Channel.value(params.Strandedness)
     def SL = Channel.value(params.Selection)
     def RL = Channel.value(params.Readlength)
-    def Metadata = N.combine(T).combine(SN).combine(R).combine(Ti).combine(A).combine(SX).combine(REM).combine(LP).combine(SD).combine(SL).combine(RL)
+    def Metadata = N.combine(SN).combine(R).combine(Ti).combine(A).combine(SX).combine(REM).combine(LP).combine(SD).combine(SL).combine(RL)
     
     Metadata | MetadataCreation
     
     RmarkdownB(
         MetadataCreation.out.settings,
         MetadataCreation.out.notes,
-        MetadataCreation.out.triminfo
     )
  
     RmarkdownCDEGIK()

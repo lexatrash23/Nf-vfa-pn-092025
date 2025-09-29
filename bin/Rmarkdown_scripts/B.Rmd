@@ -6,7 +6,6 @@ output:
 params:
   settings: NULL
   notes: NULL
-  triminfo: NULL
   name: NULL
 ---
 <!-- get current date --> 
@@ -19,7 +18,6 @@ params:
 args <- commandArgs(trailingOnly = TRUE)
 Settings <- params$settings
 Notes <- params$notes
-Trim <- params$triminfo
 
 ```
 
@@ -50,7 +48,6 @@ lapply(packages, install_if_missing)
 # Read in the files based on the provided parameters
 Settings <- read.csv(Settings)
 Notes <- readLines(Notes)
-Trim <- readLines(Trim)
 
 
 kable(Settings, format = "html") %>%
@@ -61,10 +58,6 @@ kable(Settings, format = "html") %>%
 
 ```
 
-## Trimmomatic  
-```{r, results='asis'}
-cat(Trim)
-```
 
 ## Notes 
 ```{r, results='asis'}
