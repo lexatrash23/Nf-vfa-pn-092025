@@ -1,5 +1,5 @@
 #!/usr/bin/env Rscript
-args <- commandArgs(trailingOnly = TRUE)
+arg <- commandArgs(trailingOnly = TRUE)
 #read in command line arguments
 # read in sample_name
 Sample <- arg[1]
