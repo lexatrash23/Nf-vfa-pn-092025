@@ -122,6 +122,7 @@ process CreateTrinityDataframe {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
+    publishDir "results/RappData/Single", pattern: "*.gz", mode: 'copy'
 
     input:
     tuple path(trinity_fasta), path(blastx_file), path(kallisto_csv)
