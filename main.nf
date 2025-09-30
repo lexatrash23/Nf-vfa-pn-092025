@@ -214,7 +214,7 @@ process BUSCOtranscriptome {
     script: 
     """
      
-    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/busco_transcriptome/"
+    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/BUSCO/transcriptome"
     """
 
 }
@@ -234,7 +234,7 @@ process BUSCOtranslatome {
     script: 
     """
      
-    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/busco_translatome/"
+    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/BUSCO/translatome"
 
     """
 
