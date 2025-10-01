@@ -1,5 +1,6 @@
 #!/usr/bin/env Rscript
 library(dplyr)
+library(tidyr)
 args <- commandArgs(trailingOnly = TRUE)
 dataframe <- args[1]
 toxin_data_csv <- args[2]
