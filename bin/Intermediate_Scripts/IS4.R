@@ -3,7 +3,9 @@
 
 library(Biostrings)
 library(dplyr)
-library(tidyr)
+library(GO.db)
+library(biomaRt)
+
 
 args <- commandArgs(trailingOnly = TRUE)
 
