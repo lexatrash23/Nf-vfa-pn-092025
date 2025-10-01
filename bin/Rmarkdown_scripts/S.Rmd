@@ -13,16 +13,10 @@ params:
   `r Sys.Date()`
 
 ```{r, echo = FALSE, message=FALSE, warning= FALSE, results = 'hide'}
-knitr::opts_chunk$set(echo = FALSE)
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/")
-    library(package, character.only = TRUE)
-  }
-}
-
-packages <- c("DT", "dplyr", "knitr", "kableExtra", "seqinr", "shiny")
-lapply(packages, install_if_missing)
+library(kableExtra)
+library(DT)
+library(dplyr)
+library(knitr)
 ```
 
 ```{r}

@@ -1,19 +1,10 @@
 #!/usr/bin/env Rscript
 # Figure generations
 
-#installing and laoding packages
-#packages loading 
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/")
-    library(package, character.only = TRUE)
-  }
-}
-
-packages <- c("png", "grid", "dplyr", "knitr", "kableExtra", "ggplot2","ggalluvial", "shiny", "cowplot")
-lapply(packages, install_if_missing)
-if (!requireNamespace("DT", quietly = TRUE)) install.packages("DT", type = "binary")
-
+library(dplyr)
+library(ggplot2)
+library(ggalluvial)
+library(grid)
 
 #check of current working directory. The script assumes the working directory is the
 #locally
