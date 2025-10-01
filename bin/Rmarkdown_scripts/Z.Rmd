@@ -23,6 +23,7 @@ library(DT)
 library(dplyr)
 library(knitr)
 library(png)
+library(grid)
 # Load packages 
 
 ```
