@@ -7,7 +7,7 @@
 # Function to check if a package is installed and install if not
 install_if_missing <- function(package) {
   if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE)
+    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org")
     library(package, character.only = TRUE)
   }
 }
