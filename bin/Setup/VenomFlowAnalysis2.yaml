@@ -23,6 +23,7 @@ dependencies:
   - r-ggalluvial
   - r-DT
   - r-ggpubr
+  - r-ggvenn
   - asttokens=3.0.0=pyhd8ed1ab_1
   - async-lru=2.0.5=pyh29332c3_0
   - at-spi2-atk=2.38.0=h0630a04_3
