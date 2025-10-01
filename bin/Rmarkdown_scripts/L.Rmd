@@ -33,7 +33,6 @@ library(kableExtra)
 library(png)
 library(grid)
 library(DT)
-library(pandoc)
 library(kableExtra)
 ```
 
