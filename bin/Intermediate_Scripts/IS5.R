@@ -2,19 +2,11 @@
 #Intermediate_Script_5
 #IS_5
 #userinputversion 
-#20250121
 
-# Function to check if a package is installed and install if not
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org")
-    library(package, character.only = TRUE)
-  }
-}
-BiocManager::install("Biostrings")
+
 library(Biostrings)
-packages <- c("tidyr", "ggplot2", "gridExtra", "data.table", "dplyr")
-lapply(packages, install_if_missing)
+library(dplyr)
+library(tidyr)
 
 #print the current working directory as a check #The original command should be run from the directory containing all input files 
 args <- commandArgs(trailingOnly = TRUE)

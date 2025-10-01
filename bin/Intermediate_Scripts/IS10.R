@@ -1,13 +1,5 @@
 #!/usr/bin/env Rscript
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/")
-    library(package, character.only = TRUE)
-  }
-}
 
-packages <- c("tidyverse", "ggvenn")
-lapply(packages, install_if_missing)
 args <- commandArgs(trailingOnly = TRUE)
 dataframe <- args[1]
 toxin_data_csv <- args[2]

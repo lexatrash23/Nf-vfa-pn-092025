@@ -1,24 +1,11 @@
 #!/usr/bin/env Rscript
-#Intermediate_Script_4
-#IS4
-#userinputversion 
-#20250202 
+#Intermediate_Script_1
+#IS1
+#userinputversion
 
-# Function to check if a package is installed and install if not
-BiocManager::install("GenomeInfoDbData")
-
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/")
-    library(package, character.only = TRUE)
-  }
-}
-
-packages <- c("tidyr", "ggplot2", "gridExtra", "data.table", "dplyr")
-lapply(packages, install_if_missing)
-BiocManager::install("Biostrings")
 library(Biostrings)
-
+library(tidyr)
+library(dplyr)
 
 #saves the current directory into the current_dir variable
 args <- commandArgs(trailingOnly = TRUE)

@@ -1,21 +1,9 @@
 #!/usr/bin/env Rscript
 #load pacakages
 
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/")
-    library(package, character.only = TRUE)
-  }
-}
-
-packages <- c("httr", "jsonlite", "dplyr", "tidyr", "data.table", "dplyr")
-lapply(packages, install_if_missing)
-BiocManager::install("GO.db")
-BiocManager::install("biomaRt")
-
-library(GO.db)
-library(biomaRt)
-#saving current directory as a variable
+library(Biostrings)
+library(dplyr)
+library(tidyr)
 
 args <- commandArgs(trailingOnly = TRUE)
 

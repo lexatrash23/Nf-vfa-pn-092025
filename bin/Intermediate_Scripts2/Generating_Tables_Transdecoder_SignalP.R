@@ -1,14 +1,7 @@
 #!/usr/bin/env Rscript
 #installing and laoding packages
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/")
-    library(package, character.only = TRUE)
-  }
-}
-packages <- c("dplyr", "knitr", "kableExtra", "seqinr", "shiny")
-lapply(packages, install_if_missing)
-if (!requireNamespace("DT", quietly = TRUE)) install.packages("DT", type = "binary")
+library(dplyr)
+library(DT)
 
 
 #this take two arguments, the first being the genome ID and the second being species name

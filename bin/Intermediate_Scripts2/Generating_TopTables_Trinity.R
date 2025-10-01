@@ -1,16 +1,10 @@
 #!/usr/bin/env Rscript
 #installing and laoding packages
 
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/",type = "binary")
-    library(package, character.only = TRUE)
-  }
-}
-packages <- c("dplyr", "DT", "knitr", "kableExtra","shiny")
-lapply(packages, install_if_missing)
-install.packages("seqinr", dependencies = TRUE, type = "source", repos = "https://cloud.r-project.org/")
 
+
+library(dplyr)
+library(DT)
 
 #Takes three arguments, the first being the TBK csv , the second being the NCBI genome code and the third being the full species name
 args <- commandArgs(trailingOnly = TRUE)

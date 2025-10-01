@@ -1,23 +1,11 @@
 #!/usr/bin/env Rscript
 #installing and laoding packages
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE, repos = "https://cloud.r-project.org/")
-    library(package, character.only = TRUE)
-  }
-}
 
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install("Biostrings")
 library(Biostrings)
-
-
-
-packages <- c("webshot2", "dplyr", "htmlwidgets", "plotly")
-lapply(packages, install_if_missing)
-if (!requireNamespace("webshot2", quietly = TRUE)) install.packages("webshot2", type = "binary")
-if (!requireNamespace("htmlwidgets", quietly = TRUE)) install.packages("htmlwidgets", type = "binary")
+library(dplyr)
+library(tidyr)
+library(htmlwidgets)
+library(plotly)
 
 args <- commandArgs(trailingOnly = TRUE)
 
@@ -94,10 +82,7 @@ annotation_counts_df <- annotation_counts_df_matched
 #303
 
 #filter out our FASTA file from IS5 
-if (!requireNamespace("BiocManager", quietly = TRUE))
-  install.packages("BiocManager")
-BiocManager::install("Biostrings")
-library(Biostrings)
+
 
 fasta <- readAAStringSet(file = fasta_file)
 seq_ids <- sapply(strsplit(names(fasta), " "), `[`, 1)
@@ -233,7 +218,6 @@ annotation_counts_df$Group <- ifelse(
     )
   )
 )
-library(dplyr)
 library(plotly)
 
 group_totals <- annotation_counts_df %>%

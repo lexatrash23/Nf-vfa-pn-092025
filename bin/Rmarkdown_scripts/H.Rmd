@@ -28,16 +28,17 @@ options(repos = c(CRAN = "https://cran.rstudio.com"))
 ```
 
 ```{r, echo = FALSE, message=FALSE, warning= FALSE, results = 'hide'}
-# Load packages 
-install_if_missing <- function(package) {
-  if (!require(package, character.only = TRUE)) {
-    install.packages(package, dependencies = TRUE)
-    library(package, character.only = TRUE)
-  }
-}
+library(readr)
+library(tidyr)
+library(knitr)
+library(gridExtra)
+library(kableExtra)
+library(png)
+library(grid)
+library(DT)
+library(pandoc)
+library(kableExtra)
 
-packages <- c("png", "grid", "DT", "dplyr", "knitr", "pandoc","kableExtra", "ggplot2","ggalluvial", "shiny")
-lapply(packages, install_if_missing)
 ```
 
 ```{r, echo=FALSE, results='asis'}
