@@ -11,8 +11,9 @@ install_if_missing <- function(package) {
     library(package, character.only = TRUE)
   }
 }
-
-packages <- c("Biostrings", "tidyr", "ggplot2", "gridExtra", "data.table", "dplyr")
+BiocManager::install("Biostrings")
+library(Biostrings)
+packages <- c("tidyr", "ggplot2", "gridExtra", "data.table", "dplyr")
 lapply(packages, install_if_missing)
 
 #print the current working directory as a check #The original command should be run from the directory containing all input files 
