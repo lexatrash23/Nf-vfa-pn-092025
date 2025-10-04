@@ -19,7 +19,7 @@ sampleURL <- args[2]
 Name <- args[3]
 
 # Build the full URL for the Search and Download button
-search_url <- paste0("https://cephalopodpsg1.shinyapps.io/Dataframe_search/?sample=", sampleURL)
+search_url <-sampleURL
 ```
 
 <!-- get current date --> 
