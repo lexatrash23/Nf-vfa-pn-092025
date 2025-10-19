@@ -4,6 +4,7 @@ def launchDir = System.getProperty('user.dir')
 
 // Process 0: Creating the settings, notes and triminfo files
 process MetadataCreation {
+    errorStrategy 'ignore'
 
     publishDir "results/metadata", mode: 'copy'
 
@@ -45,6 +46,7 @@ EOF
 
 // Process 1: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrinity {
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -69,6 +71,7 @@ process kallistoAnalysisTrinity {
 
 // Process 2: For kallistoanalysistrans.py dependencies:python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrans {
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -93,6 +96,8 @@ process kallistoAnalysisTrans {
 
 // Process 3: Extract Signal Sequences dependencies python biopython
 process ExtractSignalSequences {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
@@ -113,6 +118,8 @@ process ExtractSignalSequences {
 
 // Process 4: Create Trinity Dataframe dependecies : R, biocmanager 
 process CreateTrinityDataframe {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
@@ -135,6 +142,8 @@ process CreateTrinityDataframe {
 
 // Process 4: Create Interproscan Dataframe dependecies : R, biocmanager 
 process CreateInterproscanDataframe {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
@@ -155,6 +164,8 @@ process CreateInterproscanDataframe {
 
 // Process 5: Create Transdecoder Dataframe dependecies : R, biocmanager 
 process CreateTransdecoderDataframe {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
@@ -178,6 +189,8 @@ process CreateTransdecoderDataframe {
 
 // Process 6: Create Interproscantoxinplotly
 process CreateInterproscanToxinPlotly {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", pattern: "*.html", mode: 'copy'
@@ -201,6 +214,8 @@ process CreateInterproscanToxinPlotly {
 
 // Process 7: Create BUSCOgraphtranscriptome  Literally the busco provided script for visualisation
 process BUSCOtranscriptome {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/busco2.yaml"
 
     publishDir "results/busco/transcriptome", mode: 'copy'
@@ -221,6 +236,8 @@ process BUSCOtranscriptome {
 
 // Process 8: Create BUSCOgraphtranslatome  Literally the busco provided script for visualisation
 process BUSCOtranslatome {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/busco2.yaml"
 
     publishDir "results/busco/translatome", mode: 'copy'
@@ -242,6 +259,8 @@ process BUSCOtranslatome {
 
 // Process 9: Create TableGenerationTrinity
 process TableGenerationTrinity {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
@@ -265,6 +284,8 @@ process TableGenerationTrinity {
 
 // Process 10: Create TableGenerationTransdecoder  
 process TableGenerationTransdecoder {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
@@ -294,6 +315,8 @@ process TableGenerationTransdecoder {
 
 // Process 11: Create FigureGenerationTrinity
 process FigureGenerationTrinity {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
@@ -321,6 +344,8 @@ process FigureGenerationTrinity {
 
 // Process 12: Create FigureGenerationTransdecoder
 process FigureGenerationTransdecoder {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
@@ -348,6 +373,8 @@ process FigureGenerationTransdecoder {
 
 // Process 13: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
@@ -375,6 +402,8 @@ process FigureGenerationSignalp {
 
 // Process 14: Create AddMassSpec
 process AddMassSpec {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/RappData/Single", pattern: "*.gz", mode: 'copy'
@@ -399,6 +428,8 @@ process AddMassSpec {
 
 // Process 15: Create SkipMassSpec
 process SkipMassSpec {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/RappData/Single", pattern: "*.gz", mode: 'copy'
@@ -423,6 +454,8 @@ process SkipMassSpec {
 
 // Process 16: Create VennOverview
 process VennOverviewMS {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
@@ -446,6 +479,8 @@ process VennOverviewMS {
 
 // Process 16b: Create VennOverview
 process VennOverviewNoMS {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
@@ -469,6 +504,8 @@ process VennOverviewNoMS {
 
 // Process 17: RmarkdownA
 process RmarkdownA {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -490,6 +527,8 @@ process RmarkdownA {
 
 // Process 18: RmarkdownB
 process RmarkdownB {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -521,6 +560,8 @@ process RmarkdownB {
 }
 
 process RmarkdownCDEGIK {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -546,6 +587,8 @@ process RmarkdownCDEGIK {
 }
 
 process RmarkdownH {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -601,6 +644,8 @@ process RmarkdownH {
 
 
 process RmarkdownJ {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -655,6 +700,8 @@ process RmarkdownJ {
 }
 
 process RmarkdownL {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -701,6 +748,8 @@ process RmarkdownL {
 }
 
 process RmarkdownM {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -729,6 +778,8 @@ process RmarkdownM {
 }
 
 process RmarkdownN {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -760,6 +811,8 @@ process RmarkdownN {
 }
 
 process RmarkdownO {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -788,6 +841,8 @@ process RmarkdownO {
 }
 
 process RmarkdownQ {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -816,6 +871,8 @@ process RmarkdownQ {
 }
 
 process RmarkdownR {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -847,6 +904,8 @@ process RmarkdownR {
 }
 
 process RmarkdownS {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -877,6 +936,8 @@ process RmarkdownS {
 
 
 process RmarkdownV {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -905,6 +966,8 @@ process RmarkdownV {
 }
 
 process RmarkdownW {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -936,6 +999,8 @@ process RmarkdownW {
 }
 
 process RmarkdownX {
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -964,6 +1029,8 @@ process RmarkdownX {
 }
 
 process RmarkdownZ {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
@@ -995,6 +1062,8 @@ process RmarkdownZ {
 }
 
 process Blast0Chunks {
+     errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/RappData/Alignmentapp", mode: 'copy'
