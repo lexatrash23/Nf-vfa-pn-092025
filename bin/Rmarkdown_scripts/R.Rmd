@@ -21,7 +21,7 @@ library(dplyr)
 library(knitr)
 ```
 
-```{r}
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
 #Read in table 6 and 7 
 Table6 <- read.csv(params$Table6)
 Table7 <- read.csv(params$Table7)
@@ -30,7 +30,7 @@ Table7 <- read.csv(params$Table7)
 
 # Top 100 Sorted by Bit Score, Distinct Transcripts
 
-```{r}
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
 Table6 %>%
   kable("html", 
         caption = "Top 100 Sorted by Bit Score, Distinct Transcripts", 
@@ -47,7 +47,7 @@ Table6 %>%
 ```
 
 # Top 100 Sorted by Bit Score, Distinct Hits
-```{r}
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
 Table7 %>%
   kable("html", 
         caption = "Top 100 Sorted by Bit Score, , Distinct Transcripts", 

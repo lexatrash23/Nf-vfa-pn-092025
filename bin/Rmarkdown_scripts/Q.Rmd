@@ -18,14 +18,14 @@ library(dplyr)
 library(knitr)
 ```
 
-```{r}
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
 #read in table 5
 Table5 <- read.csv(params$Table5)
 ```
 
 
 
-```{r}
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
 Table5 %>%
   kable("html", 
         caption = "Top 100 Sorted by Bit Score", 
