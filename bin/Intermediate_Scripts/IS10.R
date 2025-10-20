@@ -43,22 +43,22 @@ set_A<-matching_rows
 if (!"Coverage..." %in% colnames(df)) {
   venn_list <- list(
     TD = set_A$Transdecoder_ID,
-    MS = set_B$Transdecoder_ID,
     TP = set_C$Transdecoder_ID,
     KE = set_D$Transdecoder_ID
   )
-  p <- ggvenn(venn_list,c("TD", "MS","TP","KE"), fill_color = c("#E41A1C", "#377EB8", "#4DAF4A", "#EBAC4D"))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_B$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID))
+  p <- ggvenn(venn_list,c("TD","TP","KE"), fill_color = c("#E41A1C", "#4DAF4A", "#EBAC4D"))
+  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID))
   
 } else {
   venn_list <- list(
     TD = set_A$Transdecoder_ID,
+    MS = set_B$Transdecoder_ID,
     TP = set_C$Transdecoder_ID,
     KE = set_D$Transdecoder_ID
     
   )
-  p <- ggvenn(venn_list,c("TD","TP","KE"), fill_color = c("#E41A1C", "#4DAF4A", "#EBAC4D"))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID))
+  p <- ggvenn(venn_list,c("TD", "MS","TP","KE"), fill_color = c("#E41A1C", "#377EB8", "#4DAF4A", "#EBAC4D"))
+  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_B$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID))
   
 }
 
