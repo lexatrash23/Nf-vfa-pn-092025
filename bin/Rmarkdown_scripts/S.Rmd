@@ -19,14 +19,14 @@ library(dplyr)
 library(knitr)
 ```
 
-```{r}
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
 #read in table 8 
 Table8 <- read.csv(params$Table8)
 ```
 
 
 
-```{r}
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
 #display table 8 
 Table8 %>%
   kable("html", 

@@ -18,14 +18,14 @@ library(dplyr)
 library(knitr)
 ```
 
-```{r}
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
 #read in table of signals sorted by bitscore
 Table9 <- read.csv(params$Table9)
 ```
 
 
 
-```{r}
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
 #display table of sorted by btiscore
 Table9 %>%
   kable("html", 
