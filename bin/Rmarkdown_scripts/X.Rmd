@@ -26,7 +26,7 @@ Table12 <- read.csv(params$Table12)
 
 
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+```{r,echo = FALSE, message = FALSE, warning = FALSE}
 #displaying table 12 
 Table12 %>%
   kable("html", 

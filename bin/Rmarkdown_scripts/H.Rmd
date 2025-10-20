@@ -40,7 +40,7 @@ library(kableExtra)
 
 ```
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 kallistotop20graphtrinity <- params$kallistotop20graphtrinity
 kallistotop500graphtrinity <- params$kallistotop500graphtrinity
 busco_figure <- params$busco_figure
@@ -65,7 +65,7 @@ cat("\n\n Figure 1. BUSCO score of Transcriptome against metazoan(met) and mollu
 
 ### Kallisto Distribution of Top 500 expressed transcripts 
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 Trinity_Top500_read <- readPNG(kallistotop500graphtrinity)
 top500 <- grid.raster(Trinity_Top500_read)
 cat("\n\n Figure 2. Kallisto Distribution of Top 500 expressed transcripts. Kallisto was run using trinity file as an index and trimmomatic files as inputs with bootstraps.Y axis shows the transcript per million(tpm) counts per target id. X shows each target id (trinity sequence). \n\n") 
@@ -75,7 +75,7 @@ cat("\n\n Figure 2. Kallisto Distribution of Top 500 expressed transcripts. Kall
 ### Kallisto Distribution of Top 20 expressed transcripts 
 
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 Trinity_Top200_read <- readPNG(kallistotop20graphtrinity)
 top200 <- grid.raster(Trinity_Top200_read)
 cat("\n\n Figure 3. Kallisto Distribution of Top 20 expressed transcripts. Kallisto was run using trinity file as an index and trimmomatic files as inputs with bootstraps. Left Y axis shows the transcript per million(tpm) counts per target id. Right Y axis shows the cumulative percent of expression the top 20 most expressed transcripts. X shows each target id (trinity sequence). \n\n ") 
@@ -83,7 +83,7 @@ cat("\n\n Figure 3. Kallisto Distribution of Top 20 expressed transcripts. Kalli
 
 ### % of Trinity Transcripts with a significant hit to a unitprot toxin
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 P1 <- readPNG(pie1)
 P1 <- grid.raster(P1)
 cat("\n\n Figure 4. Pie chart showing the percentage of Trinity transcripts that showed a significant hit to annotated uniprot toxin. Blastx was done using the trinity file as the query and the annotated toxin database from uniprot as the database. Results were filtered for hits with a BitScore of at least 50. Pie chart represents what percentage of distinct trinity transcripts had at least one uniprot toxin match with a BitScore of at least 50. \n\n ") 
@@ -92,7 +92,7 @@ cat("\n\n Figure 4. Pie chart showing the percentage of Trinity transcripts that
 
 ### Most significant uniprot toxin hit per transcript (BitScore > 50)
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 A1 <- readPNG(alluvial1)
 A1 <- grid.raster(A1)
 cat("\n\n Figure 5. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 50. On the right is each of the distinct trinity transcripts with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display. \n\n ") 
@@ -101,7 +101,7 @@ cat("\n\n Figure 5. Alluvial graph representing the most significant uniprot tox
 ### Most significant uniprot toxin hit per transcript (BitScore > 300)
 
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 A2 <- readPNG(alluvial2)
 A2 <- grid.raster(A2)
 cat("\n\n Figure 6. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 300. On the right is each of the distinct trinity transcripts with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display. \n\n") 
@@ -109,7 +109,7 @@ cat("\n\n Figure 6. Alluvial graph representing the most significant uniprot tox
 
 ### % of Relative kallisto-predicted expression of transcripts with and without uniprot toxin hit (E-value < 1e-5)
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 P2 <- readPNG(pie2)
 P2 <- grid.raster(P2)
 cat("\n\n Figure 7. Pie Chart displaying the relative percentage of Kallisto-predicted transcripts with a hit to uniprot toxin with an E-value of less than 1e^-5. \n\n ") 
@@ -117,7 +117,7 @@ cat("\n\n Figure 7. Pie Chart displaying the relative percentage of Kallisto-pre
 
 ### % kallisto-predicted expression of transcripts with and without uniprot toxin hit (BitScore > 50)
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 P3 <- readPNG(pie3)
 P3 <- grid.raster(P3)
 cat("\n\n Figure 8. Pie Chart displaying the relative percentage of Kallisto-predicted transcripts with a hit to uniprot toxin with a bitscore of at least 50. \n\n ") 
@@ -126,7 +126,7 @@ cat("\n\n Figure 8. Pie Chart displaying the relative percentage of Kallisto-pre
 
 ### Relative kallisto-predicted expression of transcripts with uniprot toxin hit (BitScore >300)
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 P4 <- readPNG(pie4)
 P4 <- grid.raster(P4)
 cat("\n\n Figure 9. Pie Chart showing the relative kallisto-predicted expression of the transcripts with a uniprot toxin hit of at least 300.\n\n") 
@@ -134,7 +134,7 @@ cat("\n\n Figure 9. Pie Chart showing the relative kallisto-predicted expression
 
 ## Top 10 relatively most expressed unitprot toxin matched transcripts 
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 Table4 <- read.csv(topkallisto)
 Table4 <- Table4[1:10, ]
 Table4 %>%
