@@ -30,7 +30,7 @@ Table3 <- read.csv(params$Table3)
 
 # Top 100 Sorted by Bit Score, Distinct Transcripts
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+```{r,echo = FALSE, message = FALSE, warning = FALSE}
 Table2 %>%
   kable("html", 
         caption = "Top 100 Sorted by Bit Score, Distinct Transcripts", 
@@ -47,7 +47,7 @@ Table2 %>%
 ```
 
 # Top 100 Sorted by Bit Score, Distinct Hits
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+```{r,echo = FALSE, message = FALSE, warning = FALSE}
 Table3 %>%
   kable("html", 
         caption = "Top 100 Sorted by Bit Score, , Distinct Transcripts", 

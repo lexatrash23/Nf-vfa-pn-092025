@@ -39,7 +39,7 @@ library(kableExtra)
 
 
 
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+```{r,echo = FALSE, message = FALSE, warning = FALSE}
 # Read in the files based on the provided parameters
 Settings <- read.csv(Settings)
 Notes <- readLines(Notes)
