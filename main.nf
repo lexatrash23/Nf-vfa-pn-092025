@@ -90,7 +90,7 @@ process kallistoAnalysisTrans {
     script:
     """
     
-    python3 ${workflow.projectDir}/bin/Intermediate_Scripts/kallistoanalysistrans.py ./ ${params.basename} ${kallisto_file_transdecoder}
+    python3 ${workflow.projectDir}/bin/Intermediate_Scripts/kallistoanalysistrans.py ./ "${params.basename}trans" ${kallisto_file_transdecoder}
     """
 }
 
