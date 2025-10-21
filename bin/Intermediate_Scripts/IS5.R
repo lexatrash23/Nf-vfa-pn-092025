@@ -60,9 +60,9 @@ Transdecoder_pep_cds_merge <- full_join(transdecoder_pep_df, transdecoder_cds_df
 
 # readin blasatpunitox6 file 
 blastpunitox6 <- read.table(blastpunitox6_file, header = FALSE, sep = "\t", stringsAsFactors = FALSE)
-blastpunitox6 <- blastpunitox6[, c(1, 2, 3, ncol(blastpunitox6)-1, ncol(blastpunitox6))]
-
-colnames(blastpunitox6) <- c("Transdecoder_ID", "Hit", "Percentage_Identity", "E_value", "BitScore") #name columns
+colnames(blastpunitox6) <- c("Transdecoder_ID", "Hit", "Percentage_Identity", "length", "mismatch", "E_value", "BitScore", "qframe") #name columns
+keeps <- c("Transdecoder_ID", "Hit", "Percentage_Identity","E_value", "BitScore")
+blastpunitox6 <- blastpunitox6[keeps]
 blastpunitox6$Hit <- gsub("^sp\\|", "", blastpunitox6$Hit) #remove sp|
 blastpunitox6 <- separate(blastpunitox6,  #seperate hit and code column 
                           col = "Hit", 
