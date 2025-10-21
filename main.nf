@@ -1093,7 +1093,7 @@ process Blast0Chunks {
 
 // Define input file patterns via parameters
 params.input_kallisto_trinity = "${params.data}/kallisto/trinity/output/abundance.tsv"
-params.input_kallisto_trans   = "${params.data}/kallisto/trinity/output/abundance.tsv"
+params.input_kallisto_trans   = "${params.data}/kallisto/transdecoder/output/abundance.tsv"
 params.input_transdecoder_pep = "${params.data}/Transdecoder/*.transdecoder.pep"
 params.input_transdecoder_cds = "${params.data}/Transdecoder/*.transdecoder.cds"
 params.input_mature_fasta   = "${params.data}/Signalp/*_mature.fasta"
