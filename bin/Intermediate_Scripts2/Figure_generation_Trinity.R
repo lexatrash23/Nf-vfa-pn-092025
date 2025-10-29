@@ -42,7 +42,7 @@ pie1 <- ggplot(counts, aes(x = "", y = Count, fill = Category)) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar(theta = "y", start = 0) +  # Set the starting angle for the slices
   theme_void() +  # Removes axes and background
-  labs(title = "% of Trinity transcripts with a significant hit to a uniprot annotated toxin(bitscore > 50)") +
+  labs(title = "% of transcripts with a significant hit to a uniprot annotated toxin(bitscore > 50)") +
   geom_text(aes(label = Label), 
             size = 3,  # Increased text size for better visibility
             nudge_x = 0.7,  # Adjust nudging to better position labels outside the pie

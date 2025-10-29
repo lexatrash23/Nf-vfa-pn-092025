@@ -46,7 +46,7 @@ pie9 <- ggplot(counts, aes(x = "", y = Count, fill = Category)) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar(theta = "y", start = 0) +  # Set the starting angle for the slices
   theme_void() +  # Removes axes and background
-  labs(title = "% of SignalP transcripts with a significant hit to a uniprot annotated toxin(bitscore > 50)") +
+  labs(title = "% of transcripts with a significant hit to a uniprot toxin(bitscore > 50)") +
   geom_text(aes(label = Label),
             size = 3,  # Increased text size for better visibility
             nudge_x = 0.7,  # Adjust nudging to better position labels outside the pie
@@ -144,7 +144,7 @@ pie11 <- ggplot(pie_data2, aes(x = "", y = Value, fill = Category)) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar(theta = "y", start = 0) +  # Set the starting angle for the slices
   theme_void() +  # Removes axes and background
-  labs(title = "% of Expression from transcripts with uniprot toxin hits(BitScore > 50)) ") +
+  labs(title = "% of Expression from transcripts with uniprot toxin hits(BitScore > 50) ") +
   geom_text(aes(label = paste0(round(Value/sum(Value) * 100, 1), "%")),
             position = position_stack(vjust = 0.5), size = 3) +
   scale_fill_manual(values = c("With Hits" = "#4C9E9A", "Without Hits" = "#B0B0B0")) +

@@ -1266,12 +1266,12 @@ workflow {
         kallistoAnalysisTrinity.out.trin_top20_png,
         kallistoAnalysisTrinity.out.trin_top500_png,
         BUSCOtranscriptome.out.busco_transcriptome,
-        FigureGenerationTrinity.out.pie1,
+        FigureGenerationTrinity.out.alluvial1,
+        FigureGenerationTrinity.out.alluvial2,       
+	FigureGenerationTrinity.out.pie1,
         FigureGenerationTrinity.out.pie2,
         FigureGenerationTrinity.out.pie3,
         FigureGenerationTrinity.out.pie4,
-        FigureGenerationTrinity.out.alluvial1,
-        FigureGenerationTrinity.out.alluvial2,
         FigureGenerationTrinity.out.Table13
         
     )
@@ -1280,23 +1280,23 @@ workflow {
         kallistoAnalysisTrans.out.trans_top20_png,
         kallistoAnalysisTrans.out.trans_top500_png,
         BUSCOtranslatome.out.busco_translatome,
+        FigureGenerationTransdecoder.out.alluvial3,
+        FigureGenerationTransdecoder.out.alluvial4,
         FigureGenerationTransdecoder.out.pie5,
         FigureGenerationTransdecoder.out.pie6,
         FigureGenerationTransdecoder.out.pie7,
         FigureGenerationTransdecoder.out.pie8,
-        FigureGenerationTransdecoder.out.alluvial3,
-        FigureGenerationTransdecoder.out.alluvial4,
         FigureGenerationTransdecoder.out.Table14
         
     )
     
     RmarkdownL(
+        FigureGenerationSignalp.out.alluvial5,
+        FigureGenerationSignalp.out.alluvial6,
         FigureGenerationSignalp.out.pie9,
         FigureGenerationSignalp.out.pie10,
         FigureGenerationSignalp.out.pie11,
         FigureGenerationSignalp.out.pie12,
-        FigureGenerationSignalp.out.alluvial5,
-        FigureGenerationSignalp.out.alluvial6,
         FigureGenerationSignalp.out.Table15
         
     )
