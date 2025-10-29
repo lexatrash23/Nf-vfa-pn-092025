@@ -83,7 +83,6 @@ cat("\n\n Figure 3. Kallisto Distribution of Top 20 expressed transcripts. Kalli
 
 ### % of Trinity Transcripts with a significant hit to a unitprot toxin
 
- v
 P1 <- readPNG(pie1)
 P1 <- grid.raster(P1)
 cat("\n\n Figure 4. Pie chart showing the percentage of Trinity transcripts that showed a significant hit to annotated uniprot toxin. Blastx was done using the trinity file as the query and the annotated toxin database from uniprot as the database. Results were filtered for hits with a BitScore of at least 50. Pie chart represents what percentage of distinct trinity transcripts had at least one uniprot toxin match with a BitScore of at least 50. \n\n ") 
