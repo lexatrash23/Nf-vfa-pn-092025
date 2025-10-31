@@ -196,6 +196,6 @@ Plot3 <- ggplot(new_df2, aes(x = "", y = total_percentage, fill = Hit)) +
     legend.key.border = element_rect(color = "black", size = 1.5, linetype = "solid"),  
     plot.title = element_text(size = 14, face = "bold", hjust = -0.1, vjust = 1)
   ) +
-  labs(title = "Relative expression of transcripts with significant uniprot toxin (BitScore >50)")
+  labs(title = "Relative expression of transcripts with significant uniprot toxin")
 ggsave(filename = file.path("pie4.png"), plot = Plot3, width = 8, height = 6, dpi = 600)
 

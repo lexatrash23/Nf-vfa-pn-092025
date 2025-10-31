@@ -93,7 +93,7 @@ alluvial4 <- ggplot(data = Distinct_Transcripts_300,
                        legend.key.size = unit(0.5, "cm"),  # Make the legend keys (colored boxes) smaller
                        legend.key.height = unit(0.5, "cm"),  # Adjust height of the key
                        legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = 0.5) ) +
-  labs(title = "Most significant unitprot toxin hit per transcript(Bitscore >300")
+  labs(title = "Most significant unitprot toxin hit per transcript(Bitscore >300)")
 
 ggsave(filename = file.path("alluvial4.png"), plot = alluvial4, width = 8, height = 6, dpi = 600)
 
@@ -137,8 +137,8 @@ pie7 <- ggplot(pie_data2, aes(x = "", y = Value, fill = Category)) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar(theta = "y", start = 0) +  # Set the starting angle for the slices
   theme_void() +  # Removes axes and background
-  labs(title = "% of Expression from transcripts with uniprot toxin hits(BitScore > 50 ") +
-  geom_text(aes(label = paste0(round(Value/sum(Value) * 100, 1), "%")), 
+  labs(title = "% of Expression from transcripts with uniprot toxin hits(BitScore > 50) ") +
+  geom_text(aes(label = paste0(round(Value/sum(Value) * 100, 1), "%")),
             position = position_stack(vjust = 0.5), size = 3) +
   scale_fill_manual(values = c("With Hits" = "#4C9E9A", "Without Hits" = "#B0B0B0")) +
   theme(
@@ -195,7 +195,7 @@ Plot4 <- ggplot(new_df2, aes(x = "", y = total_percentage, fill = Hit)) +
     legend.key.border = element_rect(color = "black", size = 1.5, linetype = "solid"),  # Bold border around legend keys
     plot.title = element_text(size = 14, face = "bold", hjust = -0.1, vjust = 1)
   ) +
-  labs(title = "Relative expression of transcripts with hit to uniprot toxin (BitScore >50)")
+  labs(title = "Relative expression of transcripts with hit to uniprot toxin")
 ggsave(filename = file.path("pie8.png"), plot = Plot4, width = 8, height = 6, dpi = 600)
 
 
