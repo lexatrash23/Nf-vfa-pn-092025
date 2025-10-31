@@ -123,7 +123,7 @@ cat("\n\n Figure 8. Pie Chart displaying the relative percentage of Kallisto-pre
 ```
 
 
-### Relative kallisto-predicted expression of transcripts with uniprot toxin hit (BitScore >300)
+### Relative kallisto-predicted expression of transcripts with uniprot toxin hit (BitScore >50)
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 P4 <- readPNG(pie4)

@@ -201,7 +201,7 @@ Plot5 <- ggplot(new_df2, aes(x = "", y = total_percentage, fill = Hit)) +
     legend.key.border = element_rect(color = "black", size = 1.5, linetype = "solid"),  # Bold border around legend keys
     plot.title = element_text(size = 14, face = "bold", hjust = -0.1, vjust = 1)
   ) +
-  labs(title = "Relative expression of transcripts with significant uniprot toxin (BitScore >50)")
+  labs(title = "Relative expression of transcripts with significant uniprot toxin")
 Plot5
 ggsave(filename = file.path("pie12.png"), plot = Plot5, width = 8, height = 6, dpi = 600)
 
