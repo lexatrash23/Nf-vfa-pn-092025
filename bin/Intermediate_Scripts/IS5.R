@@ -156,7 +156,7 @@ FINAL_CSV_distinct_filtered_min[is.na(FINAL_CSV_distinct_filtered_min)] <- ""
 # Define the fixed sample name (replace with your desired sample name)
 
 # Open the file for writing
-fasta_file <- file.path("FINAL_CSV_distinct_filtered_putative_toxins.fasta")
+fasta_file <- file.path("secreted_proteins.fasta")
 file_conn <- file(fasta_file, open = "w")
 
 # Loop through each row to write custom FASTA format

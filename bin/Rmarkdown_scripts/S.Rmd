@@ -30,7 +30,7 @@ Table8 <- read.csv(params$Table8)
 #display table 8 
 Table8 %>%
   kable("html", 
-        caption = "Top 25% of expression", 
+        caption = "Top 10 transcripts sorted by Kallisto", 
         booktabs = TRUE, 
         escape = FALSE) %>%  # Escape = FALSE to render HTML
   kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
