@@ -2,7 +2,7 @@
 
 def launchDir = System.getProperty('user.dir')
 
-// Process 0: Creating the settings, notes and triminfo files
+// Process 1: Creating the settings, notes and triminfo files
 process MetadataCreation {
     errorStrategy 'ignore'
 
@@ -44,7 +44,7 @@ EOF
     """
 }
 
-// Process 1: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
+// Process 2: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrinity {
     errorStrategy 'ignore'
 
@@ -69,7 +69,7 @@ process kallistoAnalysisTrinity {
     """
 }
 
-// Process 2: For kallistoanalysistrans.py dependencies:python,pandas,seaborn,matplotlib
+// Process 3: For kallistoanalysistrans.py dependencies:python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrans {
     errorStrategy 'ignore'
 
@@ -94,7 +94,7 @@ process kallistoAnalysisTrans {
     """
 }
 
-// Process 3: Extract Signal Sequences dependencies python biopython
+// Process 4: Extract Signal Sequences dependencies python biopython
 process ExtractSignalSequences {
      errorStrategy 'ignore'
 
@@ -116,7 +116,7 @@ process ExtractSignalSequences {
 
 }
 
-// Process 4: Create Trinity Dataframe dependecies : R, biocmanager 
+// Process 5: Create Trinity Dataframe dependecies : R, biocmanager 
 process CreateTrinityDataframe {
     errorStrategy 'ignore'
 
@@ -140,7 +140,7 @@ process CreateTrinityDataframe {
 
 }
 
-// Process 4: Create Interproscan Dataframe dependecies : R, biocmanager 
+// Process 6: Create Interproscan Dataframe dependecies : R, biocmanager 
 process CreateInterproscanDataframe {
     errorStrategy 'ignore'
 
@@ -162,7 +162,7 @@ process CreateInterproscanDataframe {
 
 }
 
-// Process 5: Create Transdecoder Dataframe dependecies : R, biocmanager 
+// Process 7: Create Transdecoder Dataframe dependecies : R, biocmanager 
 process CreateTransdecoderDataframe {
      errorStrategy 'ignore'
 
@@ -176,18 +176,18 @@ process CreateTransdecoderDataframe {
     output:
     path "_transdf.csv", emit: transdf
     path "_transdf_distinct.csv", emit: transdf_distinct   
-    path "FINAL_CSV_distinct_filtered_putative_toxins.fasta", emit: toxin_fasta
+    path "secreted_proteins.fasta", emit: toxin_fasta
 
     script: 
     def basename = transdecoder_pep.getSimpleName()
-    """
+   """
     
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS5.R ${transdecoder_pep} ${transdecoder_cds} ${blastp_file} ${mature_fasta} ${Signalp_summary} ${signalsequences} ${Interproscan_dataframe} ${kallistotrans} ${basename}
     """
 
 }
 
-// Process 6: Create Interproscantoxinplotly
+// Process 8: Create Interproscantoxinplotly
 process CreateInterproscanToxinPlotly {
      errorStrategy 'ignore'
 
@@ -212,7 +212,7 @@ process CreateInterproscanToxinPlotly {
 
 }
 
-// Process 7: Create BUSCOgraphtranscriptome  Literally the busco provided script for visualisation
+// Process 9: Create BUSCOgraphtranscriptome  Literally the busco provided script for visualisation
 process BUSCOtranscriptome {
     errorStrategy 'ignore'
 
@@ -234,7 +234,7 @@ process BUSCOtranscriptome {
 
 }
 
-// Process 8: Create BUSCOgraphtranslatome  Literally the busco provided script for visualisation
+// Process 10: Create BUSCOgraphtranslatome  Literally the busco provided script for visualisation
 process BUSCOtranslatome {
     errorStrategy 'ignore'
 
@@ -257,7 +257,7 @@ process BUSCOtranslatome {
 
 }
 
-// Process 9: Create TableGenerationTrinity
+// Process 11: Create TableGenerationTrinity
 process TableGenerationTrinity {
      errorStrategy 'ignore'
 
@@ -282,7 +282,7 @@ process TableGenerationTrinity {
 
 }
 
-// Process 10: Create TableGenerationTransdecoder  
+// Process 12: Create TableGenerationTransdecoder  
 process TableGenerationTransdecoder {
     errorStrategy 'ignore'
 
@@ -313,7 +313,7 @@ process TableGenerationTransdecoder {
 }
 
 
-// Process 11: Create FigureGenerationTrinity
+// Process 13: Create FigureGenerationTrinity
 process FigureGenerationTrinity {
     errorStrategy 'ignore'
 
@@ -342,7 +342,7 @@ process FigureGenerationTrinity {
 
 }
 
-// Process 12: Create FigureGenerationTransdecoder
+// Process 14: Create FigureGenerationTransdecoder
 process FigureGenerationTransdecoder {
      errorStrategy 'ignore'
 
@@ -371,7 +371,7 @@ process FigureGenerationTransdecoder {
 
 }
 
-// Process 13: Create FigureGenerationSignalp
+// Process 15: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
     errorStrategy 'ignore'
 
@@ -400,7 +400,7 @@ process FigureGenerationSignalp {
 
 }
 
-// Process 14: Create AddMassSpec
+// Process 16: Create AddMassSpec
 process AddMassSpec {
      errorStrategy 'ignore'
 
@@ -426,7 +426,7 @@ process AddMassSpec {
 
 }
 
-// Process 15: Create SkipMassSpec
+// Process 17: Create SkipMassSpec
 process SkipMassSpec {
     errorStrategy 'ignore'
 
@@ -452,7 +452,7 @@ process SkipMassSpec {
 
 }
 
-// Process 16: Create VennOverview
+// Process 18: Create VennOverview
 process VennOverviewMS {
     errorStrategy 'ignore'
 
@@ -477,7 +477,7 @@ process VennOverviewMS {
 
 }
 
-// Process 16b: Create VennOverview
+// Process 19: Create VennOverview
 process VennOverviewNoMS {
     errorStrategy 'ignore'
 
@@ -502,7 +502,7 @@ process VennOverviewNoMS {
 
 }
 
-// Process 17: RmarkdownA
+// Process 20: RmarkdownA
 process RmarkdownA {
     errorStrategy 'ignore'
 
@@ -525,7 +525,7 @@ process RmarkdownA {
 
 }
 
-// Process 18: RmarkdownB
+// Process 21: RmarkdownB
 process RmarkdownB {
     errorStrategy 'ignore'
 
@@ -559,7 +559,7 @@ process RmarkdownB {
     """
 }
 
-process RmarkdownCDEGIK {
+process 22: RmarkdownCDEGIK {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -586,7 +586,7 @@ process RmarkdownCDEGIK {
     """
 }
 
-process RmarkdownH {
+process 23: RmarkdownH {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -643,7 +643,7 @@ process RmarkdownH {
 }
 
 
-process RmarkdownJ {
+process 24: RmarkdownJ {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -699,7 +699,7 @@ process RmarkdownJ {
     """
 }
 
-process RmarkdownL {
+process 25: RmarkdownL {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -747,7 +747,7 @@ process RmarkdownL {
     """
 }
 
-process RmarkdownM {
+process 26: RmarkdownM {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -777,7 +777,7 @@ process RmarkdownM {
     """
 }
 
-process RmarkdownN {
+process 27: RmarkdownN {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -810,7 +810,7 @@ process RmarkdownN {
     """
 }
 
-process RmarkdownO {
+process 28: RmarkdownO {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -840,7 +840,7 @@ process RmarkdownO {
     """
 }
 
-process RmarkdownQ {
+process 29: RmarkdownQ {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -870,7 +870,7 @@ process RmarkdownQ {
     """
 }
 
-process RmarkdownR {
+process 30: RmarkdownR {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -903,7 +903,7 @@ process RmarkdownR {
     """
 }
 
-process RmarkdownS {
+process 31: RmarkdownS {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -935,7 +935,7 @@ process RmarkdownS {
 
 
 
-process RmarkdownV {
+process 32: RmarkdownV {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -965,7 +965,7 @@ process RmarkdownV {
     """
 }
 
-process RmarkdownW {
+process 33: RmarkdownW {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -998,7 +998,7 @@ process RmarkdownW {
     """
 }
 
-process RmarkdownX {
+process 34: RmarkdownX {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -1028,7 +1028,7 @@ process RmarkdownX {
     """
 }
 
-process RmarkdownZ {
+process 35: RmarkdownZ {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -1061,7 +1061,7 @@ process RmarkdownZ {
     """
 }
 
-process Blast0Chunks {
+process 36: Blast0Chunks {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
