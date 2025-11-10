@@ -559,7 +559,7 @@ process RmarkdownB {
     """
 }
 
-process 22: RmarkdownCDEGIK {
+// Process 22: RmarkdownCDEGIK {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -586,7 +586,7 @@ process 22: RmarkdownCDEGIK {
     """
 }
 
-process 23: RmarkdownH {
+// Process 23: RmarkdownH {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -643,7 +643,7 @@ process 23: RmarkdownH {
 }
 
 
-process 24: RmarkdownJ {
+// Process 24: RmarkdownJ {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -699,7 +699,7 @@ process 24: RmarkdownJ {
     """
 }
 
-process 25: RmarkdownL {
+// Process 25: RmarkdownL {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -747,7 +747,7 @@ process 25: RmarkdownL {
     """
 }
 
-process 26: RmarkdownM {
+// Process 26: RmarkdownM {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -777,7 +777,7 @@ process 26: RmarkdownM {
     """
 }
 
-process 27: RmarkdownN {
+// Process 27: RmarkdownN {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -810,7 +810,7 @@ process 27: RmarkdownN {
     """
 }
 
-process 28: RmarkdownO {
+// Process 28: RmarkdownO {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -840,7 +840,7 @@ process 28: RmarkdownO {
     """
 }
 
-process 29: RmarkdownQ {
+// Process 29: RmarkdownQ {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -870,7 +870,7 @@ process 29: RmarkdownQ {
     """
 }
 
-process 30: RmarkdownR {
+// Process 30: RmarkdownR {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -903,7 +903,7 @@ process 30: RmarkdownR {
     """
 }
 
-process 31: RmarkdownS {
+// Process 31: RmarkdownS {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -935,7 +935,7 @@ process 31: RmarkdownS {
 
 
 
-process 32: RmarkdownV {
+// Process 32: RmarkdownV {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -965,7 +965,7 @@ process 32: RmarkdownV {
     """
 }
 
-process 33: RmarkdownW {
+// Process 33: RmarkdownW {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -998,7 +998,7 @@ process 33: RmarkdownW {
     """
 }
 
-process 34: RmarkdownX {
+// Process 34: RmarkdownX {
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -1028,7 +1028,7 @@ process 34: RmarkdownX {
     """
 }
 
-process 35: RmarkdownZ {
+// Process 35: RmarkdownZ {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
@@ -1061,7 +1061,7 @@ process 35: RmarkdownZ {
     """
 }
 
-process 36: Blast0Chunks {
+// Process 36: Blast0Chunks {
      errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
