@@ -1380,7 +1380,7 @@ workflow {
      
     if (params.input_blastn0_files) {
     blastn0txt = Channel.fromPath("${params.data}/*_blastnunitox0.txt")
-    Blast0Chunks(blastx0txt, blastp0txt, blastn0txt)
+    Blast0Chunksn(blastx0txt, blastp0txt, blastn0txt)
     }
     else {
     Blast0Chunks(blastx0txt, blastp0txt)
