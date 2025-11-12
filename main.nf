@@ -1093,7 +1093,9 @@ process Blast0Chunks {
     script:
     
     """
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0}
+    blastx0_abs=\$(readlink -f "${blastx0}")
+    blastp0_abs=\$(readlink -f "${blastp0}")
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0_abs} ${blastp0_abs}
     """
     
 
@@ -1119,7 +1121,10 @@ process Blast0Chunksn {
     script:
     
     """
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0} ${blastn0}
+    blastx0_abs=\$(readlink -f "${blastx0}")
+    blastp0_abs=\$(readlink -f "${blastp0}")
+    blastn0_abs=\$(readlink -f "${blastn0}")
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0_abs} ${blastp0_abs} ${blastn0_abs}
     """
     
 
@@ -1133,9 +1138,9 @@ params.input_transdecoder_cds = "${params.data}/Transdecoder/*.transdecoder.cds"
 params.input_mature_fasta   = "${params.data}/Signalp/*_mature.fasta"
 params.input_blastx_files   = "${params.data}/Blast/Blastx/*.blastx.db.6.txt"
 params.input_blastp_files   = "${params.data}/Blast/Blastp/*.blastp.db.6.txt"
-params.input_blastx0_files   = "${params.data}/Blastx/*.blastx.db.0.txt"
-params.input_blastp0_files   = "${params.data}/Blastp/*.blastp.db.0.txt"
-params.input_blastn0_files   = "${params.data}/Blastn/*.blastn.db.0.txt"
+params.input_blastx0_files   = "${params.data}/Blast/Blastx/*.blastx.db.0.txt"
+params.input_blastp0_files   = "${params.data}/Blast/Blastp/*.blastp.db.0.txt"
+params.input_blastn0_files   = "${params.data}/Blast/Blastn/*.blastn.db.0.txt"
 params.input_interproscan = "${params.data}/Interproscan/*.cleaned.pep.tsv"
 params.input_signalp_summary   = "${params.data}/Signalp/*_summary.signalp5"
 params.input_blastn0_files = "${params.data}/Blastn/*.blastn.db.0.txt"
