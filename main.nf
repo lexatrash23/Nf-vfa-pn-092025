@@ -1094,7 +1094,7 @@ process Blast0Chunks {
     
     """
 
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${$blastp0}
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0}
     """
     
 
