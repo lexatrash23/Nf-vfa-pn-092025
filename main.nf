@@ -1093,9 +1093,8 @@ process Blast0Chunks {
     script:
     
     """
-    blastx0_abs=\$(readlink -f "${blastx0}")
-    blastp0_abs=\$(readlink -f "${blastp0}")
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} '\$blastx0_abs' '\$blastp0_abs'
+
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} {$blastx0} '{$blastp0}
     """
     
 
@@ -1121,10 +1120,8 @@ process Blast0Chunksn {
     script:
     
     """
-    blastx0_abs=\$(readlink -f "${blastx0}")
-    blastp0_abs=\$(readlink -f "${blastp0}")
-    blastn0_abs=\$(readlink -f "${blastn0}")
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} '\$blastx0_abs' '\$blastp0_abs' '\$blastn0_abs'
+
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} {$blastx0} '{$blastp0} {$blastn0}
     """
     
 
