@@ -1092,18 +1092,38 @@ process Blast0Chunks {
     path "*", emit: blast0chunks
 
     script:
-    if (blastn0.exists()) {
+    
+    """
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0}
+    """
+    
+
+}
+
+
+
+process Blast0Chunksn {
+     errorStrategy 'ignore'
+
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "results/RappData/Alignmentapp", mode: 'copy'
+
+    input:
+    path (blastx0)
+    path (blastp0)
+    path (blastn0)
+    
+    output:
+    path "*", emit: blast0chunks
+
+    script:
     
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0} ${blastn0}
     """
     
-    } else {
-    """
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0}
-    """
-    
-}
+
 }
 
 // Define input file patterns via parameters
@@ -1358,12 +1378,13 @@ workflow {
      def blastx0txt = Channel.fromPath(params.input_blastx0_files)
      def blastp0txt = Channel.fromPath(params.input_blastp0_files)
      
-    def blastn0txt = Channel.empty()
-    if (params.input_blastn0_files != 'NULL') {
+    if (params.input_blastn0_files) {
     blastn0txt = Channel.fromPath("${params.data}/*_blastnunitox0.txt")
-    }
     Blast0Chunks(blastx0txt, blastp0txt, blastn0txt)
- 
+    }
+    else {
+    Blast0Chunks(blastx0txt, blastp0txt)
+ }
  
 }
 
