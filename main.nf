@@ -1077,7 +1077,7 @@ process RmarkdownZ {
 
 // Process 36:
 process Blast0Chunks {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -1086,7 +1086,6 @@ process Blast0Chunks {
     input:
     path (blastx0)
     path (blastp0)
-    path (blastn0)
     
     output:
     path "*", emit: blast0chunks
@@ -1103,7 +1102,7 @@ process Blast0Chunks {
 
 
 process Blast0Chunksn {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -1136,6 +1135,7 @@ params.input_blastx_files   = "${params.data}/Blast/Blastx/*.blastx.db.6.txt"
 params.input_blastp_files   = "${params.data}/Blast/Blastp/*.blastp.db.6.txt"
 params.input_blastx0_files   = "${params.data}/Blastx/*.blastx.db.0.txt"
 params.input_blastp0_files   = "${params.data}/Blastp/*.blastp.db.0.txt"
+params.input_blastn0_files   = "${params.data}/Blastn/*.blastn.db.0.txt"
 params.input_interproscan = "${params.data}/Interproscan/*.cleaned.pep.tsv"
 params.input_signalp_summary   = "${params.data}/Signalp/*_summary.signalp5"
 params.input_blastn0_files = "${params.data}/Blastn/*.blastn.db.0.txt"
@@ -1379,7 +1379,7 @@ workflow {
      def blastp0txt = Channel.fromPath(params.input_blastp0_files)
      
     if (params.input_blastn0_files) {
-    blastn0txt = Channel.fromPath("${params.data}/*_blastnunitox0.txt")
+    def blastn0txt = Channel.fromPath(params.input_blastn0_files)
     Blast0Chunksn(blastx0txt, blastp0txt, blastn0txt)
     }
     else {
