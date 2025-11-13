@@ -1379,9 +1379,11 @@ workflow {
 
      def blastx0txt = Channel.fromPath(params.input_blastx0_files)
      def blastp0txt = Channel.fromPath(params.input_blastp0_files)
-     
+
+     println "isgenomeavailable: ${params.isgenomeavailable}"
+
     if (params.isgenomeavailable == 'Y') {
-    def blastn0txt = Channel.fromPath(params.input_blastn0_files)
+    	def blastn0txt = Channel.fromPath(params.input_blastn0_files)
     Blast0Chunksn(blastx0txt, blastp0txt, blastn0txt)
     }
     else {
