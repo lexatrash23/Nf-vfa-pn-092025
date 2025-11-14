@@ -45,11 +45,11 @@ blastp_query_chunks <- mapply(function(start,end) {
 saveRDS(blastp_query_chunks, "query_chunks_blastp.rds" )
 
 
-blastn <- if (length(arg) >= 4) arg[4] else "NULL"
+blastn <- arg[4]
 
 #read in blastn0 file (IF PRESENT)
 
-if (!is.null(blastn)) {
+if (!is.na(blastn)) {
 blastn_file <- readLines(blastn)
 
 
