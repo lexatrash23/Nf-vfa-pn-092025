@@ -1137,7 +1137,6 @@ params.input_blastx_files   = "${params.data}/Blast/Blastx/*.blastx.db.6.txt"
 params.input_blastp_files   = "${params.data}/Blast/Blastp/*.blastp.db.6.txt"
 params.input_blastx0_files   = "${params.data}/Blast/Blastx/*.blastx.db.0.txt"
 params.input_blastp0_files   = "${params.data}/Blast/Blastp/*.blastp.db.0.txt"
-params.input_blastn0_files   = "${params.data}/Blast/Blastn/*.blastn.db.0.txt"
 params.input_interproscan = "${params.data}/Interproscan/*.cleaned.pep.tsv"
 params.input_signalp_summary   = "${params.data}/Signalp/*_summary.signalp5"
 params.input_blastn0_files = "${params.data}/Blastn/*.blastn.db.0.txt"
@@ -1377,18 +1376,18 @@ workflow {
     TableGenerationTransdecoder.out.Table12
 )
 
-     def blastx0txt = Channel.fromPath(params.input_blastx0_files)
-     def blastp0txt = Channel.fromPath(params.input_blastp0_files)
-
-     println "isgenomeavailable: ${params.isgenomeavailable}"
-
-    if (params.isgenomeavailable == 'Y') {
-    	def blastn0txt = Channel.fromPath(params.input_blastn0_files)
-    Blast0Chunksn(blastx0txt, blastp0txt, blastn0txt)
-    }
-    else {
-    Blast0Chunks(blastx0txt, blastp0txt)
- }
+     if (params.isgenomeavailable == 'Y') {
+                
+            params.input_blastn0_files   = "${params.data}/Blast/Blastn/*.blastn.db.0.txt"
+            def blastn0txt = Channel.fromPath(params.input_blastn0_files)
+            def blastx0txt = Channel.fromPath(params.input_blastx0_files)
+            def blastp0txt = Channel.fromPath(params.input_blastp0_files)
+            Blast0Chunksn(blastx0txt, blastp0txt, blastn0txt)
+    } else {
+        def blastx0txt = Channel.fromPath(params.input_blastx0_files)
+        def blastp0txt = Channel.fromPath(params.input_blastp0_files)
+        Blast0Chunks(blastx0txt, blastp0txt)
+        }
  
 }
 
