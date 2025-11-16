@@ -1103,7 +1103,6 @@ process Blast0Chunks {
 
 
 process Blast0Chunksn {
-    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
