@@ -1104,6 +1104,8 @@ process Blast0Chunks {
 
 process Blast0Chunksn {
 
+    errorStrategy 'ignore'
+    
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/RappData/Alignmentapp", mode: 'copy'
@@ -1123,6 +1125,34 @@ process Blast0Chunksn {
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0} ${blastn0}
     """
     
+
+}
+
+process BlastnIntegration {
+    errorStrategy 'ignore'
+    
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
+    
+    input:
+    path (venndiagram)
+    path (trandfdistinctmass)
+    path (blastn6)
+    
+    output:
+    path "transdf_distinct_blastn.csv", emit: transdf_distinct_blastn
+    path "venn_overview_blastn.csv", emit: venn_overview_blastn
+    path "venn_overview_blastn_filtered.csv", emit: venn_overview_blastn_filtered
+    
+
+    script:
+    
+    """
+
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS12.R" ${venndiagram} ${trandfdistinctmass} ${blastn6}
+    """
+
 
 }
 
@@ -1256,7 +1286,11 @@ workflow {
             def overviewms = filtered_massspec.combine(Toxin_domains)
             overviewms | VennOverviewMS
             RmarkdownZ (VennOverviewMS.out.overviewpng,VennOverviewMS.out.overviewcsv)
-
+            if (params.isgenomeavailable == 'Y') {
+                params.input_blastn_files   = "${params.data}/Blast/Blastn/*.blastn.db.6.txt"
+                def Blastn6 = Channel.fromPath(params.input_blastn_files)
+                BlastnIntegration ( VennOverviewMS.out.overviewcsv, AddMassSpec.out.distinct_massspec, Blastn6 )
+            }
         } else {
 
             def nomassspecdatatable = transdf
@@ -1268,6 +1302,11 @@ workflow {
             def overviewnoms = filtered_nomasspec.combine(Toxin_domains)
             overviewnoms | VennOverviewNoMS
             RmarkdownZ (VennOverviewNoMS.out.overviewpng, VennOverviewNoMS.out.overviewcsv)
+            if (params.isgenomeavailable == 'Y') {
+                params.input_blastn_files   = "${params.data}/Blast/Blastn/*.blastn.db.6.txt"
+                def Blastn6 = Channel.fromPath(params.input_blastn_files)
+                BlastnIntegration (VennOverviewNoMS.out.overviewcsv, SkipMassSpec.out.distinct_nomassspec, Blastn6 )
+            }
             
         }
     def sampleurl = Channel.value(params.sampleURL)
@@ -1381,6 +1420,7 @@ workflow {
             def blastx0txt = Channel.fromPath(params.input_blastx0_files)
             def blastp0txt = Channel.fromPath(params.input_blastp0_files)
             Blast0Chunksn(blastx0txt, blastp0txt, blastn0txt)
+            
     } else {
         def blastx0txt = Channel.fromPath(params.input_blastx0_files)
         def blastp0txt = Channel.fromPath(params.input_blastp0_files)
