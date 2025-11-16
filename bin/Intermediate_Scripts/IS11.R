@@ -22,7 +22,7 @@ blastx_query_chunks <- mapply(function(start,end) {
 }, blastx_query_starts, blastx_query_ends, SIMPLIFY=FALSE)
 
 #save chunks
-saveRDS(blastx_query_chunks, "query_chunks_blastx.rds.xz", compression = "xz")
+saveRDS(blastx_query_chunks, "query_chunks_blastx.rds", compress = TRUE)
 
 #read in blastp0 file
 blastp <- arg[3]
@@ -42,7 +42,7 @@ blastp_query_chunks <- mapply(function(start,end) {
 }, blastp_query_starts, blastp_query_ends, SIMPLIFY=FALSE)
 
 #save chunks
-saveRDS(blastp_query_chunks, "query_chunks_blastp.rds.xz", compression = "xz" )
+saveRDS(blastp_query_chunks, "query_chunks_blastp.rds", compress = TRUE )
 
 
 blastn <- arg[4]
@@ -69,7 +69,7 @@ blastn_query_chunks <- mapply(function(start,end) {
 
 
 #save chunks
-saveRDS(blastn_query_chunks, "query_chunks_blastn.rds.xz", compression = "xz")
+saveRDS(blastn_query_chunks, "query_chunks_blastn.rds", compress = TRUE)
 } else {
     print("No blastn file provided.")
 }
