@@ -1305,7 +1305,7 @@ workflow {
             if (params.isgenomeavailable == 'Y') {
                 params.input_blastn_files   = "${params.data}/Blast/Blastn/*.blastn.db.6.txt"
                 def Blastn6 = Channel.fromPath(params.input_blastn_files)
-                BlastnIntegration (VennOverviewNoMS.out.overviewcsv, SkipMassSpec.out.distinct_nomassspec, Blastn6 )
+                BlastnIntegration (VennOverviewNoMS.out.overviewcsv, SkipMassSpec.out.distinct_nomasspec, Blastn6 )
             }
             
         }
