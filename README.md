@@ -1,15 +1,18 @@
+
+**Pipeline and Documentation still in development**
+
 # Overview
 ___
 
 ## Quick Start [Following from previous lexatrash-vf-092025 run] 
-**1.** Download nextflow.config file from lexatrash-vfa-092025
+**1.** Download nextflow.config file from lexatrash-vfa-092025 
 **2.** Edit config file by providing appropriate input for each described parameter. config file must be in the same directory that the script is run from  
-**4.** (Optional)Edit config file by providing appropriate memory allocation for each described parameters  
-**5.** run on command line:  
+**3.** (Optional)Edit config file by providing appropriate memory allocation for each described parameters  
+**4.** run on command line:  
     ``` nextflow pull lexatrash23/Nf-vfa-pn-092025 ```  
-**6.** run on command line (or preferably in an sbatch script) :  
+**5.** run on command line (or preferably in an sbatch script) :  
    ``` nextflow run lexatrash23/Nf-vfa-pn-092025 -with-conda -with-dag -with-timeline -with-report -with-trace  ```
-**7.** Copy multiqc_report.html from lexatrash-vf-092025 results folder into lexatrash-vfa-092025 results/htmls to complete html folder
+**6.** Copy multiqc_report.html from lexatrash-vf-092025 results folder into lexatrash-vfa-092025 results/htmls to complete html folder
 ___
 ## Additional notes 
 **_Suggested Dir Structure:_**   
