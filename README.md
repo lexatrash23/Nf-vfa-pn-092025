@@ -19,19 +19,19 @@ ___
 Sample_Name>Analysis>.config  
 
 **_config params info_:**  
-sampleURL - parameter should link to page from which the user can search through and download available. This could be a custom dropbox/drive link etc.. For example of a Dataframe and Alignment search Rshiny app click [here](https://github.com/lexatrash23)
-genome_id - Genbank genome ID that will be used to create hyperlinks for Blastn searches
-data - path to results folder from lexatrash-vf-092025 nextflow run. 
-input_list - Interprosccan entry.list
-input_panther - PANTHER entry names csv
-input_toxindomains - TSV file of proteins with IP domains of interet 
+sampleURL - parameter should link to page from which the user can search through and download available. This could be a custom dropbox/drive link etc.. For example of a Dataframe and Alignment search Rshiny app click [here](https://github.com/lexatrash23)  
+genome_id - Genbank genome ID that will be used to create hyperlinks for Blastn searches  
+data - path to results folder from lexatrash-vf-092025 nextflow run.   
+input_list - Interprosccan entry.list  
+input_panther - PANTHER entry names csv   
+input_toxindomains - TSV file of proteins with IP domains of interest.     
 Settings -  settings parameters can be removed as necessary.  
 **_When complete:_**     
-Check slurm output file (if using sbatch script) to ensure all tasks were run successfully. If completed sucessfully, work directory can be deleted to clear space.
+Check slurm output file (if using sbatch script) to ensure all tasks were run successfully. If completed sucessfully, work directory can be deleted to clear space.  
 
 **_Rerunning and Rerunning after cancellation:_**  
--If desired -resume flag can be used to resume nextflow script when troubleshooting failed steps to avoid repeating successful steps  
--If slurm job running nextflow pipeline is cancelled prior to completion, and subsequent run fails, work directory may need to be deleted prior to rerunning to ensure proper conda environment installation 
+-If desired -resume flag can be used to resume nextflow script when troubleshooting failed steps to avoid repeating successful steps    
+-If slurm job running nextflow pipeline is cancelled prior to completion, and subsequent run fails, work directory may need to be deleted prior to rerunning to ensure proper conda environment installation   
 ___
 
 Pipeline image : 
@@ -40,25 +40,25 @@ Pipeline image :
 ___
 
 ### Required Inputs
-This Nextflow pipeline requires lexatrash23/Nf-vf-pn-092025 to be successfully run first. The files found in the results folder of  lexatrash23/Nf-vf-pn-092025 will serve as inputs for lexatrash23/Nf-vfa-pn-092025
-Apart from this files, the following input files are required: 
-1. De novo Trinity Assembly (fasta)
-2. Interproscan entry.list
-3. PANTHER protein names csv
-4. TSV file of Proteins with Interproscan domains of interest  
+This Nextflow pipeline requires lexatrash23/Nf-vf-pn-092025 to be successfully run first. The files found in the results folder of  lexatrash23/Nf-vf-pn-092025 will serve as inputs for lexatrash23/Nf-vfa-pn-092025  
+Apart from this files, the following input files are required:   
+1. De novo Trinity Assembly (fasta)  
+2. Interproscan entry.list  
+3. PANTHER protein names csv  
+4. TSV file of Proteins with Interproscan domains of interest    
 
-### Optional Inputs
-5. Massspec analysis file 
+### Optional Inputs  
+5. Massspec analysis file   
 
 ### Provided test files
-Test run can be down with the following provided test files:  
-1. trinity_test: A subset(200 sequences) of the trinity assembly from a Doryteuthis pealeii Posterior Salivary Gland tissue
-2. Results: Results folder from lexatrash23/Nf-vf-pn-092025 run using test files
-3. entry.list, panther_names.csv, toxindomains.tsv
-4. massspec_analysis file   
-Download Test_files folder and specify respective file paths in local config file.
+Test run can be down with the following provided test files:    
+1. trinity_test: A subset(200 sequences) of the trinity assembly from a Doryteuthis pealeii Posterior Salivary Gland tissue  
+2. Results: Results folder from lexatrash23/Nf-vf-pn-092025 run using test files  
+3. entry.list, panther_names.csv, toxindomains.tsv  
+4. massspec_analysis file    
+Download Test_files folder and specify respective file paths in local config file.  
 ### Output files
-Several Output files are produced by this pipeline. Main output files of interest are listed below: 
+Several Output files are produced by this pipeline. Main output files of interest are listed below:   
 HTMLs: 
 A.html -> starting menu page, all other html pages can be navigated to from this. For full html webpage map, please refer to the pipeline image above. 
 
