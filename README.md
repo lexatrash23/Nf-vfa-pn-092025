@@ -5,7 +5,7 @@
 ___
 
 ## Quick Start [Following from previous lexatrash-vf-092025 run] 
-**1.** Download nextflow.config file from lexatrash-vfa-092025 
+**1.** Download nextflow.config file from lexatrash-vfa-092025  
 **2.** Edit config file by providing appropriate input for each described parameter. config file must be in the same directory that the script is run from  
 **3.** (Optional)Edit config file by providing appropriate memory allocation for each described parameters  
 **4.** run on command line:  
