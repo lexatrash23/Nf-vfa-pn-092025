@@ -1,0 +1,2 @@
+file                format  type  num_seqs  sum_len  min_len  avg_len  max_len
+trinity_test.fasta  FASTA   DNA        200   85,200      202      426    1,606

@@ -1,0 +1,2 @@
+file                                format  type  num_seqs  sum_len  min_len  avg_len  max_len
+DP4_test.trandescoder.complete.cds  FASTA   DNA          8    3,258      279    407.3      693
