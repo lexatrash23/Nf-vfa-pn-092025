@@ -56,7 +56,9 @@ Test run can be down with the following provided test files:
 2. Results: Results folder from lexatrash23/Nf-vf-pn-092025 run using test files  
 3. entry.list, panther_names.csv, toxindomains.tsv  
 4. massspec_analysis file    
-Download Test_files folder and specify respective file paths in local config file.  
+Download Test_files folder and specify respective file paths in local config
+ file.  
+ Due to size limitations, these are only sample fasta and hence the results will be limited, for an example of a complete html report, refer to the example below. 
 ### Output files
 Several Output files are produced by this pipeline. Main output files of interest are listed below:   
 HTMLs: 

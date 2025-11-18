@@ -1,0 +1,19 @@
+# BUSCO version is: 5.8.2 
+# The lineage dataset is: mollusca_odb10 (Creation date: 2024-01-08, number of genomes: 7, number of BUSCOs: 5295)
+# Summarized benchmarking in BUSCO notation for file /ocean/projects/bio230056p/mnaidu/Cephalopod/Sample_full_pipeline/DP4_PN/DP4_PN_testfiles/Venomflow/work/91/6821125bbaeae1b235c2d52db9e28c/trinity_test.fasta.transdecoder.pep
+# BUSCO was run in mode: proteins
+
+	***** Results: *****
+
+	C:0.1%[S:0.1%,D:0.0%],F:0.1%,M:99.8%,n:5295	   
+	5	Complete BUSCOs (C)			   
+	5	Complete and single-copy BUSCOs (S)	   
+	0	Complete and duplicated BUSCOs (D)	   
+	3	Fragmented BUSCOs (F)			   
+	5287	Missing BUSCOs (M)			   
+	5295	Total BUSCO groups searched		   
+
+Dependencies and versions:
+	hmmsearch: 3.4
+	python: sys.version_info(major=3, minor=11, micro=13, releaselevel='final', serial=0)
+	busco: 5.8.2

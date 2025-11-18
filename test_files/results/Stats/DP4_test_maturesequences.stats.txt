@@ -1,0 +1,2 @@
+file                   format  type     num_seqs  sum_len  min_len  avg_len  max_len
+DP4_test_mature.fasta  FASTA   Protein         1      211      211      211      211

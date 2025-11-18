@@ -1,0 +1,903 @@
+BLASTP 2.17.0+
+
+
+Reference: Stephen F. Altschul, Thomas L. Madden, Alejandro A.
+Schaffer, Jinghui Zhang, Zheng Zhang, Webb Miller, and David J.
+Lipman (1997), "Gapped BLAST and PSI-BLAST: a new generation of
+protein database search programs", Nucleic Acids Res. 25:3389-3402.
+
+
+Reference for composition-based statistics: Alejandro A. Schaffer,
+L. Aravind, Thomas L. Madden, Sergei Shavirin, John L. Spouge, Yuri
+I. Wolf, Eugene V. Koonin, and Stephen F. Altschul (2001),
+"Improving the accuracy of PSI-BLAST protein database searches with
+composition-based statistics and other refinements", Nucleic Acids
+Res. 29:2994-3005.
+
+
+
+Database: unitox_curated.fasta
+           8,055 sequences; 856,158 total letters
+
+
+
+Query= TRINITY_DN12109_c0_g1_i1.p1
+TRINITY_DN12109_c0_g1~~TRINITY_DN12109_c0_g1_i1.p1  ORF
+type:internal (+),score=129.20 len:133
+TRINITY_DN12109_c0_g1_i1:2-400(+)
+
+Length=133
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.329    0.140    0.441    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 20887218
+
+
+Query= TRINITY_DN12119_c0_g1_i1.p1
+TRINITY_DN12119_c0_g1~~TRINITY_DN12119_c0_g1_i1.p1  ORF
+type:internal (+),score=73.72 len:108
+TRINITY_DN12119_c0_g1_i1:1-324(+)
+
+Length=108
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.310    0.130    0.382    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21064056
+
+
+Query= TRINITY_DN12120_c0_g1_i1.p1
+TRINITY_DN12120_c0_g1~~TRINITY_DN12120_c0_g1_i1.p1  ORF
+type:complete (+),score=65.64 len:119
+TRINITY_DN12120_c0_g1_i1:200-559(+)
+
+Length=120
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.324    0.138    0.414    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21523377
+
+
+Query= TRINITY_DN12124_c0_g1_i2.p1
+TRINITY_DN12124_c0_g1~~TRINITY_DN12124_c0_g1_i2.p1  ORF
+type:5prime_partial (+),score=110.49 len:168
+TRINITY_DN12124_c0_g1_i2:1-507(+)
+
+Length=169
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.336    0.144    0.511    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 30036300
+
+
+Query= TRINITY_DN12126_c0_g1_i2.p1
+TRINITY_DN12126_c0_g1~~TRINITY_DN12126_c0_g1_i2.p1  ORF
+type:5prime_partial (+),score=92.51 len:207
+TRINITY_DN12126_c0_g1_i2:1-624(+)
+
+Length=208
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.320    0.137    0.425    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 38942661
+
+
+Query= TRINITY_DN12139_c0_g1_i1.p2
+TRINITY_DN12139_c0_g1~~TRINITY_DN12139_c0_g1_i1.p2  ORF
+type:internal (+),score=75.43 len:106
+TRINITY_DN12139_c0_g1_i1:2-319(+)
+
+Length=106
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.320    0.139    0.394    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21069783
+
+
+Query= TRINITY_DN12148_c0_g1_i1.p1
+TRINITY_DN12148_c0_g1~~TRINITY_DN12148_c0_g1_i1.p1  ORF
+type:5prime_partial (+),score=91.88 len:146
+TRINITY_DN12148_c0_g1_i1:2-442(+)
+
+Length=147
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.320    0.142    0.458    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 24365022
+
+
+Query= TRINITY_DN12150_c0_g1_i1.p1
+TRINITY_DN12150_c0_g1~~TRINITY_DN12150_c0_g1_i1.p1  ORF
+type:internal (+),score=90.82 len:129
+TRINITY_DN12150_c0_g1_i1:1-387(+)
+
+Length=129
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.310    0.132    0.354    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21285312
+
+
+Query= TRINITY_DN12158_c0_g1_i1.p1
+TRINITY_DN12158_c0_g1~~TRINITY_DN12158_c0_g1_i1.p1  ORF
+type:internal (-),score=89.21 len:103
+TRINITY_DN12158_c0_g1_i1:1-309(-)
+
+Length=103
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.315    0.134    0.409    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21462150
+
+
+Query= TRINITY_DN12169_c0_g2_i1.p1
+TRINITY_DN12169_c0_g2~~TRINITY_DN12169_c0_g2_i1.p1  ORF
+type:internal (+),score=88.38 len:162
+TRINITY_DN12169_c0_g2_i1:2-487(+)
+
+Length=162
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.315    0.132    0.368    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 27933759
+
+
+Query= TRINITY_DN12171_c0_g1_i1.p1
+TRINITY_DN12171_c0_g1~~TRINITY_DN12171_c0_g1_i1.p1  ORF
+type:5prime_partial (+),score=92.20 len:149
+TRINITY_DN12171_c0_g1_i1:3-452(+)
+
+Length=150
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.323    0.134    0.388    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 25290276
+
+
+Query= TRINITY_DN12172_c0_g1_i1.p1
+TRINITY_DN12172_c0_g1~~TRINITY_DN12172_c0_g1_i1.p1  ORF
+type:5prime_partial (+),score=153.45 len:257
+TRINITY_DN12172_c0_g1_i1:3-776(+)
+
+Length=258
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.318    0.131    0.393    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 49606455
+
+
+Query= TRINITY_DN12179_c0_g3_i1.p1
+TRINITY_DN12179_c0_g3~~TRINITY_DN12179_c0_g3_i1.p1  ORF
+type:5prime_partial (+),score=118.52 len:243
+TRINITY_DN12179_c0_g3_i1:3-734(+)
+
+Length=244
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.326    0.139    0.406    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 47506056
+
+
+Query= TRINITY_DN12181_c1_g1_i1.p1
+TRINITY_DN12181_c1_g1~~TRINITY_DN12181_c1_g1_i1.p1  ORF
+type:3prime_partial (+),score=126.23 len:176
+TRINITY_DN12181_c1_g1_i1:48-575(+)
+
+Length=176
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.323    0.136    0.455    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 30984648
+
+
+Query= TRINITY_DN12187_c0_g1_i1.p1
+TRINITY_DN12187_c0_g1~~TRINITY_DN12187_c0_g1_i1.p1  ORF
+type:5prime_partial (+),score=136.85 len:163
+TRINITY_DN12187_c0_g1_i1:2-493(+)
+
+Length=164
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.331    0.145    0.482    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 28534485
+
+
+Query= TRINITY_DN3112_c0_g1_i1.p1
+TRINITY_DN3112_c0_g1~~TRINITY_DN3112_c0_g1_i1.p1  ORF type:complete
+(+),score=102.11 len:128 TRINITY_DN3112_c0_g1_i1:83-469(+)
+
+Length=129
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.320    0.134    0.369    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21285312
+
+
+Query= TRINITY_DN3119_c0_g1_i2.p1
+TRINITY_DN3119_c0_g1~~TRINITY_DN3119_c0_g1_i2.p1  ORF
+type:5prime_partial (+),score=293.59 len:325
+TRINITY_DN3119_c0_g1_i2:3-980(+)
+
+Length=326
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.313    0.131    0.390    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 63260283
+
+
+Query= TRINITY_DN3123_c0_g2_i1.p1
+TRINITY_DN3123_c0_g2~~TRINITY_DN3123_c0_g2_i1.p1  ORF
+type:5prime_partial (+),score=81.48 len:114
+TRINITY_DN3123_c0_g2_i1:3-347(+)
+
+Length=115
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.330    0.146    0.458    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21331128
+
+
+Query= TRINITY_DN3130_c0_g1_i1.p1
+TRINITY_DN3130_c0_g1~~TRINITY_DN3130_c0_g1_i1.p1  ORF
+type:5prime_partial (+),score=150.37 len:232
+TRINITY_DN3130_c0_g1_i1:2-700(+)
+
+Length=233
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.325    0.136    0.411    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 44467878
+
+
+Query= TRINITY_DN3132_c0_g1_i1.p1
+TRINITY_DN3132_c0_g1~~TRINITY_DN3132_c0_g1_i1.p1  ORF
+type:5prime_partial (+),score=185.82 len:269
+TRINITY_DN3132_c0_g1_i1:1-810(+)
+
+Length=270
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.314    0.130    0.405    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 52824171
+
+
+Query= TRINITY_DN3132_c0_g1_i2.p1
+TRINITY_DN3132_c0_g1~~TRINITY_DN3132_c0_g1_i2.p1  ORF
+type:5prime_partial (+),score=204.56 len:293
+TRINITY_DN3132_c0_g1_i2:1-882(+)
+
+Length=294
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.313    0.130    0.398    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 57219360
+
+
+Query= TRINITY_DN3143_c0_g1_i1.p1
+TRINITY_DN3143_c0_g1~~TRINITY_DN3143_c0_g1_i1.p1  ORF type:internal
+(-),score=80.57 len:113 TRINITY_DN3143_c0_g1_i1:2-340(-)
+
+Length=113
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.333    0.146    0.489    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21393240
+
+
+Query= TRINITY_DN3149_c0_g1_i1.p1
+TRINITY_DN3149_c0_g1~~TRINITY_DN3149_c0_g1_i1.p1  ORF type:internal
+(+),score=146.73 len:189 TRINITY_DN3149_c0_g1_i1:3-569(+)
+
+Length=189
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.317    0.133    0.384    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 34784652
+
+
+Query= TRINITY_DN3155_c0_g2_i1.p3
+TRINITY_DN3155_c0_g2~~TRINITY_DN3155_c0_g2_i1.p3  ORF type:complete
+(-),score=52.84 len:92 TRINITY_DN3155_c0_g2_i1:925-1203(-)
+
+Length=93
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.330    0.140    0.457    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21128310
+
+
+Query= TRINITY_DN3155_c0_g2_i1.p1
+TRINITY_DN3155_c0_g2~~TRINITY_DN3155_c0_g2_i1.p1  ORF type:complete
+(+),score=170.31 len:230 TRINITY_DN3155_c0_g2_i1:207-899(+)
+
+Length=231
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.323    0.142    0.448    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 43915482
+
+
+Query= TRINITY_DN3156_c0_g1_i2.p1
+TRINITY_DN3156_c0_g1~~TRINITY_DN3156_c0_g1_i2.p1  ORF
+type:5prime_partial (+),score=93.32 len:172
+TRINITY_DN3156_c0_g1_i2:3-521(+)
+
+Length=173
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.321    0.134    0.429    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 31237752
+
+
+Query= TRINITY_DN3162_c0_g1_i1.p1
+TRINITY_DN3162_c0_g1~~TRINITY_DN3162_c0_g1_i1.p1  ORF type:complete
+(+),score=88.50 len:143 TRINITY_DN3162_c0_g1_i1:112-543(+)
+
+Length=144
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.312    0.126    0.333    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 23439768
+
+
+Query= TRINITY_DN3162_c0_g1_i2.p1
+TRINITY_DN3162_c0_g1~~TRINITY_DN3162_c0_g1_i2.p1  ORF type:complete
+(+),score=60.74 len:113 TRINITY_DN3162_c0_g1_i2:112-453(+)
+
+Length=114
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.317    0.124    0.364    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 20950215
+
+
+Query= TRINITY_DN3162_c0_g2_i1.p1
+TRINITY_DN3162_c0_g2~~TRINITY_DN3162_c0_g2_i1.p1  ORF type:internal
+(+),score=65.15 len:107 TRINITY_DN3162_c0_g2_i1:1-321(+)
+
+Length=107
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.314    0.125    0.386    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21482916
+
+
+Query= TRINITY_DN3162_c0_g3_i1.p1
+TRINITY_DN3162_c0_g3~~TRINITY_DN3162_c0_g3_i1.p1  ORF
+type:5prime_partial (+),score=221.37 len:356
+TRINITY_DN3162_c0_g3_i1:1-1071(+)
+
+Length=357
+                                                                      Score     E
+Sequences producing significant alignments:                          (Bits)  Value
+
+sp|K9IMD0|TRLF_DESRO Lactotransferrin OS=Desmodus rotundus OX=943...  195     2e-57
+
+
+>sp|K9IMD0|TRLF_DESRO Lactotransferrin OS=Desmodus rotundus OX=9430 
+GN=LTF PE=1 SV=1
+Length=708
+
+ Score = 195 bits (495),  Expect = 2e-57, Method: Compositional matrix adjust.
+ Identities = 127/338 (38%), Positives = 174/338 (51%), Gaps = 30/338 (9%)
+
+Query  1    CTIGDAEFEKCTDIKFAFMAKRATNKLECIKAKDPADCMVKIEQKKADFVVLDGGDISTA  60
+            CTI   E  KC+ ++      R  + L CI  K   +C+  I  K+AD + LD G +  A
+Sbjct  28   CTISKPEAAKCSKLQQNLKRVRGPS-LSCISRKSYLECIQAIAAKRADAMSLDAGLVYEA  86
+
+Query  61   MKS-CKLEPVIAEDYGVATA---SYYAVAVVKATAKFTIRDLKGKKSCHTGIEKTSGWKT  116
+             +   +L PV AE YG   A    YYAVA+VK  +   +  L+G +SCHTG+ +++GWK 
+Sbjct  87   GQDPYRLRPVAAEVYGTEGAPRTHYYAVALVKKDSNLQLNQLQGVRSCHTGLNRSAGWKI  146
+
+Query  117  PVSYLIKNKMMPKGDSIPLE--VGKFFSASCVPGALDPTYNPKKTNPKNLCALCPKNGTD  174
+            PV  L +  +   G   PL+  V  FFSASCVP A    Y        NLC LC   G D
+Sbjct  147  PVGTL-RPYLGWAGPPAPLQEAVANFFSASCVPCADGNQY-------PNLCRLCAGTGAD  198
+
+Query  175  -CQRNPENKYYDYSGAFRCLVETDADVAFIKHATVPESTDGKGKEDWEKGLKSSDYRLLC  233
+             C  + +  Y+ YSGAF+CL +   DVAF+K +TV E+   K + D         Y LLC
+Sbjct  199  KCACSSKEPYFGYSGAFKCLKDGAGDVAFVKDSTVFENLPNKAERD--------QYELLC  250
+
+Query  234  KDGKVALIDQWENCHLAKVPAHAVVVRK---GETKLGELLFRVFSNFDLSSDESKELLFS  290
+             D     +D++E CHLA+VP+HAVV R     E  +  LL +    F   +  S +L  S
+Sbjct  251  PDNTRKPVDEFEQCHLARVPSHAVVARSVGGKEDSIWRLLSKAQEKFGKGTSGSFQLFSS  310
+
+Query  291  SPDGKNLLFKDSTTGLIHIEK---PDKFLGDDYLEILK  325
+             P  K+LLFKD   G + I      + +LG  YL ++K
+Sbjct  311  PPGQKDLLFKDGAQGFLRIPSRVDAELYLGPSYLTVIK  348
+
+
+ Score = 191 bits (485),  Expect = 4e-56, Method: Compositional matrix adjust.
+ Identities = 135/373 (36%), Positives = 186/373 (50%), Gaps = 54/373 (14%)
+
+Query  1    CTIGDAEFEKCTDIKFAFMAKRATNKLECIKAKDPADCMVKIEQKKADFVVLDGGDISTA  60
+            C +G  E  KC        + ++   + C  A D  DC+  + + +AD + LDGG I  A
+Sbjct  367  CAVGPEELRKCQQ-----WSGQSNGTVTCTTAADTEDCIALVLKGEADAMSLDGGVIYIA  421
+
+Query  61   MKSCKLEPVIAEDYGVATASYY-----------AVAVV-KATAKFTIRDLKGKKSCHTGI  108
+             K C L PV+AE       S             AVAVV K++A  T    +G KSCHT +
+Sbjct  422  GK-CGLAPVLAESQRSEGGSNLDCVNRPLEGDRAVAVVRKSSAGLTWNSRRGTKSCHTAV  480
+
+Query  109  EKTSGWKTPVSYLIKNKMMPKGDSIPLEVGKFFSASCVPGALDPTYNPKKTNPKNLCALC  168
+             +T+GW  P+  L         D       +FFS SC PGA DP          NLCALC
+Sbjct  481  GRTAGWNIPMGLLFNQTRSCNFD-------EFFSQSCAPGA-DPN--------SNLCALC  524
+
+Query  169  PKN--GTD-CQRNPENKYYDYSGAFRCLVETDADVAFIKHATVPESTDGKGKEDWEKGLK  225
+              N  G D C  N   +Y+ Y+G+FRCLVE   DVAF+K +TV E+ DG+G E W K LK
+Sbjct  525  VGNEQGQDKCAPNSNERYFSYAGSFRCLVENAGDVAFVKASTVLENPDGRGTEAWAKDLK  584
+
+Query  226  SSDYRLLCKDGKVALIDQWENCHLAKVPAHAVVVRKGETK-LGELLFRVFSNFDLSSD--  282
+              D+ LLC DG    + ++E CHLA+ P+H VV RK   + L ++L      F  +    
+Sbjct  585  LEDFELLCLDGTRKPVSEFETCHLARAPSHGVVSRKDRVQYLEQVLLDQQGKFGRNGPLC  644
+
+Query  283  ESKELLFSSPDGKNLLFKDSTTGLIHIEKP---DKFLGDDYLEILKVFSSDIKVCSGSSH  339
+              K  LF S + KNLLF D+T  L  ++     +K+LG +Y+  +    ++++ CS    
+Sbjct  645  PGKFCLFQS-ETKNLLFNDNTECLAKLQGKTTYEKYLGPEYVTAV----ANLRQCS----  695
+
+Query  340  VITSVILMVFTLL  352
+              TS +L   T L
+Sbjct  696  --TSPLLEACTFL  706
+
+
+
+Lambda      K        H        a         alpha
+   0.319    0.136    0.409    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 71073306
+
+
+Query= TRINITY_DN3164_c0_g1_i3.p1
+TRINITY_DN3164_c0_g1~~TRINITY_DN3164_c0_g1_i3.p1  ORF
+type:5prime_partial (+),score=83.90 len:145
+TRINITY_DN3164_c0_g1_i3:1-438(+)
+
+Length=146
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.319    0.132    0.389    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 24056604
+
+
+Query= TRINITY_DN3176_c0_g1_i1.p1
+TRINITY_DN3176_c0_g1~~TRINITY_DN3176_c0_g1_i1.p1  ORF type:complete
+(+),score=73.48 len:153 TRINITY_DN3176_c0_g1_i1:283-744(+)
+
+Length=154
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.320    0.139    0.407    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 26523948
+
+
+Query= TRINITY_DN3177_c1_g1_i1.p1
+TRINITY_DN3177_c1_g1~~TRINITY_DN3177_c1_g1_i1.p1  ORF
+type:5prime_partial (-),score=62.09 len:100
+TRINITY_DN3177_c1_g1_i1:12-314(-)
+
+Length=101
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.331    0.146    0.445    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21427602
+
+
+Query= TRINITY_DN3179_c0_g1_i3.p1
+TRINITY_DN3179_c0_g1~~TRINITY_DN3179_c0_g1_i3.p1  ORF
+type:3prime_partial (+),score=89.60 len:106
+TRINITY_DN3179_c0_g1_i3:554-871(+)
+
+Length=106
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.328    0.139    0.478    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21069783
+
+
+Query= TRINITY_DN3181_c0_g1_i1.p1
+TRINITY_DN3181_c0_g1~~TRINITY_DN3181_c0_g1_i1.p1  ORF type:complete
+(+),score=65.66 len:100 TRINITY_DN3181_c0_g1_i1:52-354(+)
+
+Length=101
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.334    0.142    0.429    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21427602
+
+
+Query= TRINITY_DN3189_c0_g1_i2.p1
+TRINITY_DN3189_c0_g1~~TRINITY_DN3189_c0_g1_i2.p1  ORF
+type:5prime_partial (+),score=52.03 len:102
+TRINITY_DN3189_c0_g1_i2:2-310(+)
+
+Length=103
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.317    0.129    0.354    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 21462150
+
+
+Query= TRINITY_DN3195_c0_g1_i1.p1
+TRINITY_DN3195_c0_g1~~TRINITY_DN3195_c0_g1_i1.p1  ORF
+type:5prime_partial (+),score=255.44 len:326
+TRINITY_DN3195_c0_g1_i1:1-981(+)
+
+Length=327
+
+
+***** No hits found *****
+
+
+
+Lambda      K        H        a         alpha
+   0.318    0.131    0.358    0.792     4.96 
+
+Gapped
+Lambda      K        H        a         alpha    sigma
+   0.267   0.0410    0.140     1.90     42.6     43.6 
+
+Effective search space used: 63512316
+
+
+  Database: unitox_curated.fasta
+    Posted date:  Nov 18, 2025  5:09 PM
+  Number of letters in database: 856,158
+  Number of sequences in database:  8,055
+
+
+
+Matrix: BLOSUM62
+Gap Penalties: Existence: 11, Extension: 1
+Neighboring words threshold: 11
+Window for multiple hits: 40
