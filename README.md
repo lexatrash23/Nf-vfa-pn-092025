@@ -49,7 +49,7 @@ Apart from this files, the following input files are required:
 
 ### Provided test files
 Test run can be down with the following provided test files:  
-1. DP3_PD_test: A subset(200 sequences) of the trinity assembly from a Doryteuthis pealeii Posterior Salivary Gland tissue
+1. trinity_test: A subset(200 sequences) of the trinity assembly from a Doryteuthis pealeii Posterior Salivary Gland tissue
 2. Results: Results folder from lexatrash23/Nf-vf-pn-092025 run using test files
 3. entry.list, panther_names.csv, toxindomains.tsv
 4. massspec_analysis file   
@@ -64,8 +64,13 @@ if genome was available: transdf_distinct_blastn and overview_csv_filtered
 if no genome was available: transdf_distinct and overview_csv
 
 
-## Next Step: Compilation of HTMLs and R shiny search apps [OPTIONAL]
+Document with more detailed information on input/output/scripts can be found [here](https://github.com/lexatrash23)
 
+## Example output 
+Example html output can be seen [here](https://lexatrash23.github.io/CephTranscriptomicsGUI/Samples/Doryteuthis_pealeii/DP3_PD/A.html)
+
+## Next Step: Compilation of HTMLs and R shiny search apps [OPTIONAL]
+For suggested R shiny script to create Apps for parsing and downloading dataframe files and alignment outputs click [here](https://github.com/lexatrash23)
 ___
 ## Citing
 This pipeline can be cited as follows:
@@ -78,10 +83,7 @@ Please also include citations for the individual bioinformatic tools utilized in
 ___
 ## Pipeline development and Contact information
 
-This Nextflow pipeline was developed by [the Holford Lab](https://holfordlab.com/) by [Praveena Naidu](https://github.com/lexatrash23). The code for this Nextflow pipeline has been reviewed by [Add Name/hyperlinks of individuals or bioinformatics teams that have reviewed this code]. The Holford Lab can be contacted at holfordlab@gmail.com.
+This Nextflow pipeline was developed by [the Holford Lab](https://holfordlab.com/) by [Praveena Naidu](https://github.com/lexatrash23) and edited/reviewed by [Add Name/hyperlinks of individuals or bioinformatics teams that have reviewed this code]. The Holford Lab can be contacted at holfordlab@gmail.com.
 ___
 
 
-## More details about outputs
-#### 
-Document with more detailed information on input/output/scripts can be found [here](https://github.com/lexatrash23)
