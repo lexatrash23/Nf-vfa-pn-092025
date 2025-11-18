@@ -11,7 +11,7 @@ ___
 **4.** run on command line:  
     ``` nextflow pull lexatrash23/Nf-vfa-pn-092025 ```  
 **5.** run on command line (or preferably in an sbatch script) :  
-   ``` nextflow run lexatrash23/Nf-vfa-pn-092025 -with-conda -with-dag -with-timeline -with-report -with-trace  ``` 
+   ``` nextflow run lexatrash23/Nf-vfa-pn-092025 -with-conda -with-dag -with-timeline -with-report -with-trace  ```     
 **6.** Copy multiqc_report.html from lexatrash-vf-092025 results folder into lexatrash-vfa-092025 results/htmls to complete html folder
 ___
 ## Additional notes 
