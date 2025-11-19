@@ -22,7 +22,7 @@ Sample_Name>Analysis>.config
 sampleURL - parameter should link to page from which the user can search through and download available. This could be a custom dropbox/drive link etc.. For example of a Dataframe and Alignment search Rshiny app click [here](https://github.com/lexatrash23)  
 genome_id - Genbank genome ID that will be used to create hyperlinks for Blastn searches  
 data - path to results folder from lexatrash-vf-092025 nextflow run.   
-input_list - Interprosccan entry.list  
+input_list - Interproscan entry.list  
 input_panther - PANTHER entry names csv   
 input_toxindomains - TSV file of proteins with IP domains of interest.     
 Settings -  settings parameters can be removed as necessary.  
