@@ -1,7 +1,5 @@
 #!/usr/env nextflow
 
-def launchDir = System.getProperty('user.dir')
-
 // Process 1: Creating the settings, notes and triminfo files
 process MetadataCreation {
     errorStrategy 'ignore'
@@ -53,7 +51,7 @@ process kallistoAnalysisTrinity {
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
     input:
-    path (kallisto_file_trinity)
+    path kallisto_file_trinity
 
     output:
     path "*_all.csv", emit: trin_all_csv
@@ -78,14 +76,13 @@ process kallistoAnalysisTrans {
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
 
     input:
-    path (kallisto_file_transdecoder)
+    path kallisto_file_transdecoder
 
     output:
     path "*_all.csv", emit: trans_all_csv
     path "*_top20.csv", emit: trans_top20_csv
     path "*_top500graph.png", emit: trans_top500_png
     path "*_top20graph.png", emit: trans_top20_png
-
 
     script:
     """
@@ -96,7 +93,7 @@ process kallistoAnalysisTrans {
 
 // Process 4: Extract Signal Sequences dependencies python biopython
 process ExtractSignalSequences {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -106,14 +103,13 @@ process ExtractSignalSequences {
     tuple path(transdecoder_pep), path(mature_fasta)
 
     output:
-    path "signalsequences.fasta",  emit: signalsequences
+    path "signalsequences.fasta", emit: signalsequences
 
-    script: 
+    script:
     """
     
     python3 ${workflow.projectDir}/bin/Intermediate_Scripts/IS2.py ${transdecoder_pep} ${mature_fasta} signalsequences.fasta
     """
-
 }
 
 // Process 5: Create Trinity Dataframe dependecies : R, biocmanager 
@@ -132,12 +128,11 @@ process CreateTrinityDataframe {
     path "_TBK.csv", emit: TBK
     path "_TBK_distinct.csv.gz", emit: TBK_distinct
 
-    script: 
+    script:
     """
     
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS1.R ${trinity_fasta} ${blastx_file} ${kallisto_csv}
     """
-
 }
 
 // Process 6: Create Interproscan Dataframe dependecies : R, biocmanager 
@@ -152,19 +147,18 @@ process CreateInterproscanDataframe {
     tuple path(Interproscan), path(ListFile), path(PantherFile)
 
     output:
-    path "Final_interproscan_dataframe.csv",  emit: Interproscan_dataframe
+    path "Final_interproscan_dataframe.csv", emit: Interproscan_dataframe
 
-    script: 
+    script:
     """
     
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS4.R" ${Interproscan} ${ListFile} ${PantherFile}
     """
-
 }
 
 // Process 7: Create Transdecoder Dataframe dependecies : R, biocmanager 
 process CreateTransdecoderDataframe {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -175,21 +169,20 @@ process CreateTransdecoderDataframe {
 
     output:
     path "_transdf.csv", emit: transdf
-    path "_transdf_distinct.csv", emit: transdf_distinct   
+    path "_transdf_distinct.csv", emit: transdf_distinct
     path "secreted_proteins.fasta", emit: toxin_fasta
 
-    script: 
+    script:
     def basename = transdecoder_pep.getSimpleName()
-   """
+    """
     
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS5.R ${transdecoder_pep} ${transdecoder_cds} ${blastp_file} ${mature_fasta} ${Signalp_summary} ${signalsequences} ${Interproscan_dataframe} ${kallistotrans} ${basename}
     """
-
 }
 
 // Process 8: Create Interproscantoxinplotly
 process CreateInterproscanToxinPlotly {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -202,17 +195,15 @@ process CreateInterproscanToxinPlotly {
     output:
     path "filtered_sequences.fasta", emit: filtered_sequences
     path "plotly_graph.html", emit: plotly_graph
- 
 
-    script: 
+    script:
     """
     
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS7.R ${transdf_distinct_csv} ${Toxin_domains} ${transtoxinfasta}
     """
-
 }
 
-// Process 9: Create BUSCOgraphtranscriptome  Literally the busco provided script for visualisation
+// Process 9: Create BUSCOgraphtranscriptome  
 process BUSCOtranscriptome {
     errorStrategy 'ignore'
 
@@ -220,21 +211,17 @@ process BUSCOtranscriptome {
 
     publishDir "results/busco/transcriptome", mode: 'copy'
 
-    input:
-
     output:
     path "*.png", emit: busco_transcriptome
- 
 
-    script: 
+    script:
     """
      
     python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/BUSCO/transcriptome"
     """
-
 }
 
-// Process 10: Create BUSCOgraphtranslatome  Literally the busco provided script for visualisation
+// Process 10: Create BUSCOgraphtranslatome 
 process BUSCOtranslatome {
     errorStrategy 'ignore'
 
@@ -242,24 +229,20 @@ process BUSCOtranslatome {
 
     publishDir "results/busco/translatome", mode: 'copy'
 
-    input:
-
     output:
     path "*.png", emit: busco_translatome
- 
 
-    script: 
+    script:
     """
      
     python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/BUSCO/translatome"
 
     """
-
 }
 
 // Process 11: Create TableGenerationTrinity
 process TableGenerationTrinity {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -274,12 +257,11 @@ process TableGenerationTrinity {
     path "Table3.csv", emit: Table3
     path "Table4.csv", emit: Table4
 
-    script: 
+    script:
     """
 	
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_TopTables_Trinity.R" ${TBK} ${genome_id} ${species}
     """
-
 }
 
 // Process 12: Create TableGenerationTransdecoder  
@@ -302,14 +284,12 @@ process TableGenerationTransdecoder {
     path "Table10.csv", emit: Table10
     path "Table11.csv", emit: Table11
     path "Table12.csv", emit: Table12
- 
 
-    script: 
+    script:
     """
 	
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_Tables_Transdecoder_SignalP.R" ${transdf} ${genome_id} ${species}
     """
-
 }
 
 
@@ -322,7 +302,7 @@ process FigureGenerationTrinity {
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
     input:
-    path(TBK)
+    path TBK
 
     output:
     path "pie1.png", emit: pie1
@@ -331,27 +311,25 @@ process FigureGenerationTrinity {
     path "pie4.png", emit: pie4
     path "alluvial1.png", emit: alluvial1
     path "alluvial2.png", emit: alluvial2
-    path "Table13.csv", emit:Table13
+    path "Table13.csv", emit: Table13
 
- 
-    script: 
+    script:
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Trinity.R" ${TBK} "${workflow.projectDir}/bin/Intermediate_Scripts2/color_palette.rds"
 
     """
-
 }
 
 // Process 14: Create FigureGenerationTransdecoder
 process FigureGenerationTransdecoder {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
     input:
-    path(transdf)
+    path transdf
 
     output:
     path "pie5.png", emit: pie5
@@ -360,15 +338,13 @@ process FigureGenerationTransdecoder {
     path "pie8.png", emit: pie8
     path "alluvial3.png", emit: alluvial3
     path "alluvial4.png", emit: alluvial4
-    path "Table14.csv", emit:Table14
- 
+    path "Table14.csv", emit: Table14
 
-    script: 
+    script:
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Transdecoder.R" ${transdf} "${workflow.projectDir}/bin/Intermediate_Scripts2/color_palette.rds"
 
     """
-
 }
 
 // Process 15: Create FigureGenerationSignalp
@@ -380,7 +356,7 @@ process FigureGenerationSignalp {
     publishDir "results/Intermediate_Scripts2_outputs", mode: 'copy'
 
     input:
-    path(transdf)
+    path transdf
 
     output:
     path "pie9.png", emit: pie9
@@ -389,20 +365,18 @@ process FigureGenerationSignalp {
     path "pie12.png", emit: pie12
     path "alluvial5.png", emit: alluvial5
     path "alluvial6.png", emit: alluvial6
-    path "Table15.csv", emit:Table15
- 
+    path "Table15.csv", emit: Table15
 
-    script: 
+    script:
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_SignalP.R" ${transdf} "${workflow.projectDir}/bin/Intermediate_Scripts2/color_palette.rds"
 
     """
-
 }
 
 // Process 16: Create AddMassSpec
 process AddMassSpec {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
@@ -414,8 +388,7 @@ process AddMassSpec {
 
     output:
     path "*_filtered_masspec_select.csv", emit: filtered_massspec
-    path "*_distinct_masspec.csv.gz" , emit: distinct_massspec
- 
+    path "*_distinct_masspec.csv.gz", emit: distinct_massspec
 
     script:
     """
@@ -423,7 +396,6 @@ process AddMassSpec {
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS8.R" ${transdf} ${massspecdata} "${species}" ${basename}
 
     """
-
 }
 
 // Process 17: Create SkipMassSpec
@@ -440,8 +412,7 @@ process SkipMassSpec {
 
     output:
     path "*_filtered_nomasspec_.csv", emit: filtered_nomasspec
-    path "*_distinct_nomasspec.csv.gz" , emit: distinct_nomasspec
- 
+    path "*_distinct_nomasspec.csv.gz", emit: distinct_nomasspec
 
     script:
     """
@@ -449,7 +420,6 @@ process SkipMassSpec {
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS9.R" ${transdf} "${species}" ${basename}
 
     """
-
 }
 
 // Process 18: Create VennOverview
@@ -465,8 +435,7 @@ process VennOverviewMS {
 
     output:
     path "*.csv", emit: overviewcsv
-    path "*.png" , emit: overviewpng
- 
+    path "*.png", emit: overviewpng
 
     script:
     """
@@ -474,7 +443,6 @@ process VennOverviewMS {
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS10.R" ${filtered_massspec} "${Toxin_domains}"
 
     """
-
 }
 
 // Process 19: Create VennOverview
@@ -490,8 +458,7 @@ process VennOverviewNoMS {
 
     output:
     path "*.csv", emit: overviewcsv
-    path "*.png" , emit: overviewpng
- 
+    path "*.png", emit: overviewpng
 
     script:
     """
@@ -499,7 +466,6 @@ process VennOverviewNoMS {
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS10.R" ${filtered_nomasspec} "${Toxin_domains}"
     
     """
-
 }
 
 // Process 20: RmarkdownA
@@ -511,18 +477,16 @@ process RmarkdownA {
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    val(sampleURL)
+    val sampleURL
 
     output:
     path "*.html"
- 
 
     script:
     """
 
     Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/A.Rmd', output_dir = '.')" "${workflow.projectDir}/bin/Rmarkdown_scripts/" "${sampleURL}" "${params.name}"
     """
-
 }
 
 // Process 21: RmarkdownB
@@ -536,8 +500,7 @@ process RmarkdownB {
     input:
     path settings
     path notes
-    
-    
+
     output:
     path "*.html"
 
@@ -567,9 +530,6 @@ process RmarkdownCDEGIK {
 
     publishDir "results/htmls", mode: 'copy'
 
-    input:
-
-    
     output:
     path "*.html"
 
@@ -589,25 +549,24 @@ process RmarkdownCDEGIK {
 
 // Process 23:
 process RmarkdownH {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (kallistotop20graphtrinity)
-    path (kallistotop500graphtrinity)
-    path (busco_figure)
-    path (alluvial1)
-    path (alluvial2)
-    path (pie1)
-    path (pie2)
-    path (pie3)
-    path (pie4)
-    path (topkallisto)
+    path kallistotop20graphtrinity
+    path kallistotop500graphtrinity
+    path busco_figure
+    path alluvial1
+    path alluvial2
+    path pie1
+    path pie2
+    path pie3
+    path pie4
+    path topkallisto
 
-    
     output:
     path "*.html"
 
@@ -647,25 +606,24 @@ process RmarkdownH {
 
 // Process 24:
 process RmarkdownJ {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (kallistotop20graphtransdecoder)
-    path (kallistotop500graphtransdecoder)
-    path (busco_figure_transdecoder)
-    path (alluvial3)
-    path (alluvial4)
-    path (pie5)
-    path (pie6)
-    path (pie7)
-    path (pie8)
-    path (topkallisto_transdecoder)
+    path kallistotop20graphtransdecoder
+    path kallistotop500graphtransdecoder
+    path busco_figure_transdecoder
+    path alluvial3
+    path alluvial4
+    path pie5
+    path pie6
+    path pie7
+    path pie8
+    path topkallisto_transdecoder
 
-    
     output:
     path "*.html"
 
@@ -704,22 +662,21 @@ process RmarkdownJ {
 
 // Process 25:
 process RmarkdownL {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (alluvial5)
-    path (alluvial6)
-    path (pie9)
-    path (pie10)
-    path (pie11)
-    path (pie12)
-    path (topkallisto_signalp)
+    path alluvial5
+    path alluvial6
+    path pie9
+    path pie10
+    path pie11
+    path pie12
+    path topkallisto_signalp
 
-    
     output:
     path "*.html"
 
@@ -760,8 +717,8 @@ process RmarkdownM {
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Table1)
-    
+    path Table1
+
     output:
     path "*.html"
 
@@ -791,9 +748,9 @@ process RmarkdownN {
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Table2)
-    path (Table3)
-    
+    path Table2
+    path Table3
+
     output:
     path "*.html"
 
@@ -825,8 +782,8 @@ process RmarkdownO {
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Table4)
-    
+    path Table4
+
     output:
     path "*.html"
 
@@ -856,8 +813,8 @@ process RmarkdownQ {
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Table5)
-    
+    path Table5
+
     output:
     path "*.html"
 
@@ -880,16 +837,16 @@ process RmarkdownQ {
 
 // Process 30:
 process RmarkdownR {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Table6)
-    path (Table7)
-    
+    path Table6
+    path Table7
+
     output:
     path "*.html"
 
@@ -914,15 +871,15 @@ process RmarkdownR {
 
 // Process 31:
 process RmarkdownS {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Table8)
-    
+    path Table8
+
     output:
     path "*.html"
 
@@ -947,15 +904,15 @@ process RmarkdownS {
 
 // Process 32:
 process RmarkdownV {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Table9)
-    
+    path Table9
+
     output:
     path "*.html"
 
@@ -985,9 +942,9 @@ process RmarkdownW {
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Table10)
-    path (Table11)
-    
+    path Table10
+    path Table11
+
     output:
     path "*.html"
 
@@ -1019,8 +976,8 @@ process RmarkdownX {
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Table12)
-    
+    path Table12
+
     output:
     path "*.html"
 
@@ -1043,16 +1000,16 @@ process RmarkdownX {
 
 // Process 35:
 process RmarkdownZ {
-     errorStrategy 'ignore'
+    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/htmls", mode: 'copy'
 
     input:
-    path (Venn)
-    path (table)
-    
+    path Venn
+    path table
+
     output:
     path "*.html"
 
@@ -1084,20 +1041,18 @@ process Blast0Chunks {
     publishDir "results/RappData/Alignmentapp", mode: 'copy'
 
     input:
-    path (blastx0)
-    path (blastp0)
-    
+    path blastx0
+    path blastp0
+
     output:
     path "*", emit: blast0chunks
 
     script:
-    
+
     """
 
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0}
     """
-    
-
 }
 
 
@@ -1105,69 +1060,67 @@ process Blast0Chunks {
 process Blast0Chunksn {
 
     errorStrategy 'ignore'
-    
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/RappData/Alignmentapp", mode: 'copy'
 
     input:
-    path (blastx0)
-    path (blastp0)
-    path (blastn0)
-    
+    path blastx0
+    path blastp0
+    path blastn0
+
     output:
     path "*", emit: blast0chunks
 
     script:
-    
+
     """
 
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0} ${blastn0}
     """
-    
-
 }
 
 process BlastnIntegration {
     errorStrategy 'ignore'
-    
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
-    
+
     input:
-    path (venndiagram)
-    path (trandfdistinctmass)
-    path (blastn6)
-    
+    path venndiagram
+    path trandfdistinctmass
+    path blastn6
+
     output:
     path "transdf_distinct_blastn.csv", emit: transdf_distinct_blastn
     path "venn_overview_blastn.csv", emit: venn_overview_blastn
     path "venn_overview_blastn_filtered.csv", emit: venn_overview_blastn_filtered
-    
 
     script:
-    
+
     """
 
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS12.R" ${venndiagram} ${trandfdistinctmass} ${blastn6}
     """
-
-
 }
 
 // Define input file patterns via parameters
 params.input_kallisto_trinity = "${params.data}/kallisto/trinity/output/abundance.tsv"
-params.input_kallisto_trans   = "${params.data}/kallisto/transdecoder/output/abundance.tsv"
+params.input_kallisto_trans = "${params.data}/kallisto/transdecoder/output/abundance.tsv"
 params.input_transdecoder_pep = "${params.data}/Transdecoder/*.transdecoder.pep"
 params.input_transdecoder_cds = "${params.data}/Transdecoder/*.transdecoder.cds"
-params.input_mature_fasta   = "${params.data}/Signalp/*_mature.fasta"
-params.input_blastx_files   = "${params.data}/Blast/Blastx/*.blastx.db.6.txt"
-params.input_blastp_files   = "${params.data}/Blast/Blastp/*.blastp.db.6.txt"
-params.input_blastx0_files   = "${params.data}/Blast/Blastx/*.blastx.db.0.txt"
-params.input_blastp0_files   = "${params.data}/Blast/Blastp/*.blastp.db.0.txt"
+params.input_mature_fasta = "${params.data}/Signalp/*_mature.fasta"
+params.input_blastx_files = "${params.data}/Blast/Blastx/*.blastx.db.6.txt"
+params.input_blastp_files = "${params.data}/Blast/Blastp/*.blastp.db.6.txt"
+params.input_blastx0_files = "${params.data}/Blast/Blastx/*.blastx.db.0.txt"
+params.input_blastp0_files = "${params.data}/Blast/Blastp/*.blastp.db.0.txt"
 params.input_interproscan = "${params.data}/Interproscan/*.cleaned.pep.tsv"
-params.input_signalp_summary   = "${params.data}/Signalp/*_summary.signalp5"
+params.input_signalp_summary = "${params.data}/Signalp/*_summary.signalp5"
+params.input_blastn0_files = "${params.data}/Blast/Blastn/*.blastn.db.0.txt"
+params.input_blastn_files = "${params.data}/Blast/Blastn/*.blastn.db.6.txt"
+
 
 workflow {
 
@@ -1178,7 +1131,7 @@ workflow {
     def transdecoder_pep = Channel.fromPath(params.input_transdecoder_pep)
 
     def transdecoder_cds = Channel.fromPath(params.input_transdecoder_cds)
- 
+
 
     def mature_fasta = Channel.fromPath(params.input_mature_fasta)
 
@@ -1187,23 +1140,19 @@ workflow {
 
 
     kallisto_file_trinity | kallistoAnalysisTrinity
-    kallisto_file_trans   | kallistoAnalysisTrans
+    kallisto_file_trans | kallistoAnalysisTrans
     signal_inputs | ExtractSignalSequences
 
     def kallisto_trin_csv = kallistoAnalysisTrinity.out.trin_all_csv
 
 
-    def trinity_fasta = Channel 
-        .fromPath(params.trinity_fasta)
-    
-    def blastx_files = Channel 
-        .fromPath(params.input_blastx_files)
+    def trinity_fasta = Channel.fromPath(params.trinity_fasta)
 
-    def blastp_files = Channel 
-        .fromPath(params.input_blastp_files)
+    def blastx_files = Channel.fromPath(params.input_blastx_files)
 
-    def signalp_summary = Channel 
-        .fromPath(params.input_signalp_summary)
+    def blastp_files = Channel.fromPath(params.input_blastp_files)
+
+    def signalp_summary = Channel.fromPath(params.input_signalp_summary)
 
     def trinity_data = trinity_fasta.combine(blastx_files).combine(kallisto_trin_csv)
 
@@ -1214,8 +1163,8 @@ workflow {
     def PantherFile = Channel.fromPath(params.input_panther)
 
     def Interproscan_data = Interproscan
-                            .combine(ListFile)
-                            .combine(PantherFile)
+        .combine(ListFile)
+        .combine(PantherFile)
 
 
     Interproscan_data | CreateInterproscanDataframe
@@ -1227,42 +1176,41 @@ workflow {
     def kallisto_trans_csv = kallistoAnalysisTrans.out.trans_all_csv
 
     def Transdecoderdf_data = transdecoder_pep
-                              .combine(transdecoder_cds)
-                              .combine(blastp_files)
-                              .combine(mature_fasta)
-                              .combine(signalp_summary)
-                              .combine(signalpsequences)
-                              .combine(Interproscan_dataframe)
-                              .combine(kallisto_trans_csv)
+        .combine(transdecoder_cds)
+        .combine(blastp_files)
+        .combine(mature_fasta)
+        .combine(signalp_summary)
+        .combine(signalpsequences)
+        .combine(Interproscan_dataframe)
+        .combine(kallisto_trans_csv)
 
-    
+
     Transdecoderdf_data | CreateTransdecoderDataframe
 
     def transdf_distinct_csv = CreateTransdecoderDataframe.out.transdf_distinct
     def Toxin_domains = Channel.fromPath(params.input_toxindomains)
     def transtoxinfasta = CreateTransdecoderDataframe.out.toxin_fasta
     def InterproscanToxinData = transdf_distinct_csv
-                                .combine(Toxin_domains)
-                                .combine(transtoxinfasta)
+        .combine(Toxin_domains)
+        .combine(transtoxinfasta)
 
     InterproscanToxinData | CreateInterproscanToxinPlotly
-   BUSCOtranscriptome()
-   BUSCOtranslatome()
+    BUSCOtranscriptome()
+    BUSCOtranslatome()
 
-   def genome_id = Channel.value(params.genome_id)
-   def species = Channel.value(params.species)
-   def info = genome_id.combine(species)
-   def TBK = CreateTrinityDataframe.out.TBK
+    def genome_id = Channel.value(params.genome_id)
+    def species = Channel.value(params.species)
+    def TBK = CreateTrinityDataframe.out.TBK
 
-    def TBK_table_data  = TBK.combine(genome_id).combine(species).view()
+    def TBK_table_data = TBK.combine(genome_id).combine(species).view()
 
     TBK_table_data | TableGenerationTrinity
 
     def transdf = CreateTransdecoderDataframe.out.transdf
-    
-    def Trans_table_data  = transdf    
-                         .combine(genome_id)
-                         .combine(species)
+
+    def Trans_table_data = transdf
+        .combine(genome_id)
+        .combine(species)
 
     Trans_table_data | TableGenerationTransdecoder
     def TBK_only = CreateTrinityDataframe.out.TBK
@@ -1271,47 +1219,45 @@ workflow {
     transdf | FigureGenerationTransdecoder
     transdf | FigureGenerationSignalp
     def basename = Channel.value(params.basename)
- 
+
     if (params.ismassspecavailable == 'Y') {
 
-            def massspecdata = Channel.fromPath(params.massspecdata)
+        def massspecdata = Channel.fromPath(params.massspecdata)
 
-            def massspecdatatable = transdf
-                                    .combine(massspecdata)
-                                    .combine(species)
-                                    .combine(basename)
+        def massspecdatatable = transdf
+            .combine(massspecdata)
+            .combine(species)
+            .combine(basename)
 
-            massspecdatatable | AddMassSpec
-            def filtered_massspec = AddMassSpec.out.filtered_massspec
-            def overviewms = filtered_massspec.combine(Toxin_domains)
-            overviewms | VennOverviewMS
-            RmarkdownZ (VennOverviewMS.out.overviewpng,VennOverviewMS.out.overviewcsv)
-            if (params.isgenomeavailable == 'Y') {
-                params.input_blastn_files   = "${params.data}/Blast/Blastn/*.blastn.db.6.txt"
-                def Blastn6 = Channel.fromPath(params.input_blastn_files)
-                BlastnIntegration ( VennOverviewMS.out.overviewcsv, AddMassSpec.out.distinct_massspec, Blastn6 )
-            }
-        } else {
-
-            def nomassspecdatatable = transdf
-                                    .combine(species)
-                                    .combine(basename)
-
-            nomassspecdatatable | SkipMassSpec
-            def filtered_nomasspec = SkipMassSpec.out.filtered_nomasspec
-            def overviewnoms = filtered_nomasspec.combine(Toxin_domains)
-            overviewnoms | VennOverviewNoMS
-            RmarkdownZ (VennOverviewNoMS.out.overviewpng, VennOverviewNoMS.out.overviewcsv)
-            if (params.isgenomeavailable == 'Y') {
-                params.input_blastn_files   = "${params.data}/Blast/Blastn/*.blastn.db.6.txt"
-                def Blastn6 = Channel.fromPath(params.input_blastn_files)
-                BlastnIntegration (VennOverviewNoMS.out.overviewcsv, SkipMassSpec.out.distinct_nomasspec, Blastn6 )
-            }
-            
+        massspecdatatable | AddMassSpec
+        def filtered_massspec = AddMassSpec.out.filtered_massspec
+        def overviewms = filtered_massspec.combine(Toxin_domains)
+        overviewms | VennOverviewMS
+        RmarkdownZ(VennOverviewMS.out.overviewpng, VennOverviewMS.out.overviewcsv)
+        if (params.isgenomeavailable == 'Y') {
+            def Blastn6 = Channel.fromPath(params.input_blastn_files)
+            BlastnIntegration(VennOverviewMS.out.overviewcsv, AddMassSpec.out.distinct_massspec, Blastn6)
         }
+    }
+    else {
+
+        def nomassspecdatatable = transdf
+            .combine(species)
+            .combine(basename)
+
+        nomassspecdatatable | SkipMassSpec
+        def filtered_nomasspec = SkipMassSpec.out.filtered_nomasspec
+        def overviewnoms = filtered_nomasspec.combine(Toxin_domains)
+        overviewnoms | VennOverviewNoMS
+        RmarkdownZ(VennOverviewNoMS.out.overviewpng, VennOverviewNoMS.out.overviewcsv)
+        if (params.isgenomeavailable == 'Y') {
+            def Blastn6 = Channel.fromPath(params.input_blastn_files)
+            BlastnIntegration(VennOverviewNoMS.out.overviewcsv, SkipMassSpec.out.distinct_nomasspec, Blastn6)
+        }
+    }
     def sampleurl = Channel.value(params.sampleURL)
     sampleurl | RmarkdownA
-    
+
     def N = Channel.value(params.notes)
     def SN = Channel.value(params.samplename)
     def R = Channel.value(params.SRA)
@@ -1324,31 +1270,30 @@ workflow {
     def SL = Channel.value(params.Selection)
     def RL = Channel.value(params.Readlength)
     def Metadata = N.combine(SN).combine(R).combine(Ti).combine(A).combine(SX).combine(REM).combine(LP).combine(SD).combine(SL).combine(RL)
-    
+
     Metadata | MetadataCreation
-    
+
     RmarkdownB(
         MetadataCreation.out.settings,
         MetadataCreation.out.notes,
     )
- 
+
     RmarkdownCDEGIK()
 
-    
+
     RmarkdownH(
         kallistoAnalysisTrinity.out.trin_top20_png,
         kallistoAnalysisTrinity.out.trin_top500_png,
         BUSCOtranscriptome.out.busco_transcriptome,
         FigureGenerationTrinity.out.alluvial1,
-        FigureGenerationTrinity.out.alluvial2,       
-	FigureGenerationTrinity.out.pie1,
+        FigureGenerationTrinity.out.alluvial2,
+        FigureGenerationTrinity.out.pie1,
         FigureGenerationTrinity.out.pie2,
         FigureGenerationTrinity.out.pie3,
         FigureGenerationTrinity.out.pie4,
-        FigureGenerationTrinity.out.Table13
-        
+        FigureGenerationTrinity.out.Table13,
     )
-    
+
     RmarkdownJ(
         kallistoAnalysisTrans.out.trans_top20_png,
         kallistoAnalysisTrans.out.trans_top500_png,
@@ -1359,10 +1304,9 @@ workflow {
         FigureGenerationTransdecoder.out.pie6,
         FigureGenerationTransdecoder.out.pie7,
         FigureGenerationTransdecoder.out.pie8,
-        FigureGenerationTransdecoder.out.Table14
-        
+        FigureGenerationTransdecoder.out.Table14,
     )
-    
+
     RmarkdownL(
         FigureGenerationSignalp.out.alluvial5,
         FigureGenerationSignalp.out.alluvial6,
@@ -1370,68 +1314,59 @@ workflow {
         FigureGenerationSignalp.out.pie10,
         FigureGenerationSignalp.out.pie11,
         FigureGenerationSignalp.out.pie12,
-        FigureGenerationSignalp.out.Table15
-        
+        FigureGenerationSignalp.out.Table15,
     )
-    
+
     RmarkdownM(
-    TableGenerationTrinity.out.Table1
-)
+        TableGenerationTrinity.out.Table1
+    )
 
     RmarkdownN(
-    TableGenerationTrinity.out.Table2,
-    TableGenerationTrinity.out.Table3
-)
+        TableGenerationTrinity.out.Table2,
+        TableGenerationTrinity.out.Table3,
+    )
 
     RmarkdownO(
-    TableGenerationTrinity.out.Table4
-)
+        TableGenerationTrinity.out.Table4
+    )
 
     RmarkdownQ(
-    TableGenerationTransdecoder.out.Table5
-)
+        TableGenerationTransdecoder.out.Table5
+    )
 
     RmarkdownR(
-    TableGenerationTransdecoder.out.Table6,
-    TableGenerationTransdecoder.out.Table7
-)
+        TableGenerationTransdecoder.out.Table6,
+        TableGenerationTransdecoder.out.Table7,
+    )
 
     RmarkdownS(
-    TableGenerationTransdecoder.out.Table8
-)
+        TableGenerationTransdecoder.out.Table8
+    )
 
     RmarkdownV(
-    TableGenerationTransdecoder.out.Table9
-)
+        TableGenerationTransdecoder.out.Table9
+    )
 
     RmarkdownW(
-    TableGenerationTransdecoder.out.Table10,
-    TableGenerationTransdecoder.out.Table11
-)
+        TableGenerationTransdecoder.out.Table10,
+        TableGenerationTransdecoder.out.Table11,
+    )
 
     RmarkdownX(
-    TableGenerationTransdecoder.out.Table12
-)
+        TableGenerationTransdecoder.out.Table12
+    )
 
-     if (params.isgenomeavailable == 'Y') {
-                
-            params.input_blastn0_files   = "${params.data}/Blast/Blastn/*.blastn.db.0.txt"
-            def blastn0txt = Channel.fromPath(params.input_blastn0_files)
-            def blastx0txt = Channel.fromPath(params.input_blastx0_files)
-            def blastp0txt = Channel.fromPath(params.input_blastp0_files)
-            Blast0Chunksn(blastx0txt, blastp0txt, blastn0txt)
-            
-    } else {
+    if (params.isgenomeavailable == 'Y') {
+
+
+        def blastn0txt = Channel.fromPath(params.input_blastn0_files)
+        def blastx0txt = Channel.fromPath(params.input_blastx0_files)
+        def blastp0txt = Channel.fromPath(params.input_blastp0_files)
+        Blast0Chunksn(blastx0txt, blastp0txt, blastn0txt)
+    }
+    else {
         def blastx0txt = Channel.fromPath(params.input_blastx0_files)
         def blastp0txt = Channel.fromPath(params.input_blastp0_files)
         Blast0Chunks(blastx0txt, blastp0txt)
-        }
- 
+    }
 }
-
-
-
-
-
-
-
