@@ -1,6 +1,6 @@
 
 **Pipeline and Documentation still in development**
-
+[On Installing Nextflow](https://www.nextflow.io/docs/latest/install.html)
 # Overview
 ___
 
