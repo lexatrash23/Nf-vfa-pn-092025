@@ -1082,7 +1082,6 @@ process Blast0Chunksn {
 }
 
 process BlastnIntegration {
-    errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
