@@ -20,7 +20,7 @@ Venn_diagram_union_read <- read.csv(Venn_diagram_union, header = TRUE)
 transdf_distinct_read <- read.csv(transdf_distinct, header = TRUE)
 Blastn_result_read <- read.table(Blastn_result)
            
-colnames(Blastn_result_read) <- c("Transdecoder_ID", "sseqid", "pident", "length", "mismatch","gapopen","qstart","qend","sstart","send","evalue", "bitscore", "qcovs")
+colnames(Blastn_result_read) <- c("Transdecoder_ID", "sseqid", "pident", "length", "mismatch","gapopen","qstart","qend","sstart","send","evalue", "bitscore")
 
 Blastn_result_read_sortedbyBS <- Blastn_result_read[order(Blastn_result_read$bitscore, decreasing = TRUE), ]
 Blastn_result_read_sortedbyBS_distinct <- Blastn_result_read_sortedbyBS %>% distinct(Transdecoder_ID, .keep_all = TRUE) 
