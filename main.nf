@@ -1083,6 +1083,8 @@ process Blast0Chunksn {
 
 process BlastnIntegration {
 
+    errorStrategy 'ignore'
+
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
