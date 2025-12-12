@@ -46,18 +46,18 @@ EOF
 process kallistoAnalysisTrinity {
     errorStrategy 'ignore'
 
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+    conda 'python=3.8 pandas seaborn matplotlib'
 
-    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/KallistoAnalysis/Trinity/", mode: 'copy'
 
     input:
-    path kallisto_file_trinity
+    tuple val(sample), path (kallisto_file_trinity)
 
     output:
-    path "*_all.csv", emit: trin_all_csv
+    tuple val(sample), path ("*_all.csv"), emit: trin_all_csv
     path "*_top20.csv", emit: trin_top20_csv
-    path "*_top500graph.png", emit: trin_top500_png
-    path "*_top20graph.png", emit: trin_top20_png
+    tuple val(sample), path ("*_top500graph.png"), emit: trin_top500_png
+    tuple val(sample), path ("*_top20graph.png"), emit: trin_top20_png
 
     script:
 
@@ -71,18 +71,18 @@ process kallistoAnalysisTrinity {
 process kallistoAnalysisTrans {
     errorStrategy 'ignore'
 
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+    conda 'python=3.8 pandas seaborn matplotlib'
 
-    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/KallistoAnalysis/Transdecoder/", mode: 'copy'
 
     input:
-    path kallisto_file_transdecoder
+    tuple val(sample) , path (kallisto_file_transdecoder)
 
     output:
-    path "*_all.csv", emit: trans_all_csv
+    tuple val(sample), path ("*_all.csv"), emit: trans_all_csv
     path "*_top20.csv", emit: trans_top20_csv
-    path "*_top500graph.png", emit: trans_top500_png
-    path "*_top20graph.png", emit: trans_top20_png
+    tuple val(sample), path ("*_top500graph.png"), emit: trans_top500_png
+    tuple val(sample), path ("*_top20graph.png"), emit: trans_top20_png
 
     script:
     """
@@ -95,15 +95,15 @@ process kallistoAnalysisTrans {
 process ExtractSignalSequences {
     errorStrategy 'ignore'
 
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+    conda 'python=3.8 biopython'
 
-    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/Signal_sequences/", mode: 'copy'
 
     input:
-    tuple path(transdecoder_pep), path(mature_fasta)
+    tuple val(sample), path(transdecoder_pep), path(mature_fasta)
 
     output:
-    path "signalsequences.fasta", emit: signalsequences
+    tuple val(sample) path ("signalsequences.fasta") , emit: signalsequences
 
     script:
     """
@@ -116,16 +116,16 @@ process ExtractSignalSequences {
 process CreateTrinityDataframe {
     errorStrategy 'ignore'
 
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+    conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
 
-    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
-    publishDir "results/RappData/Single", pattern: "*.gz", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/TrinityDataframe/", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/RappData/TrinityDataframe/", pattern: "*.gz", mode: 'copy'
 
     input:
-    tuple path(trinity_fasta), path(blastx_file), path(kallisto_csv)
+    tuple val(sample), path(trinity_fasta), path(blastx_file), path(kallisto_csv)
 
     output:
-    path "_TBK.csv", emit: TBK
+    tuple val(sample), path ("_TBK.csv"), emit: TBK
     path "_TBK_distinct.csv.gz", emit: TBK_distinct
 
     script:
@@ -139,15 +139,15 @@ process CreateTrinityDataframe {
 process CreateInterproscanDataframe {
     errorStrategy 'ignore'
 
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+    conda 'r-base bioconductor-biostrings r-dplyr bioconductor-go.db bioconductor-biomart r-tidyr'
 
-    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/InterproscanDataframe/", mode: 'copy'
 
     input:
-    tuple path(Interproscan), path(ListFile), path(PantherFile)
+    tuple val(sample), path(Interproscan), path(ListFile), path(PantherFile)
 
     output:
-    path "Final_interproscan_dataframe.csv", emit: Interproscan_dataframe
+    tuple val(sample), path ("Final_interproscan_dataframe.csv"), emit: Interproscan_dataframe
 
     script:
     """
@@ -160,22 +160,22 @@ process CreateInterproscanDataframe {
 process CreateTransdecoderDataframe {
     errorStrategy 'ignore'
 
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+    conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings'
 
-    publishDir "results/Intermediate_Scripts1_outputs", mode: 'copy'
+
+    publishDir "${sample}/VenomFlowAnalysis/results/TransdecoderDataframe/", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/Secreted_proteins_fasta/", pattern: "*.fasta", mode: 'copy'
 
     input:
-    tuple path(transdecoder_pep), path(transdecoder_cds), path(blastp_file), path(mature_fasta), path(Signalp_summary), path(signalsequences), path(Interproscan_dataframe), path(kallistotrans)
+    tuple val(sample), path(transdecoder_pep), path(transdecoder_cds), path(blastp_file), path(mature_fasta), path(Signalp_summary), path(signalsequences), val(basename), path(Interproscan_dataframe), path(kallistotrans)
 
     output:
-    path "_transdf.csv", emit: transdf
-    path "_transdf_distinct.csv", emit: transdf_distinct
-    path "secreted_proteins.fasta", emit: toxin_fasta
+    tuple val(sample), path ("_transdf.csv"), emit: transdf
+    tuple val(sample), path ("_transdf_distinct.csv"), emit: transdf_distinct
+    tuple val(sample), path ("secreted_proteins.fasta"), emit: toxin_fasta
 
     script:
-    def basename = transdecoder_pep.getSimpleName()
     """
-    
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS5.R ${transdecoder_pep} ${transdecoder_cds} ${blastp_file} ${mature_fasta} ${Signalp_summary} ${signalsequences} ${Interproscan_dataframe} ${kallistotrans} ${basename}
     """
 }
@@ -184,17 +184,18 @@ process CreateTransdecoderDataframe {
 process CreateInterproscanToxinPlotly {
     errorStrategy 'ignore'
 
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+    conda 'bioconductor-biostrings r-dplyr r-tidyr r-htmlwidgets r-plotly'
 
-    publishDir "results/htmls", pattern: "*.html", mode: 'copy'
-    publishDir "results/Intermediate_Scripts1_outputs", pattern: "*.fasta", mode: 'copy'
+
+    publishDir "${sample}/VenomFlowAnalysis/results/htmls/", pattern: "*.html", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/Secreted_proteins_fasta/", pattern: "*.fasta", mode: 'copy'
 
     input:
-    tuple path(transdf_distinct_csv), path(Toxin_domains), path(transtoxinfasta)
+    tuple val(sample), path(transdf_distinct_csv), path(transtoxinfasta), path(Toxin_domains)
 
     output:
-    path "filtered_sequences.fasta", emit: filtered_sequences
-    path "plotly_graph.html", emit: plotly_graph
+    tuple val(sample), path ("filtered_sequences.fasta"), emit: filtered_sequences
+    tuple val(sample), path ("plotly_graph.html"), emit: plotly_graph
 
     script:
     """
@@ -209,15 +210,18 @@ process BUSCOtranscriptome {
 
     conda "${workflow.projectDir}/bin/Setup/busco2.yaml"
 
-    publishDir "results/busco/transcriptome", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/busco/transcriptome/", mode: 'copy'
+
+    input:
+    tuple val (sample), path (buscodirtr)
 
     output:
-    path "*.png", emit: busco_transcriptome
+    uple val(sample), (path "*.png"), emit: busco_transcriptome
 
     script:
     """
      
-    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/BUSCO/transcriptome"
+    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${buscodirtr}"
     """
 }
 
@@ -227,15 +231,18 @@ process BUSCOtranslatome {
 
     conda "${workflow.projectDir}/bin/Setup/busco2.yaml"
 
-    publishDir "results/busco/translatome", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/busco/translatome", mode: 'copy'
+
+    input:
+    val (sample), path (buscodirtl)
 
     output:
-    path "*.png", emit: busco_translatome
+    tuple val(sample), path ("*.png"), emit: busco_translatome
 
     script:
     """
      
-    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${params.data}/BUSCO/translatome"
+    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${buscodirtl}"
 
     """
 }
@@ -1108,92 +1115,96 @@ process BlastnIntegration {
 }
 
 // Define input file patterns via parameters
-params.input_kallisto_trinity = "${params.data}/kallisto/trinity/output/abundance.tsv"
-params.input_kallisto_trans = "${params.data}/kallisto/transdecoder/output/abundance.tsv"
-params.input_transdecoder_pep = "${params.data}/Transdecoder/*.transdecoder.pep"
-params.input_transdecoder_cds = "${params.data}/Transdecoder/*.transdecoder.cds"
-params.input_mature_fasta = "${params.data}/Signalp/*_mature.fasta"
-params.input_blastx_files = "${params.data}/Blast/Blastx/*.blastx.db.6.txt"
-params.input_blastp_files = "${params.data}/Blast/Blastp/*.blastp.db.6.txt"
-params.input_blastx0_files = "${params.data}/Blast/Blastx/*.blastx.db.0.txt"
-params.input_blastp0_files = "${params.data}/Blast/Blastp/*.blastp.db.0.txt"
-params.input_interproscan = "${params.data}/Interproscan/*.cleaned.pep.tsv"
-params.input_signalp_summary = "${params.data}/Signalp/*_summary.signalp5"
-params.input_blastn0_files = "${params.data}/Blast/Blastn/*.blastn.db.0.txt"
-params.input_blastn_files = "${params.data}/Blast/Blastn/*.blastn.db.6.txt"
+
 
 
 workflow {
 
-    def kallisto_file_trinity = Channel.fromPath(params.input_kallisto_trinity)
+    //Define CSV channel.. Channel factory creates the channel from a csv file. can be defined in the config or command line 
+    csv_channel = Channel.fromPath(params.input_csv).splitCsv(header: true, sep: ',')
+    //Define results folder from the Venomflow 
+    venomflowfiles = csv_channel.map { row ->
+        def samplename = row.Sample_name //0
+        def results_path = file(row.Venomflowresultsfolder).toAbsolutePath() 
+        def kallisto_trinity = file("${results_path}/kallisto/trinity/output/abundance.tsv") //1
+        def kallisto_trans = file("${results_path}/kallisto/transdecoder/output/abundance.tsv") //2
+        def transdecoder_pep = file("${results_path}/Transdecoder/*.transdecoder.pep").first() //3
+        def transdecoder_cds = file("${results_path}/Transdecoder/*.transdecoder.cds").first() //4
+        def mature_fasta = file("${results_path}/Signalp/*_mature.fasta").first() //5
+        def blastx_files = file("${results_path}/Blast/Blastx/*.blastx.db.6.txt").first() //6
+        def blastp_files = file("${results_path}/Blast/Blastp/*.blastp.db.6.txt").first() //7
+        def Interproscan_file = file("${results_path}/Interproscan/*.cleaned.pep.tsv").first() //8
+        def signalp_summary = file("${results_path}/Signalp/*_summary.signalp5").first() //9
+        def Blastn6 = file("${results_path}/Blast/Blastn/*.blastn.db.6.txt").first() //10
+        def blastn0txt = file("${results_path}/Blast/Blastn/*.blastn.db.0.txt").first() //11
+        def blastx0txt = file("${results_path}/Blast/Blastx/*.blastx.db.0.txt").first() //12
+        def blastp0txt = file("${results_path}/Blast/Blastp/*.blastp.db.0.txt").first() //13
+        def basename = row.basename //14
+        def busco_transcriptome_dir = file("${results_path}/BUSCO/transcriptome/") //15
+        def busco_translatome_dir = file("${results_path}/BUSCO/translatome/") //16
+        return [row.sample_id, kallisto_trinity, kallisto_trans, transdecoder_pep, transdecoder_cds, mature_fasta, blastx_files, blastp_files, Interproscan, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir]
+    }
 
-    def kallisto_file_trans = Channel.fromPath(params.input_kallisto_trans)
-
-    def transdecoder_pep = Channel.fromPath(params.input_transdecoder_pep)
-
-    def transdecoder_cds = Channel.fromPath(params.input_transdecoder_cds)
 
 
-    def mature_fasta = Channel.fromPath(params.input_mature_fasta)
+    //Define Inputs for kallistoanalysistrinity  sample id + kallisto_file trinity tuple 
+    kallistoanalysistrinityinput = venomflowfiles.map{return [it[0], it[1]]}
+    //Run process kallistoAnalysisTrinity
+    kallistoanalysistrinityinput | kallistoAnalysisTrinity
 
 
-    def signal_inputs = transdecoder_pep.combine(mature_fasta)
+    //Define Inputs for kallistoanalysistrans sample id + kallisto_file trans tuple 
+    kallistoanalysistransinput = venomflowfiles.map{return [it[0], it[2]]}
+    //Run process kallistoanalysistrans
+    kallistoanalysistransinput | kallistoAnalysisTrans
 
 
-    kallisto_file_trinity | kallistoAnalysisTrinity
-    kallisto_file_trans | kallistoAnalysisTrans
-    signal_inputs | ExtractSignalSequences
 
-    def kallisto_trin_csv = kallistoAnalysisTrinity.out.trin_all_csv
+    //Define Inputs for ExtractSignalSequences sample id + transdecoderpep + maturefasta tuple 
+    ExtractSignalSequencesinput = venomflowfiles.map{return [it[0], it[3], it[5]]}
+    //Run process ExtractSignalSequences
+    ExtractSignalSequencesinput | ExtractSignalSequences
 
 
-    def trinity_fasta = Channel.fromPath(params.trinity_fasta)
+    //Define Inputs for ExtractCreateTrinityDataframe  sample + trinity_fasta + blastx_file + kallisto_csv  tuple 
+    ExtractSignalSequencesinput = venomflowfiles.map{return [it[0], it[3], it[5]]}.join(kallistoAnalysisTrinity.out.trin_all_csv)
+    //Run process ExtractCreateTrinityDataframe
+    ExtractSignalSequencesinput | ExtractSignalSequences
 
-    def blastx_files = Channel.fromPath(params.input_blastx_files)
 
-    def blastp_files = Channel.fromPath(params.input_blastp_files)
-
-    def signalp_summary = Channel.fromPath(params.input_signalp_summary)
-
-    def trinity_data = trinity_fasta.combine(blastx_files).combine(kallisto_trin_csv)
-
-    trinity_data | CreateTrinityDataframe
-
-    def Interproscan = Channel.fromPath(params.input_interproscan)
+    //Define Inputs for CreateInterproscanDataframe  sample + Interproscan + ListFile + PantherFile  tuple 
     def ListFile = Channel.fromPath(params.input_list)
     def PantherFile = Channel.fromPath(params.input_panther)
+    CreateInterproscanDataframeinput = venomflowfiles.map{return [it[0], it[8]]}.combine([ListFile, PantherFile])
+    //Run process CreateInterproscanDataframe
+    CreateInterproscanDataframeinput | CreateInterproscanDataframe
 
-    def Interproscan_data = Interproscan
-        .combine(ListFile)
-        .combine(PantherFile)
-
-
-    Interproscan_data | CreateInterproscanDataframe
-
-    def signalpsequences = ExtractSignalSequences.out.signalsequences
-
-    def Interproscan_dataframe = CreateInterproscanDataframe.out.Interproscan_dataframe
-
-    def kallisto_trans_csv = kallistoAnalysisTrans.out.trans_all_csv
-
-    def Transdecoderdf_data = transdecoder_pep
-        .combine(transdecoder_cds)
-        .combine(blastp_files)
-        .combine(mature_fasta)
-        .combine(signalp_summary)
-        .combine(signalpsequences)
-        .combine(Interproscan_dataframe)
-        .combine(kallisto_trans_csv)
+    //Define Inputs for CreateTransdecoderDataframe  sample + transdecoder_pep + transdecoder_cds + blastp6_file  mature_fasta, Signalp_summary, signalsequences, Interproscan_dataframe, kallistotrans
+    CreateTransdecoderDataframeinput = venomflowfiles.map {return [it[0], it[3], it[4], t[7], it[6], it[9], it[14]]}
+                                       .join(CreateInterproscanDataframe.out.Interproscan_dataframe)
+                                       .join(kallistoAnalysisTrans.out.trans_all_csv)
+    //Run process ExtractCreateTrinityDataframe
+    CreateTransdecoderDataframeinput | CreateTransdecoderDataframe
 
 
-    Transdecoderdf_data | CreateTransdecoderDataframe
 
-    def transdf_distinct_csv = CreateTransdecoderDataframe.out.transdf_distinct
-    def Toxin_domains = Channel.fromPath(params.input_toxindomains)
-    def transtoxinfasta = CreateTransdecoderDataframe.out.toxin_fasta
-    def InterproscanToxinData = transdf_distinct_csv
-        .combine(Toxin_domains)
-        .combine(transtoxinfasta)
+    //Define Inputs for CreateInterproscanToxinPlotly sample + transdf_distinct_csv  + transtoxinfasta + toxindomains
+    def toxindomains = Channel.fromPath(params.input_toxindomains)
+    CreateInterproscanToxinPlotlyinput = CreateTransdecoderDataframe.out.transdf_distinct.join(CreateTransdecoderDataframe.out.toxin_fasta).combine([toxindomains])
+    // Run process CreateInterproscanToxinPlotly
+    CreateInterproscanToxinPlotlyinput | CreateInterproscanToxinPlotly
+
+    //Define Input BUSCOtranscriptome
+    BUSCOtranscriptomeinput = venomflowfiles.map {return [it[0], it[15]]}
+    //Run Process BUSCOtranscriptome
+    BUSCOtranscriptomeinput | BUSCOtranscriptome
+
+    //Define Input BUSCOtranslatome
+    BUSCOtranslatomeinput = venomflowfiles.map {return [it[0], it[16]]}
+    //Run Process BUSCOtranslatome
+    BUSCOtranslatomeinput | BUSCOtranslatome
+
+
 
     InterproscanToxinData | CreateInterproscanToxinPlotly
     BUSCOtranscriptome()
@@ -1371,3 +1382,5 @@ workflow {
         Blast0Chunks(blastx0txt, blastp0txt)
     }
 }
+row.Sample_name	row.Trinity_fasta			BUSCO_lin1	BUSCO_lin2	Protein_fasta_path_for_Blast	Protein_fasta_name	Strandedness	Genome_fasta_path	Genome_fasta_name	Author_Name	NCBI_Genome_id	Species	isgenomeavailble	ismassspecavailable	basename	SearchAndDownloadURL	massspec_csv	SRA	Access	Published	Age	Animal Length/Size (cm)	Tissue	Tissue mass (mg)	Sex	Source	Bred/Wildcaught	Date Collected	Collected by	Storage conditions  before extraction 	Homogenization method	RNA extraction Method 	Concentration(ng/ul)	Extraction date	Extracted by	Submission for QC/Seq Date	QC/Seq by 	Submission Order Number	RIN	Library Prep	Selection	Strandedness	Library Layout	Platform	ReadLength	Results Received Date	Preprocessing  by 	Trinity Assembly  by 	Venomflow by 	VenomflowAnalysis by 	Related Publications	Lab 	Contact email 	Misc Notes
+
