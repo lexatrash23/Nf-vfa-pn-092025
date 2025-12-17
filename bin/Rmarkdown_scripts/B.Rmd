@@ -1,71 +1,520 @@
 ---
 title: "Metadata"
-output: 
+output:
   html_document:
-    css: style.css
-params:
-  settings: NULL
-  notes: NULL
-  name: NULL
+    self_contained: false
+
 ---
-<!-- get current date --> 
 
-**`r params$name`**  
-  `r Sys.Date()`
-```{r, echo = FALSE}
 
-# Read command line arguments
+```{r setup, include=FALSE}
+library(downloadthis)
+
+knitr::opts_chunk$set(echo = TRUE)
 args <- commandArgs(trailingOnly = TRUE)
-Settings <- params$settings
-Notes <- params$notes
+Name <- args[1]
+Samplesheet <- args[2]
 
+metadata <- read.csv(Samplesheet, header = TRUE)
+names(metadata) <- sub("^X\\.", "", names(metadata))
+names(metadata) <- sub("\\.", "", names(metadata))
+m <- metadata[1, ]
+m[ ] <- lapply(m, function(x) {
+  if (is.character(x)) gsub('"', '', x) else x
+}) 
 ```
+**`r Name`** ---
+`r Sys.Date()` ---
+`r m[["Sample_name"]]`
+
+<style>
+/* ==================================================================
+CSS stylesheet adapted from boilerplate below: 
+  CSS Boilerplate v2.0.2
+  The Unlicense <https://unlicense.org>
+  https://github.com/MattMcAdams/CSS-Boilerplate
+================================================================== */
+
+:root {
+
+  /* Layout Widths */
+  --width_content: 60rem; /* 960px + gutters */
+  --width_sidebar: 20rem; /* 320px + gutters */
+  --width_wide: calc(
+    var(--width_content) +
+    var(--width_sidebar) +
+    var(--space_layout-gap)
+  );
+  /* Total wide width: 60rem + 20rem + 2rem = 82rem */
+
+  /* Colors */
+  --color_text--default: white;
+  --color_text--subtle: #71717a;
+  --color_text--link: #6366f1;
+  --color_text--link-alt: #4f46e5;
+  --color_text--accent: var(--color_text--link);
+  --color_background--surface: black;
+  --color_background--element: #f4f4f5;
+  --color_background--chip: #e4e4e7;
+  --color_accent: var(--color_text--link);
 
 
-```{r setup, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
-options(repos = c(CRAN = "https://cran.rstudio.com"))
+  /* Font Weights */
+  --font_weight--thin: 100;
+  --font_weight--extralight: 200;
+  --font_weight--light: 300;
+  --font_weight--normal: 400;
+  --font_weight--medium: 500;
+  --font_weight--semibold: 600;
+  --font_weight--bold: 700;
+  --font_weight--extrabold: 800;
+  --font_weight--black: 900;
+  --font_body : 'Verdana';
 
+  /* Font Sizes & Line Heights */
+  /* Based on a modular scale 1.125 by 1.2 */
+  /* Exact values have been refined to be a whole pixel value */
+  --font_size--small: 0.9375rem;    /* 15px */
+  --font_size--normal: 1.125rem;    /* 18px */
+  --font_size--medium: 1.375rem;    /* 22px */
+  --font_size--large: 1.625rem;     /* 26px */
+  --font_size--xlarge: 1.9375rem;   /* 31px */
+  --font_size--xxlarge: 2.3125rem;  /* 37px */
+  --font_size--xxxlarge: 2.8125rem; /* 45px */
+
+  /* Line heights */
+  --font_height--small: 1.2;
+  --font_height--normal: 1.8;
+  --font_height--medium: 1.5;
+  --font_height--large: 1.3;
+  --font_height--xlarge: 1.2;
+  --font_height--xxlarge: 1.1;
+  --font_height--xxxlarge: 1;
+}
+
+/* Medium font sizes */
+/* Based on a modular scale 1.125 by 1.25 */
+/* Exact values have been refined to be a whole pixel value */
+@media (min-width: 30rem) {
+  :root {
+    --font_size--small: 0.875rem;     /* 14px */
+    --font_size--medium: 1.4375rem;   /* 23px */
+    --font_size--large: 1.75rem;      /* 28px */
+    --font_size--xlarge: 2.1875rem;   /* 35px */
+    --font_size--xxlarge: 2.75rem;    /* 44px */
+    --font_size--xxxlarge: 3.4375rem; /* 55px */
+  }
+}
+
+/* Large font sizes */
+/* Based on a modular scale 1.125 by 1.3 */
+/* Exact values have been refined to be a whole pixel value */
+@media (min-width: 60em) {
+  :root {
+    --font_size--large: 1.875rem;     /* 30px */
+    --font_size--xlarge: 2.5rem;      /* 40px */
+    --font_size--xxlarge: 3.1875rem;  /* 51px */
+    --font_size--xxxlarge: 4.1875rem; /* 67px */
+  }
+}
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video, hr {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font: inherit;
+  font-size: 100%;
+  vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+body {
+  line-height: 1;
+}
+
+
+
+/* Set the document's default font, color, size, and line height */
+
+body {
+  font-family: var(--font_body);
+  font-size: var(--font_size--normal);
+  line-height: var(--font_height--normal);
+  color: var(--color_text--default);
+  background: var(--color_background--surface);
+  accent-color: var(--color_accent);
+}
+
+/* Heading typography */
+
+h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 30px;
+}
+
+h2,
+.util_txt--h2 {
+  font-size: var(--font_size--xxlarge);
+  line-height: var(--font_height--xxlarge);
+}
+
+h3,
+.util_txt--h3 {
+  font-size: var(--font_size--xlarge);
+  line-height: var(--font_height--xlarge);
+}
+
+h4,
+.util_txt--h4 {
+  font-size: var(--font_size--large);
+  line-height: var(--font_height--large);
+}
+
+h5 {
+  font-size: var(--font_size--medium);
+  line-height: var(--font_height--medium);
+}
+
+/* Set typography for small text */
+
+small,
+.util_txt--small {
+  font-size: var(--font_size--small);
+  line-height: var(--font_height--small);
+}
+
+/* Basic styles for inline semantics */
+
+strong, b { font-weight: bold; }
+em, cite, i, q { font-style: italic; }
+s { text-decoration: line-through; }
+u { text-decoration: underline; font-style: normal; }
+
+/* Basic style for subscript and superscript text */
+
+sub, sup {
+  font-size: 75%;
+  line-height: 0;
+  position: relative;
+}
+
+sup { top: -0.5em; }
+sub { bottom: -0.25em; }
+
+del {
+  background: var(--color_background--element);
+  text-decoration: line-through;
+  padding: 0.1em 0.3em;
+}
+
+ins {
+  background: var(--color_background--element);
+  text-decoration: underline;
+  padding: 0.1em 0.3em;
+}
+
+
+
+/* CUSTOM CSS SETTINGS ADDED  */
+.main-container {
+    margin-left: 0;
+    margin-right: 0;
+    max-width: 1800px;
+}
+
+#map iframe {
+  width: 100%;
+  height: 100%;
+}
+
+
+
+
+.mainblocks {
+    display: flex;
+    margin-left: 1em;
+    margin-right: 1em;
+    margin-top: 1em; 
+    margin-bottom: 1em
+}
+
+.sectiontitle {
+    font-weight: bold;          
+    text-align: center;         
+    width: 100%;  
+    border: none;
+    color:black
+}
+
+#part1 {
+    display: flex;
+    flex-direction: column;
+}
+#part1content {
+  display: flex;
+  flex-direction: row; 
+  justify-content: space-evenly;
+  height: 30%;
+  width: 100%;
+}
+
+#SI {
+    background-color: #d284ffdf;
+
+}
+#left{
+    display: flex; 
+    flex-direction: column;
+    width: 33.3%;
+    background-color: #d9aaf532;
+}
+
+#right{
+    width: 66.6%;
+    background-color: #d9aaf532;
+    padding-left:0.5%;
+}
+
+#map {
+    display: flex;
+    height: 66%;
+    margin:0.5%;
+}
+
+#Sampleimage, #Samplename, #Species{
+    align-self: center;
+    border: none
+}
+
+#part3 {
+  display: flex;
+  flex-direction: row; 
+  gap: 1%;
+  border: none;
+}
+
+#Colltitle {
+    background-color: aquamarine;
+}
+#Collection {
+    background-color: rgba(127, 255, 212, 0.209);
+}
+
+#RNA {
+    background-color: aquamarine;
+}
+
+#RNAExtraction {
+    background-color: rgba(127, 255, 212, 0.209);
+
+}
+
+#Seq {
+    background-color: aquamarine;
+}
+
+#QCSequencing {
+    background-color: rgba(127, 255, 212, 0.209);
+}
+
+#Analy {
+    background-color: aquamarine;
+
+}
+#Analysis {
+    background-color: rgba(127, 255, 212, 0.209);
+}
+
+
+#Collection, #RNAExtraction, #QCSequencing, #Analysis {
+ width: 24% 
+}
+#Collection {
+    margin-left: 1%;
+}
+#Analysis {
+    margin-right: 1%;
+}
+
+
+
+#DA {
+    background-color: rgb(136, 241, 130);
+}
+
+#DataAvail {
+    background-color: rgba(135, 241, 130, 0.224);
+
+}
+
+
+#DataAvail {
+    display: flex;
+    flex-direction: column;
+}
+
+#Notes {
+    background-color: #f48bb327;
+    display: flex; 
+    flex-direction: column;
+}
+#N {
+    background-color: #f48bb3;
+}
+
+#part6 {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    background-color: #afacb03a;
+}
+
+a {
+  background: none !important;
+  border: none !important;
+  padding: 0 !important;
+  color: white;   
+  font-weight: normal;
+}
+
+a.hover {
+  color: #23527c;
+}
+
+</style> 
+<main class = "main-container" >
+<div id="main">
+<div class = "mainblocks" id="part1" > 
+<div class = "sectiontitle" id = "SI"> Sample information</div>   
+<div id = "part1content">
+<div id="left"> 
+<div id = "Samplename">`r m[["Sample_name"]]` </div>
+<div id = "Sampleimage">
+
+```{r, echo=FALSE, results='asis'}
+image_url <- m$Image_path
+img <- knitr::image_uri(image_url)
+cat(sprintf(
+  '<img src="%s" alt="Sample_image">',
+  img
+))
 ```
-
-```{r, echo = FALSE, message=FALSE, warning= FALSE, results = 'hide'}
-
-library(readr)
-library(tidyr)
-library(knitr)
-library(gridExtra)
-library(kableExtra)
-```
-
-
-
-```{r,echo = FALSE, message = FALSE, warning = FALSE}
-# Read in the files based on the provided parameters
-Settings <- read.csv(Settings)
-Notes <- readLines(Notes)
-
-
-kable(Settings, format = "html") %>%
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"),
-                full_width = FALSE) %>%
-  column_spec(1:ncol(Settings), border_left = TRUE, border_right = TRUE) %>%
-  row_spec(0, background = "lightblue", bold = TRUE)  # Shaded header rowcat(Notes, sep="\n")
-
-```
-
-
-## Notes 
-```{r, results='asis'}
-cat(Notes)
-
-```
-
-<div style="display: flex; justify-content: center; gap: 50px; margin-top: 20px;">
-  <a href="multiqc_report.html" style="text-decoration: none;">
-    <button style="background-color: #E23C2C; color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 18px; cursor: pointer; box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2); transition: transform 0.2s ease;">
-      multiqc
-    </button>
-  </a>
 
 </div>
+<div id = "Species">  <p> `r m[["Species"]]` </p>
+</div>
+</div>
+<div id="right"> 
+<div id = "LabsandAuthors"> 
+<p id ="RawData"> Raw Data: <b> Lab: </b> `r m[["RawDatalab"]]`<b> ExpID:</b> `r m[["RawDataExpID"]]` <b> Author: </b> `r m[["RawDataAuth"]]` </p>
+<p id ="Analysis "> Analysis:  <b> Lab: </b> <a href="mailto:`r m[["Contact_email"]]`"> `r m[["AnalysisDatalab"]]` </a> <b> ExpID:</b> `r m[["AnalaysisDataExpID"]]` <b> Author: </b> `r m[["AnalysisdataAuth"]]` </p>
+</div>
+<div id="map"> 
+<iframe loading="lazy" style="width:100%; height:100%; border:0;" src="https://www.google.com/maps?q=`r m[["Lat"]]`,`r m[["Lon"]]`&z=5&output=embed">
+ </iframe> 
+</div>
+</div>
+</div>
+</div>
+<div class = "mainblocks" id = "Timeline" > 
 
+
+
+</div>
+<div class = "mainblocks" id="part3">
+<div id = "Collection" > 
+<div class = "sectiontitle" id = "Colltitle">Collection</div>   
+<p id ="Origin"> <b> Origin: </b> `r m[["Origin"]]` </p>
+<p id ="Source"> <b> Source: </b> `r m[["Source"]]` </p>
+<p id ="Age"> <b> Age: </b> `r m[["Age"]]` </p>
+<p id ="Sex"> <b> Sex: </b> `r m[["Sex"]]` </p>
+<p id ="Size"> <b> Size: </b> `r m[["Size"]]` </p>
+<p id ="Tissue"> <b> Tissue: </b> `r m[["Tissue"]]`</p>
+<p id ="Tissuemass"> <b> Tissue mass: </b> `r m[["Tissue_mass"]]` </p>
+<p id ="DateCollected"> <b> Date Collected: </b> `r m[["Collection_Date"]]` </p>
+<p id ="Collected by"> <b> Collected by:  </b> `r m[["Collection_by"]]` </p>
+<p id ="Storage"> <b> Storage:  </b> `r m[["Storage"]]` </p>
+</div>
+<div id = "RNAExtraction" > 
+<div class = "sectiontitle" id = "RNA"  >RNA Extraction</div>   
+<p id ="Homogenization"> <b> Homogenization: </b> `r m[["Homogenization_method"]]` </p>
+<p id ="Extraction"> <b> Extraction Method: </b> `r m[["RNA_extraction_Method"]]` </p>
+<p id ="Concentration"> <b> Concentration: </b> `r m[["Concentration"]]` </p>
+<p id ="260280"> <b> 260/280: </b> `r m[["260.230"]]` </p>
+<p id ="260230"> <b> 260/230: </b> `r m[["260.280"]]` </p>
+<p id ="Date Extracted"> <b> Date Extracted: </b> `r m[["Extraction_date"]]` </p>
+<p id ="Extraction by"> <b> Extraction by:  </b> `r m[["Extraction_by"]]` </p>       
+</div>
+<div id = "QCSequencing" > 
+<div class = "sectiontitle" id = "Seq" > QC/Sequencing</div>   
+<p id ="Date Submitted"> <b> Date Submitted: </b> `r m[["Sequence_Submission_Date"]]` </p>
+<p id ="Sequencingby"> <b> Sequencing by : </b> `r m[["Sequencing_by"]]` </p>
+<p id ="Sequencingorder "> <b> Order No: </b>`r m[["Submission_order_number"]]` </p>
+<p id ="RIN"> <b> QC Method: </b> `r m[["QC_Method"]]` </p>
+<p id ="RIN"> <b> RIN: </b> `r m[["RIN"]]` </p>
+<p id ="Library_Prep"> <b> Library Prep: </b> `r m[["Library_Prep"]]` </p>
+<p id ="Selection"> <b> Selection: </b> `r m[["Selection"]]` </p>
+<p id ="layout"> <b> Library Layout: </b> `r m[["Library_Layout"]]` </p>
+<p id ="Platform"> <b> Platform: </b> `r m[["Platform"]]` </p>
+<p id ="ReadLength"> <b> Read length: </b> `r m[["Read_Length"]]` </p>
+<p id ="Resultsrecevied by"> <b> Date received  </b> `r m[["Sequencing_Received_Date"]]` </p>
+</div>
+<div id = "Analysis" > 
+<div class="sectiontitle" id = "Analy" > Analysis</div>   
+<p id ="Trimming"> <b> Trimming tool: </b> `r m[["Preproccessing_tools"]]` </p>
+<p id ="Trimmingby"> <b> Trimming by: </b> `r m[["Preprocessing_by"]]` </p>
+<p id ="multiqc"> <b> Multiqc: </b> <a href="multiqc.html"> multiqc </a> </p>
+<p id ="Assembler "> <b> Assembler: </b> `r m[["Assembler"]]` </p>
+<p id ="Assembly by"> <b> Assembly by:  </b> `r m[["Trinity_Assembly_by"]]` </p>
+<p id ="Analysisby"> <b> Analysis by:  </b> `r m[["Analysis_by"]]` </p>
+</div>
+</div>
+<div class = "mainblocks" id = "DataAvail" >
+<div class="sectiontitle" id = "DA"> Data Availability </div>   
+<p id ="SRA"> <b> SRA: </b> `r m[["SRA"]]` </p>
+<p id ="Access"> <b> Access: </b> `r m[["Access"]]` </p>
+<p id ="Storage"> <b> Storage: </b> `r m[["Harddrive_Storage"]]` </p>
+<p id ="PublishedDate"> <b> First Published: </b> `r m[["First_Published_Date"]]` </p>
+<p id = "Publications"> <b> Related Publications: </b> `r m[["Related_Publications"]]` </p>
+</div>
+<div class = "mainblocks"  id = "Notes" >
+<div class="sectiontitle" id = "N"> Notes </div>   
+<p id ="notescontent"> `r m[["Misc_Notes"]]`</p>
+</div>
+<div class = "mainblocks" id="part6"> 
+<div id = "Download" > 
+```{r, results='asis', echo=FALSE}
+metadata %>% 
+  download_this(
+    output_name = paste0(Sys.Date(), "_Metadata_", m$Sample_name[1]),
+    output_extension = ".csv",
+    button_label = "--- Download Metadata as csv ---",
+    button_type = "default",
+    csv2 = FALSE,
+  )
+```
+
+</div>
+</div>
+</div>
+</main>

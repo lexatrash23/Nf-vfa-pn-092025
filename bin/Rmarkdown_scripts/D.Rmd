@@ -6,16 +6,15 @@ output:
 
 ---
 ```{r, echo=FALSE, results='hide'}
-# Read command line arguments
 args <- commandArgs(trailingOnly = TRUE)
-
-# Set variables based on passed arguments
 path <- args[1]
 Name <- args[2]
+Sample_Name<- args[3]
 ```
 <!-- get current date --> 
-**`r Name`**
-  `r Sys.Date()`
+**`r Name`** ---
+  `r Sys.Date()` ---
+**`r Sample_Name`**
 
 <head>
   <meta charset="UTF-8" />

@@ -2,7 +2,8 @@
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Verdana';
+            color: white;
         }
 
         body {
@@ -11,14 +12,14 @@
             justify-content: flex-start;
             align-items: center;
             height: 100vh;
-            background: linear-gradient(to bottom, #ffffff, #e0e0e0);
+            background: black;
             padding-top: 40px;
         }
 
         h1 {
             font-size: 28px;
             font-weight: 600;
-            color: #333;
+            color: white;
             margin-bottom: 30px;
         }
 
@@ -30,8 +31,8 @@
         .button {
             display:flex;
             align-items:center;
-            border:2px solid black;
-            padding: 10px;
+            border:2px solid white;
+            padding: 3px;
             position: relative;
             width: 800px;
             height: 200px;
@@ -80,3 +81,7 @@
         .container {
                 margin-bottom: 20px; /* Adjust this value for more or less space */
             }
+        .textlong {
+            width: 700px;
+            text-align: center;
+        }

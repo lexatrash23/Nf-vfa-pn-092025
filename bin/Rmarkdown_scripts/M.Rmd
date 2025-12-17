@@ -3,14 +3,26 @@ title: "Trinity Tables Sorted by BitScore "
 output: 
   html_document:
     css: style.css 
+    theme: flatly
+
 params:
   Table1: NULL
   name: NULL
+  samplename: NULL
 
 ---
-<!-- get current date --> 
-**`r params$name`**  
-  `r Sys.Date()`
+
+<style>
+.table-hover > tbody > tr:hover {
+  background-color: grey; 
+}
+
+caption {
+  color: white;
+  font-weight: bold;
+}
+
+</style>
 
 ```{r, echo = FALSE, message=FALSE, warning= FALSE, results = 'hide'}
 
@@ -18,28 +30,49 @@ library(kableExtra)
 library(DT)
 library(dplyr)
 library(knitr)
-
+library(downloadthis)
+Sample_Name <- params$name
+Name <- params$samplename
 ```
+
+
+<hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
+
+**`r Name`** ---
+  `r Sys.Date()` ---
+**`r Sample_Name`** 
+<hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
+
+
+
 
 ```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
-#read in table 1
 Table1 <- read.csv(params$Table1)
+
+
 ```
 
+```{r, results='asis', echo=FALSE}
+Table1 %>% 
+  download_this(
+    output_name = paste0(Sys.Date(), "_Table1.Trinity.Top 100 Hits by Bitscore_", Name),
+    output_extension = ".csv",
+    button_label = "Download as csv",
+    button_type = "primary",
+    csv2 = FALSE,
+  )
+```
 
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE}
 Table1 %>%
   kable("html", 
-        caption = "Top 100 Sorted by Bit Score", 
         booktabs = TRUE, 
         escape = FALSE) %>%  # Escape = FALSE to render HTML
-  kable_styling(bootstrap_options = c("striped", "hover", "condensed"), 
+  kable_styling(bootstrap_options = c("hover", "condensed"), 
                 full_width = FALSE, 
                 position = "center") %>% 
-  column_spec(1, width = "4cm", bold = TRUE, color = "white", background = "#4CAF50") %>% 
-  row_spec(0, bold = TRUE, font_size = 14, color = "white", background = "#4CAF50") %>% 
-  footnote(general = "Table shows the top 100 rows of KBT sorted by bit score, with hyperlinks to UniProt entries.", 
-           general_title = "Note: ", 
-           footnote_as_chunk = TRUE)
+  column_spec(1, width = "4cm", bold = TRUE, color = "white", background = "black") %>% 
+  row_spec(0, bold = TRUE, font_size = 14, color = "white", background = "black") 
+
 ```
