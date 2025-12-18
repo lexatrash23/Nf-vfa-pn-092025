@@ -206,61 +206,6 @@ process BUSCOtranslatome {
     """
 }
 
-// Process 10: Create TableGenerationTrinity
-process TableGenerationTrinity {
-    errorStrategy 'ignore'
-
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
-
-    publishDir "${sample}/results/Figures/Tables/Trinity", mode: 'copy'
-
-    input:
-    tuple val(sample), path(TBK), val(genome_id), val(species)
-
-    output:
-    tuple val(sample), path ("Table1.csv"), emit: Table1
-    tuple val(sample), path ("Table2.csv"), emit: Table2
-    tuple val(sample), path ("Table3.csv"), emit: Table3
-    tuple val(sample), path ("Table4.csv"), emit: Table4
-
-    script:
-    """
-	
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_TopTables_Trinity.R" ${TBK} ${genome_id} ${species}
-    """
-}
-
-// Process 11: Create TableGenerationTransdecoder  
-process TableGenerationTransdecoder {
-    errorStrategy 'ignore'
-
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
-
-    publishDir "${sample}/results/Figures/Tables/Transdecoder", pattern: "*{5,6,7,8}.csv", mode: 'copy'
-    publishDir "${sample}/results/Figures/Tables/SignalP", pattern: "*{9,10,11,12}.csv", mode: 'copy'
-
-
-    input:
-    tuple val(sample), path(transdf), val(genome_id), val(species)
-
-    output:
-    tuple val(sample),path ("Table5.csv"), emit: Table5
-    tuple val(sample),path ("Table6.csv"), emit: Table6
-    tuple val(sample),path ("Table7.csv"), emit: Table7
-    tuple val(sample),path ("Table8.csv"), emit: Table8
-    tuple val(sample),path ("Table9.csv"), emit: Table9
-    tuple val(sample),path ("Table10.csv"), emit: Table10
-    tuple val(sample),path ("Table11.csv"), emit: Table11
-    tuple val(sample),path ("Table12.csv"), emit: Table12
-
-    script:
-    """
-	
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_Tables_Transdecoder_SignalP.R" ${transdf} ${genome_id} ${species}
-    """
-}
-
-
 // Process 12: Create FigureGenerationTrinity
 process FigureGenerationTrinity {
     errorStrategy 'ignore'
@@ -319,6 +264,30 @@ process FigureGenerationTransdecoder {
     """
 }
 
+// Process 10: Create TableGenerationTrinity
+process TableGenerationTrinity {
+    errorStrategy 'ignore'
+
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "${sample}/results/Figures/Tables/Trinity", mode: 'copy'
+
+    input:
+    tuple val(sample), path(TBK), val(genome_id), val(species)
+
+    output:
+    tuple val(sample), path ("Table1.csv"), emit: Table1
+    tuple val(sample), path ("Table2.csv"), emit: Table2
+    tuple val(sample), path ("Table3.csv"), emit: Table3
+    tuple val(sample), path ("Table4.csv"), emit: Table4
+
+    script:
+    """
+	
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_TopTables_Trinity.R" ${TBK} ${genome_id} ${species}
+    """
+}
+
 // Process 14: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
     errorStrategy 'ignore'
@@ -347,6 +316,7 @@ process FigureGenerationSignalp {
     """
 }
 
+
 // Process 15: Create AddMassSpec
 process AddMassSpec {
     errorStrategy 'ignore'
@@ -354,15 +324,16 @@ process AddMassSpec {
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
     publishDir "${sample}/results/RappData/Single", pattern: "*.gz", mode: 'copy'
-    publishDir "${sample}/results/RappData/Combined", pattern: "*.csv", mode: 'copy'
-    publishDir "${sample}/results/FinalDataframes/", pattern: "*.gz", mode: 'copy'
+    publishDir "${sample}/results/RappData/Combined", pattern: "*select.csv", mode: 'copy'
+    publishDir "${sample}/results/FinalDataframes/", pattern: "*masspec.csv", mode: 'copy'
 
     input:
-    tuple val(sample), path(transdf), path(massspecdata), val(species), val(basename)
+    tuple val(sample), path(transdf), path(massspecdata), val(basename), val(species)
 
     output:
-    tuple val(sample), path ("*_filtered_masspec_select.csv"), emit: filtered_massspec
-    tuple val(sample), path ("*_distinct_masspec.csv.gz"), emit: distinct_massspec
+    tuple val(sample), path ("*_filtered_massspec_select.csv"), emit: filtered_massspec
+    path "*_distinct_massspec.csv.gz", emit: distinct_massspec
+    tuple val(sample), path ("*_transdf_massspec.csv"), emit: transdf_massspec
 
     script:
     """
@@ -380,15 +351,15 @@ process SkipMassSpec {
 
     publishDir "${sample}/results/RappData/Single", pattern: "*.gz", mode: 'copy'
     publishDir "${sample}/results/RappData/Combined", pattern: "*.csv", mode: 'copy'
-    publishDir "${sample}/results/FinalDataframes/", pattern: "*.gz", mode: 'copy'
 
 
     input:
-    tuple val(sample), path(transdf), val(species), val(basename)
+    tuple val(sample), path(transdf), val(basename), val(species)
 
     output:
-    path "*_filtered_nomasspec_.csv", emit: filtered_nomasspec
+    tuple val(sample), path ("*_filtered_nomasspec_.csv"), emit: filtered_nomasspec
     path "*_distinct_nomasspec.csv.gz", emit: distinct_nomasspec
+
 
     script:
     """
@@ -397,6 +368,178 @@ process SkipMassSpec {
 
     """
 }
+
+process BlastnIntegrationwithMassSpec {
+
+    errorStrategy 'ignore'
+
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "${sample}/results/Intermediate_Scripts1_outputs", mode: 'copy'
+
+    input:
+    tuple val(sample), path(transdf_massspec), path(blastn6)
+
+    output:
+    tuple val(sample), path(transdf_massspec_blastn), emit: transdf_ms_blastn
+
+
+    script:
+
+    """
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS12.R" ${venndiagram} ${trandfdistinctmass} ${blastn6}
+    """
+}
+
+process BlastnIntegrationwithoutMassSpec {
+
+    errorStrategy 'ignore'
+
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "${sample}/results/Intermediate_Scripts1_outputs", mode: 'copy'
+
+    input:
+    tuple val(sample), path(transdf), path(blastn6)
+
+
+    output:
+    tuple val(sample), path(transdf_blastn), emit: transdf_blastn
+
+
+    script:
+
+    """
+
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS12.R" ${venndiagram} ${trandfdistinctmass} ${blastn6}
+    """
+}
+
+
+
+// Process 11: Create TableGenerationTransdecoder  
+process TableGenerationTransdecoderNoMSnoGenome {
+    errorStrategy 'ignore'
+
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "${sample}/results/Figures/Tables/Transdecoder", pattern: "*{5,6,7,8}.csv", mode: 'copy'
+    publishDir "${sample}/results/Figures/Tables/SignalP", pattern: "*{9,10,11,12}.csv", mode: 'copy'
+
+
+    input:
+    tuple val(sample), path(transdf), val(genome_id), val(species)
+
+    output:
+    tuple val(sample),path ("Table5.csv"), emit: Table5
+    tuple val(sample),path ("Table6.csv"), emit: Table6
+    tuple val(sample),path ("Table7.csv"), emit: Table7
+    tuple val(sample),path ("Table8.csv"), emit: Table8
+    tuple val(sample),path ("Table9.csv"), emit: Table9
+    tuple val(sample),path ("Table10.csv"), emit: Table10
+    tuple val(sample),path ("Table11.csv"), emit: Table11
+    tuple val(sample),path ("Table12.csv"), emit: Table12
+
+    script:
+    """
+	
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_Tables_Transdecoder_SignalP.R" ${transdf} ${genome_id} ${species}
+    """
+}
+
+
+// Process 11: Create TableGenerationTransdecoder  
+process TableGenerationTransdecoderMSG {
+    errorStrategy 'ignore'
+
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "${sample}/results/Figures/Tables/Transdecoder", pattern: "*{5,6,7,8}.csv", mode: 'copy'
+    publishDir "${sample}/results/Figures/Tables/SignalP", pattern: "*{9,10,11,12}.csv", mode: 'copy'
+
+
+    input:
+    tuple val(sample), path(transdf_massspec_blastn), val(genome_id), val(species)
+
+    output:
+    tuple val(sample),path ("Table5.csv"), emit: Table5
+    tuple val(sample),path ("Table6.csv"), emit: Table6
+    tuple val(sample),path ("Table7.csv"), emit: Table7
+    tuple val(sample),path ("Table8.csv"), emit: Table8
+    tuple val(sample),path ("Table9.csv"), emit: Table9
+    tuple val(sample),path ("Table10.csv"), emit: Table10
+    tuple val(sample),path ("Table11.csv"), emit: Table11
+    tuple val(sample),path ("Table12.csv"), emit: Table12
+
+    script:
+    """
+	
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_Tables_Transdecoder_SignalP.R" ${transdf} ${genome_id} ${species}
+    """
+}
+
+
+// Process 11: Create TableGenerationTransdecoder  
+process TableGenerationTransdecoderMSNoGenome {
+    errorStrategy 'ignore'
+
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "${sample}/results/Figures/Tables/Transdecoder", pattern: "*{5,6,7,8}.csv", mode: 'copy'
+    publishDir "${sample}/results/Figures/Tables/SignalP", pattern: "*{9,10,11,12}.csv", mode: 'copy'
+
+
+    input:
+    tuple val(sample), path(transdf_massspec), val(genome_id), val(species)
+
+    output:
+    tuple val(sample),path ("Table5.csv"), emit: Table5
+    tuple val(sample),path ("Table6.csv"), emit: Table6
+    tuple val(sample),path ("Table7.csv"), emit: Table7
+    tuple val(sample),path ("Table8.csv"), emit: Table8
+    tuple val(sample),path ("Table9.csv"), emit: Table9
+    tuple val(sample),path ("Table10.csv"), emit: Table10
+    tuple val(sample),path ("Table11.csv"), emit: Table11
+    tuple val(sample),path ("Table12.csv"), emit: Table12
+
+    script:
+    """
+	
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_Tables_Transdecoder_SignalP.R" ${transdf} ${genome_id} ${species}
+    """
+}
+
+
+// Process 11: Create TableGenerationTransdecoder  
+process TableGenerationTransdecoderNoMsWithGenome {
+    errorStrategy 'ignore'
+
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "${sample}/results/Figures/Tables/Transdecoder", pattern: "*{5,6,7,8}.csv", mode: 'copy'
+    publishDir "${sample}/results/Figures/Tables/SignalP", pattern: "*{9,10,11,12}.csv", mode: 'copy'
+
+
+    input:
+    tuple val(sample), path(transdf_blastn), val(genome_id), val(species)
+
+    output:
+    tuple val(sample),path ("Table5.csv"), emit: Table5
+    tuple val(sample),path ("Table6.csv"), emit: Table6
+    tuple val(sample),path ("Table7.csv"), emit: Table7
+    tuple val(sample),path ("Table8.csv"), emit: Table8
+    tuple val(sample),path ("Table9.csv"), emit: Table9
+    tuple val(sample),path ("Table10.csv"), emit: Table10
+    tuple val(sample),path ("Table11.csv"), emit: Table11
+    tuple val(sample),path ("Table12.csv"), emit: Table12
+
+    script:
+    """
+	
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_Tables_Transdecoder_SignalP.R" ${transdf} ${genome_id} ${species}
+    """
+}
+
 
 // Process 18: Create VennOverview
 process VennOverviewMS {
@@ -407,11 +550,11 @@ process VennOverviewMS {
     publishDir "${sample}/results/Intermediate_Scripts1_outputs", mode: 'copy'
 
     input:
-    tuple path(filtered_massspec), path(Toxin_domains)
+    tuple val(sample), path(filtered_massspec), path(Toxin_domains)
 
     output:
-    path "*.csv", emit: overviewcsv
-    path "*.png", emit: overviewpng
+    tuple val(sample), path "*.csv", emit: overviewcsv
+    tuple val(sample), path "*.png", emit: overviewpng
 
     script:
     """
@@ -430,11 +573,11 @@ process VennOverviewNoMS {
     publishDir "${sample}/results/Intermediate_Scripts1_outputs", mode: 'copy'
 
     input:
-    tuple path(filtered_nomasspec), path(Toxin_domains)
+    tuple val(sample), path(filtered_nomasspec), path(Toxin_domains)
 
     output:
-    path "*.csv", emit: overviewcsv
-    path "*.png", emit: overviewpng
+    tuple val(sample),path "*.csv", emit: overviewcsv
+    tuple val(sample),path "*.png", emit: overviewpng
 
     script:
     """
@@ -443,6 +586,31 @@ process VennOverviewNoMS {
     
     """
 }
+
+process BlastnIntegrationVennDiagramMS {
+
+    errorStrategy 'ignore'
+
+    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
+
+    publishDir "${sample}/results/Intermediate_Scripts1_outputs", mode: 'copy'
+
+    input:
+    tuple val(sample), path (venndiagram), path(trandfdistinctmass)
+
+    output:
+    path "transdf_distinct_blastn.csv", emit: transdf_distinct_blastn
+    path "venn_overview_blastn.csv", emit: venn_overview_blastn
+    path "venn_overview_blastn_filtered.csv", emit: venn_overview_blastn_filtered
+
+    script:
+
+    """
+
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS12.R" ${venndiagram} ${trandfdistinctmass} ${blastn6}
+    """
+}
+
 
 // Process 20: RmarkdownA
 process RmarkdownA {
@@ -1057,31 +1225,7 @@ process Blast0Chunksn {
     """
 }
 
-process BlastnIntegration {
 
-    errorStrategy 'ignore'
-
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
-
-    publishDir "${sample}/results/Intermediate_Scripts1_outputs", mode: 'copy'
-
-    input:
-    path venndiagram
-    path trandfdistinctmass
-    path blastn6
-
-    output:
-    path "transdf_distinct_blastn.csv", emit: transdf_distinct_blastn
-    path "venn_overview_blastn.csv", emit: venn_overview_blastn
-    path "venn_overview_blastn_filtered.csv", emit: venn_overview_blastn_filtered
-
-    script:
-
-    """
-
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS12.R" ${venndiagram} ${trandfdistinctmass} ${blastn6}
-    """
-}
 
 // Define input file patterns via parameters
 
@@ -1090,7 +1234,7 @@ process BlastnIntegration {
 workflow {
 
     //Define CSV channel.. Channel factory creates the channel from a csv file. can be defined in the config or command line 
-    csv_channel = Channel.fromPath(params.input_csv).splitCsv(header: true, sep: ',')
+    csv_channel = Channel.fromPath(params.input_csv).splitCsv(header: true, sep: ',').map { row -> row.collectEntries { key, value -> [key.replaceAll('"', ''), value?.toString()?.replaceAll('"', '')]}}
     //Define results folder from the Venomflow 
     venomflowfiles = csv_channel.map { row ->
         def samplename = row.Sample_name //0
@@ -1113,7 +1257,11 @@ workflow {
         def busco_translatome_dir = file("${results_path}/BUSCO/translatome/") //16
         def genomeid = row.NCBI_Genome_id //17
         def species = row.Species //18 
-        return [row.sample_id, kallisto_trinity, kallisto_trans, transdecoder_pep, transdecoder_cds, mature_fasta, blastx_files, blastp_files, Interproscan, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir,genomeid,species]
+        def MS = file(row.massspec_csv) //19
+        def Gavailability = row.isgenomeavailble //20
+        def MSavailability = row.ismassspecavailable //21
+        def ToxinDomains = file(row.Toxin_domains) //22
+        return [row.sample_id, kallisto_trinity, kallisto_trans, transdecoder_pep, transdecoder_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir,genomeid,species, MS, Gavailability, MSavailability,ToxinDomains]
     }
 
     // Define Sample Metadata
@@ -1185,15 +1333,10 @@ workflow {
 
     //Process 10: Define Input for TableGenerationTrinity sample+TBK + genomeid + species 
     def genome = venomflowfiles.map{return [it[0], it[17]]}
-    def species = venomflowfiles.map{return [it[0], it[18]]}
+    def species = venomflowfiles.map{return [it[0], it[18], ]}
     def TableGenerationTrinityinput = CreateTrinityDataframe.out.TBK.join(genome).join(species)
     //Run Process TableGenerationTrinity
     TableGenerationTrinityinput | TableGenerationTrinity
-
-    //Process 11: Define Input for TableGenerationTransdecoder sample+transdf + genomeid + species 
-    def TableGenerationTransdecoderinput = CreateTransdecoderDataframe.out.transdf.join(genome).join(species)
-    //Run Process TableGenerationTrinity
-    TableGenerationTransdecoderinput | TableGenerationTransdecoder
 
 
     //Process 12: Define Input for FigureGenerationTrinity 
@@ -1211,8 +1354,93 @@ workflow {
     FigureGenerationTransdecoderinput | FigureGenerationSignalp
 
 
+    // Define Input AddMassSpec
+    SampleswithMS = venomflowfiles.filter { it[21] == 'Y' }
+                                            .map { return [it[0], it[19], it[14], it[18]] }
+    AddMassSpecInput = CreateTransdecoderDataframe.out.transdf.join(SampleswithMS)
+    // Run AddMassSpec 
+    AddMassSpecInput | AddMassSpec
 
 
+
+    // Define Input SkipMassSpec
+    SampleswithNoMS = venomflowfiles.filter { it[21] == 'N' }
+                                            .map { return [it[0], it[14], it[18]] }
+    SkipMassSpecInput = CreateTransdecoderDataframe.out.transdf.join(SampleswithNoMS)
+    // Run SkipMassSpec
+    SkipMassSpecInput | SkipMassSpec
+
+
+    // Define Input BlastnIntegrationwithMassSpec
+    SampleswithMSandGenome = venomflowfiles.filter { it[20] == 'Y' && it[21] == 'Y' }
+                                            .map { return [it[0], it[10]] }
+    
+    BlastnIntegrationwithMassSpecInput = AddMassSpec.out.transdf_massspec.join(SampleswithMSandGenome)
+  
+    // Run BlastnIntegrationwithMassSpec
+    BlastnIntegrationwithMassSpecInput | BlastnIntegrationwithMassSpec
+
+
+    // Define Input BlastnIntegrationwithoutMassSpec
+   SampleswithNoMSandGenome = venomflowfiles.filter { it[20] == 'Y' && it[21] == 'N' }
+                                            .map { return [it[0], it[10]] }
+
+    BlastnIntegrationwithoutMassSpecInput = CreateTransdecoderDataframe.out.transdf.join(SampleswithNoMSandGenome)
+    // Run BlastnIntegrationwithoutMassSpec
+    BlastnIntegrationwithoutMassSpecInput | BlastnIntegrationwithoutMassSpec
+
+
+    
+    //Process 11: Define Input for TableGenerationTransdecoderNoMSnoGenome sample+transdf + genomeid + species 
+    SampleswithNoMSandNoG = venomflowfiles.filter { it[20] == 'N' && it[21] == 'N' }
+                                            .map { return [it[0], it[17], it[18]] }
+                         
+    TableGenerationTransdecoderNoMSnoGenomeInput = CreateTransdecoderDataframe.out.transdf.join(SampleswithNoMSandNoG)
+    //Run Process TableGenerationTrinity
+    TableGenerationTransdecoderNoMSnoGenomeInput | TableGenerationTransdecoderNoMSnoGenome
+
+
+
+    //Process 11: Define Input for TableGenerationTransdecoderMSG sample+transdf + genomeid + species 
+    SamplesMSG = venomflowfiles.filter { it[20] == 'Y' && it[21] == 'Y' }
+                                            .map { return [it[0], it[17], it[18]] }
+                         
+    TableGenerationTransdecoderMSGInput = BlastnIntegrationwithMassSpec.out.transdf_ms_blastn.join(SampleswithNoMSandNoG)
+    //Run Process TableGenerationTrinity
+    TableGenerationTransdecoderMSGInput | TableGenerationTransdecoderMSG
+
+    //Process 11: Define Input for TableGenerationTransdecoderMSNoGenome sample+transdf + genomeid + species 
+    SamplesMSnoGenome = venomflowfiles.filter { it[20] == 'N' && it[21] == 'Y' }
+                                            .map { return [it[0], it[17], it[18]] }
+                         
+    TableGenerationTransdecoderMSNoGenomeInput = AddMassSpec.out.transdf_massspec.join(SamplesMSnoGenome)
+    //Run Process TableGenerationTrinity
+    TableGenerationTransdecoderMSNoGenome | TableGenerationTransdecoderMSG
+
+
+
+    //Process 11: Define Input for TableGenerationTransdecoderMSNoGenome sample+transdf + genomeid + species 
+    SamplesnoMSwithGenome = venomflowfiles.filter { it[20] == 'N' && it[21] == 'Y' }
+                                            .map { return [it[0], it[17], it[18]] }
+                         
+    TableGenerationTransdecoderMSNoGenomeInput = BlastnIntegrationwithoutMassSpec.out.transdf_blastn.join(SamplesnoMSwithGenome)
+    //Run Process TableGenerationTrinity
+    TableGenerationTransdecoderMSNoGenomeInput | TableGenerationTransdecoderNoMsWithGenome
+
+    // Input VennOverviewNoMS
+    SamplesnoMSTD = venomflowfiles.filter { it[21] == 'N' }
+                                            .map { return [it[0],it[22]] }
+
+    VennOverviewNoMSInput = SkipMassSpec.out.filtered_nomasspec.join(SamplesnoMSTD)
+    // Process VennOverviewNoMS
+    VennOverviewNoMSInput   | VennOverviewNoMS
+
+    // Input VennOverviewMS
+    SampleswithMSTD = venomflowfiles.filter { it[21] == 'Y' }
+                                     .map { return [it[0],it[22]] }
+
+
+    VennOverviewMSInput =  AddMassSpec.out.filtered_massspec.join(SampleswithMSTD)                           
 
     
 
@@ -1255,18 +1483,7 @@ workflow {
     sampleurl | RmarkdownA
 
     def N = Channel.value(params.notes)
-    def SN = Channel.value(params.samplename)
-    def R = Channel.value(params.SRA)
-    def Ti = Channel.value(params.Tissue)
-    def A = Channel.value(params.Age)
-    def SX = Channel.value(params.Sex)
-    def REM = Channel.value(params.RNAExtractionMethod)
-    def LP = Channel.value(params.LibraryPrep)
-    def SD = Channel.value(params.Strandedness)
-    def SL = Channel.value(params.Selection)
-    def RL = Channel.value(params.Readlength)
-    def Metadata = N.combine(SN).combine(R).combine(Ti).combine(A).combine(SX).combine(REM).combine(LP).combine(SD).combine(SL).combine(RL)
-
+ 
     Metadata | MetadataCreation
 
     RmarkdownB(
