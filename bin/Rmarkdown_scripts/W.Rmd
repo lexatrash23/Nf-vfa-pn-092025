@@ -17,6 +17,11 @@ params:
   background-color: grey; 
 }
 
+table, th, td {
+  margin: 10px;
+}
+
+
 caption {
   color: white;
   font-weight: bold;
@@ -42,6 +47,7 @@ Name <- params$samplename
   `r Sys.Date()` ---
 **`r Sample_Name`** 
 <hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
+<p> </p>
 
 
 
@@ -85,12 +91,13 @@ Table11 %>%
 Table10 %>%
   kable("html", 
         booktabs = TRUE, 
-        escape = FALSE) %>%  # Escape = FALSE to render HTML
-  kable_styling(bootstrap_options = c("hover", "condensed"), 
-                full_width = FALSE, 
+        escape = FALSE) %>%  
+  kable_styling(bootstrap_options = c("hover", "condensed", "responsive", "bordered"),fixed_thead = TRUE, 
+                full_width = TRUE, 
                 position = "center") %>% 
-  column_spec(1, width = "4cm", bold = TRUE, color = "white", background = "black") %>% 
-  row_spec(0, bold = TRUE, font_size = 14, color = "white", background = "black") 
+  column_spec(1, width = "4cm", bold = TRUE, color = "white", background = "#0a4136") %>% 
+  row_spec(0, bold = TRUE, font_size = 14, color = "white", background = "#0a4136") 
+
 ```
 
 # Top 100 Sorted by Bit Score, Distinct Hits
@@ -99,11 +106,13 @@ Table10 %>%
 Table11 %>%
   kable("html", 
         booktabs = TRUE, 
-        escape = FALSE) %>%  # Escape = FALSE to render HTML
-  kable_styling(bootstrap_options = c("hover", "condensed"), 
-                full_width = FALSE, 
+        escape = FALSE) %>%  
+  kable_styling(bootstrap_options = c("hover", "condensed", "responsive", "bordered"),fixed_thead = TRUE, 
+                full_width = TRUE, 
                 position = "center") %>% 
-  column_spec(1, width = "4cm", bold = TRUE, color = "white", background = "black") %>% 
-  row_spec(0, bold = TRUE, font_size = 14, color = "white", background = "black") 
+  column_spec(1, width = "4cm", bold = TRUE, color = "white", background = "#0a4136") %>% 
+  row_spec(0, bold = TRUE, font_size = 14, color = "white", background = "#0a4136") 
+
+
 ```
 
