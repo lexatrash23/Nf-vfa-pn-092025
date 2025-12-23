@@ -67,7 +67,7 @@ process ExtractSignalSequences {
     script:
     """
     
-    python3 ${workflow.projectDir}/bin/Intermediate_Scripts/IS2.py ${transdecoder_pep} ${mature_fasta} signalsequences.fasta
+    python3 ${workflow.projectDir}/bin/Intermediate_Scripts/IS2.py ${transdecoder_pep} ${mature_fasta} "${sample}_signalsequences.fasta"
     """
 }
 
@@ -84,13 +84,13 @@ process CreateTrinityDataframe {
     tuple val(sample), path(trinity_fasta), path(blastx_file), path(kallisto_csv)
 
     output:
-    tuple val(sample), path ("_TBK.csv"), emit: TBK
-    path "_TBK_distinct.csv.gz", emit: TBK_distinct
+    tuple val(sample), path ("*TBK.csv"), emit: TBK
+    path "*TBK_distinct.csv.gz", emit: TBK_distinct
 
     script:
     """
     
-    Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS1.R ${trinity_fasta} ${blastx_file} ${kallisto_csv}
+    Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS1.R ${trinity_fasta} ${blastx_file} ${kallisto_csv} ${sample}
     """
 }
 
@@ -106,12 +106,12 @@ process CreateInterproscanDataframe {
     tuple val(sample), path(Interproscan), path(ListFile), path(PantherFile)
 
     output:
-    tuple val(sample), path ("Final_interproscan_dataframe.csv"), emit: Interproscan_dataframe
+    tuple val(sample), path ("*Final_interproscan_dataframe.csv"), emit: Interproscan_dataframe
 
     script:
     """
     
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS4.R" ${Interproscan} ${ListFile} ${PantherFile}
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS4.R" ${Interproscan} ${ListFile} ${PantherFile} ${sample}
     """
 }
 
@@ -126,16 +126,18 @@ process CreateTransdecoderDataframe {
     publishDir "${sample}/VenomFlowAnalysis/results/Secreted_proteins_fasta/", pattern: "*.fasta", mode: 'copy'
 
     input:
-    tuple val(sample), path(transdecoder_pep), path(transdecoder_cds), path(blastp_file), path(mature_fasta), path(Signalp_summary), path(signalsequences), val(basename), path(Interproscan_dataframe), path(kallistotrans)
+    tuple val(sample), path(transdecoder_pep), path(transdecoder_cds), path(blastp_file), path(mature_fasta), path(Signalp_summary), path(signalsequences), path(Interproscan_dataframe), path(kallistotrans)
 
     output:
-    tuple val(sample), path ("_transdf.csv"), emit: transdf
-    tuple val(sample), path ("_transdf_distinct.csv"), emit: transdf_distinct
-    tuple val(sample), path ("secreted_proteins.fasta"), emit: toxin_fasta
+    tuple val(sample), path ("*transdf.csv"), emit: transdf
+    tuple val(sample), path ("*transdf_distinct.csv"), emit: transdf_distinct
+    tuple val(sample), path ("*secreted_proteins.pep.fasta"), emit: toxin_fastapep
+    tuple val(sample), path ("*secreted_proteins.cds.fasta"), emit: toxin_fastacds
+
 
     script:
     """
-    Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS5.R ${transdecoder_pep} ${transdecoder_cds} ${blastp_file} ${mature_fasta} ${Signalp_summary} ${signalsequences} ${Interproscan_dataframe} ${kallistotrans} ${basename}
+    Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS5.R ${transdecoder_pep} ${transdecoder_cds} ${blastp_file} ${mature_fasta} ${Signalp_summary} ${signalsequences} ${Interproscan_dataframe} ${kallistotrans} ${sample}
     """
 }
 
@@ -148,18 +150,23 @@ process CreateInterproscanToxinPlotly {
 
     publishDir "${sample}/VenomFlowAnalysis/results/htmls/", pattern: "*.html", mode: 'copy'
     publishDir "${sample}/VenomFlowAnalysis/results/Secreted_proteins_fasta/", pattern: "*.fasta", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/Toxin_Domain_Filtering/", pattern: "*.csv", mode: 'copy'
+
 
     input:
-    tuple val(sample), path(transdf_distinct_csv), path(transtoxinfasta), path(Toxin_domains)
+    tuple val(sample), path(transdf_distinct_csv), path(transtoxinfastacds), path(transtoxinfastapep) path(Toxin_domains)
 
     output:
-    tuple val(sample), path ("filtered_sequences.fasta"), emit: filtered_sequences
+    tuple val(sample), path ("secreted_sequences_with_toxin_related_domains.pep.fasta"), emit: filtered_sequencespep
+    tuple val(sample), path ("secreted_sequences_with_toxin_related_domains.cds.fasta"), emit: filtered_sequences
     tuple val(sample), path ("plotly_graph.html"), emit: plotly_graph
+    tuple val(sample), path ("*.csv"), emit: annotationcsvs
+
 
     script:
     """
     
-    Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS7.R ${transdf_distinct_csv} ${Toxin_domains} ${transtoxinfasta}
+    Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS7.R ${transdf_distinct_csv} ${Toxin_domains} ${transtoxinfastacds} ${transtoxinfastapep} ${sample}
     """
 }
 
@@ -328,7 +335,7 @@ process AddMassSpec {
     publishDir "${sample}/results/FinalDataframes/", pattern: "*masspec.csv", mode: 'copy'
 
     input:
-    tuple val(sample), path(transdf), path(massspecdata), val(basename), val(species)
+    tuple val(sample), path(transdf_distinct), path(massspecdata), val(species)
 
     output:
     tuple val(sample), path ("*_filtered_massspec_select.csv"), emit: filtered_massspec
@@ -338,7 +345,7 @@ process AddMassSpec {
     script:
     """
 
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS8.R" ${transdf} ${massspecdata} "${species}" ${basename}
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS8.R" ${transdf} ${massspecdata} "${species}" ${sample}
 
     """
 }
