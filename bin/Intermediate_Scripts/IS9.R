@@ -1,8 +1,8 @@
 #!/usr/bin/env Rscript
 library(dplyr)
-args <- commandArgs(trailingOnly = TRUE)
-#list files 
 
+
+#allow command line arguments
 args <- commandArgs(trailingOnly = TRUE)
 Transdf <- args[1]
 species_name  <- args[2]
@@ -27,4 +27,7 @@ write.csv(transdf_filtered, paste0(Sample_name, "_filtered_nomasspec_.csv"), row
 
 #the dataframe for the invidual ones 
 
-write.csv(transdf, file=gzfile(paste0(Sample_name, "_distinct_nomasspec.csv.gz")), row.names = FALSE)
+write.csv(transdf, file=gzfile(paste0(Sample_name, "transdf_distinct_nomasspec.csv.gz")), row.names = FALSE)
+
+
+write.csv(transdf, paste0(Sample_name, "transdf_distinct_nomasspec.csv"), row.names = FALSE)
