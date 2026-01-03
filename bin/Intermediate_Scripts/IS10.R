@@ -3,21 +3,27 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(ggvenn)
-args <- commandArgs(trailingOnly = TRUE)
-dataframe <- args[1]
-toxin_data_csv <- args[2]
 
+args <- commandArgs(trailingOnly = TRUE)
+trandf_massspec <- args[1] # simplified! already fileterd for complete and signalp
+toxin_data_csv <- args[2]
+sample <- args[3]
 
 toxin_data <- read.csv(toxin_data_csv, sep = "\t", header = TRUE)
 
 #read in the dataframe 
-df <- read.csv(dataframe)
+df <- read.csv(trandf_massspec, header = TRUE)
 # order by bitscore, if bitscore is equal sort by evalue 
 df <- df[order(-df$BitScore, df$E_value ), ]
 df <- distinct(df, Transdecoder_ID, .keep_all = TRUE)
-#filter for signalP present, no THMM and complete 
+df <- distinct(df, CDS_Sequence, .keep_all = TRUE)
+df <- distinct(df, PEP_Sequence, .keep_all = TRUE)
 
 # mass spec group if present 
+df[["Coverage..."]] <- as.numeric(df[["Coverage..."]])
+df[["BitScore"]] <- as.numeric(df[["BitScore"]])
+df[["percent"]] <- as.numeric(df[["percent"]])
+
 if (!"Coverage..." %in% colnames(df)) {
   set_B <- data.frame(Transdecoder_ID = character(0))
 } else {
@@ -62,9 +68,9 @@ if (!"Coverage..." %in% colnames(df)) {
   
 }
 
-ggsave("Venn.png", plot = p, width = 6, height = 4, dpi = 300)
+ggsave(paste0(sample,"_Venn.png"), plot = p, width = 6, height = 4, dpi = 300)
 
 
 df_union <- df[df$Transdecoder_ID %in% Union_ABC, ]
-write.csv(df_union, "Venn_Diagram_union.csv", row.names = FALSE)
+write.csv(df_union, paste0(sample, "_Venn_Diagram_union.csv"), row.names = FALSE)
 
