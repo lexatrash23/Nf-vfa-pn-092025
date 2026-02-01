@@ -122,7 +122,7 @@ process CreateTransdecoderDataframe {
     conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings'
 
 
-    publishDir "${sample}/VenomFlowAnalysis/results/TransdecoderDataframe/", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/TransdecoderDataframe/", pattern: "*.csv", mode: 'copy'
     publishDir "${sample}/VenomFlowAnalysis/results/Secreted_proteins_fasta/", pattern: "*.fasta", mode: 'copy'
 
     input:
@@ -176,13 +176,13 @@ process BUSCOtranscriptome {
 
     conda "${workflow.projectDir}/bin/Setup/busco2.yaml"
 
-    publishDir "${sample}/VenomFlowAnalysis/results/busco/transcriptome/", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/busco/transcriptome/${count}/", mode: 'copy'
 
     input:
-    tuple val (sample), path (buscodirtr)
+    tuple val (sample), path (buscodirtr), val(count)
 
     output:
-    uple val(sample), (path "*.png"), emit: busco_transcriptome
+    uple val(sample), path ("*.png"), emit: busco_transcriptome
 
     script:
     """
@@ -197,10 +197,10 @@ process BUSCOtranslatome {
 
     conda "${workflow.projectDir}/bin/Setup/busco2.yaml"
 
-    publishDir "${sample}/VenomFlowAnalysis/results/busco/translatome", mode: 'copy'
+    publishDir "${sample}/VenomFlowAnalysis/results/busco/translatome/${count}/", mode: 'copy'
 
     input:
-    val (sample), path (buscodirtl)
+    val (sample), path (buscodirtl), val(count)
 
     output:
     tuple val(sample), path ("*.png"), emit: busco_translatome
@@ -355,156 +355,47 @@ process TableGenerationTransdecoder {
     """
 }
 
-// Process 14: Create AddMassSpec
-process AddMassSpec {
-    errorStrategy 'ignore'
+//Process 12: Add Massspec and Blastn6 results where available
 
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
-
-    publishDir "${sample}/results/FinalDataframes/full/", pattern:"*full.csv", mode: 'copy'
-    publishDir "${sample}/results/FinalDataframes/simplified/", pattern:"*simplified.csv", mode: 'copy'
-
-
-    input:
-    tuple val(sample), path(transdf_distinct), path(massspecdata), val(species)
-
-    output:
-    tuple val(sample), path ("*_transdf_distinct_masspec_full.csv"), emit: transdf_massspec_full
-    tuple val(sample), path ("*_transdf_distinct_masspec_simplified.csv"), emit: transdf_massspec_sim
-
-    script:
-    """
-
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS8.R" ${transdf} ${massspecdata} "${species}" "${sample}"
-
-    """
-}
-
-// Process 15: Create SkipMassSpec
-process SkipMassSpec {
-    errorStrategy 'ignore'
-
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
-
-    publishDir "${sample}/results/FinalDataframes/full/", pattern:"*full.csv", mode: 'copy'
-    publishDir "${sample}/results/FinalDataframes/simplified/", pattern:"*simplified.csv", mode: 'copy'
-
-
-    input:
-    tuple val(sample), path(transdf_distinct), val(species)
-
-    output:
-    tuple val(sample), path ("*_transdf_distinct_nomasspec_full.csv"), emit: transdf_nomassspec_full
-    tuple val(sample), path ("*_transdf_distinct_nomasspec_simplified.csv"), emit: transdf_nomassspec_sim
-
-
-    script:
-    """
-
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS9.R" ${transdf} "${species}" "${sample}"
-
-    """
-}
-
-// Process 16: Adding Blastn result to transdf_distinct_massspec
-process BlastnIntegrationwithMassSpec {
+process AddMSGenomeIfAvailableAndCreateOverview {
 
     errorStrategy 'ignore'
 
     conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
 
-    publishDir "${sample}/results/FinalDataframes/full/", pattern:"*full.csv", mode: 'copy'
-    publishDir "${sample}/results/FinalDataframes/simplified/", pattern:"*simplified.csv", mode: 'copy'
+    publishDir "${sample}/results/FinalDataFrames/", pattern: "*.csv", mode: 'copy'
+    publishDir "${sample}/results/Overview/", pattern: "*.csv", mode: 'copy'
 
 
     input:
-    tuple val(sample), path(transdf_massspec_full), path(transdf_massspec_sim), path(blastn6)
+    tuple val(sample), val(species), path(massspec), , path(blastn6), path(transdf) path(Toxindomains)
 
     output:
-    tuple val(sample), path ("*_transdf_distinct_masspec_blastn_full.csv"), emit: transdf_massspec_blastn_full
-    tuple val(sample), path ("*_transdf_distinct_masspec_blastn_simplified.csv"), emit: transdf_massspec_blastn_sim
-    path ("*_transdf_distinct_masspec_blastn_filtered_simplified.csv")
-
-
-    script:
-
-    """
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS13.R" ${transdf_massspec_full} ${transdf_massspec_sim} ${blastn6} ${sample}
-    """
-}
-
-// Process 17: Adding Blastn result to transdf_distinct_nomassspec 
-process BlastnIntegrationwithoutMassSpec {
-
-    errorStrategy 'ignore'
-
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
-
-    publishDir "${sample}/results/FinalDataframes/full/", pattern:"*full.csv", mode: 'copy'
-    publishDir "${sample}/results/FinalDataframes/simplified/", pattern:"*simplified.csv", mode: 'copy'
-
-    input:
-    tuple val(sample), path(transdf_nomassspec_full), path(transdf_nomassspec_sim), path(blastn6)
-
-    output:
-    tuple val(sample), path ("*_transdf_distinct_nomasspec_blastn_full.csv"), emit: transdf_nomassspec_blastn_full
-    tuple val(sample), path ("*_transdf_distinct_nomasspec_blastn_simplified.csv"), emit: transdf_nomassspec_blastn_sim
-
-
-    script:
-
-    """
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS14.R" ${transdf_nomassspec_full} ${transdf_nomassspec_sim} ${blastn6} ${sample}
-    """
-}
-
-
-
-// Process 18: Create VennOverview
-process VennOverview {
-    errorStrategy 'ignore'
-
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
-
-    publishDir "${sample}/results/Overview/", mode: 'copy'
-
-    input:
-    tuple val(sample), path(transdf_massspecornomassspec_sim), path(Toxin_domains)
-
-    output:
-    tuple val(sample), path "*.csv", emit: overviewcsv
-    tuple val(sample), path "*.png", emit: overviewpng
+    path("*.csv")
+    tuple val(sample), path(*_Venn_strict.png), emit VennPngStrict
+    tuple val(sample), path(*_Venn_Diagram_union_strict.csv), emit VennCsvStrict
+    tuple val(sample), path(*_Venn_lax.png), emit VennPngLax
+    tuple val(sample), path(*_Venn_Diagram_union_lax.csv), emit VennCsvLax
 
     script:
     """
+	    # Check if file exists and is not empty placeholder
+    if [ -s ${blastn6} ] && [ "\$(cat ${blastn6})" != "NULL" ]; then
+        BLASTN_ARG="${blastn6}"
+    else
+        BLASTN_ARG="NULL"
+    fi
 
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS10.R" ${transdf_massspecornomassspec_sim} "${Toxin_domains}" ${sample}
+     if [ -s ${massspec} ] && [ "\$(cat ${massspec})" != "NULL" ]; then
+        MS_ARG="${massspec}"
+    else
+        MS_ARG="NULL"
+    fi
 
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS14.R" ${sample} ${species} ${transdf} ${Toxindomains}  \$BLASTN_ARG \$MS_ARG
     """
 }
 
-
-
-process BlastnIntegrationVennDiagram {
-
-    errorStrategy 'ignore'
-
-    conda "${workflow.projectDir}/bin/Setup/VenomFlowAnalysis2.yaml"
-
-    publishDir "${sample}/results/Overview/", mode: 'copy'
-
-    input:
-    tuple val(sample), path (overviewcsv), path(transdf_massspecornomassspec_sim), path(blastn6)
-
-    output:
-    path "*venn_overview_blastn_filtered.csv"
-
-    script:
-
-    """
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS12.R" ${overviewcsv} ${transdf_massspec_sim} ${blastn6} ${sample}
-    """
-}
 
 
 // Process 20: RmarkdownA
@@ -537,7 +428,7 @@ process RmarkdownB {
     publishDir "${sample}/results/htmls", mode: 'copy'
 
     input:
-    tuple val(sample), path(samplesheet)
+    tuple val(sample), val(Name), path(samplesheet)
 
     output:
     path "*.html"
@@ -545,18 +436,14 @@ process RmarkdownB {
     script:
     """
 
-    settings_abs=\$(readlink -f "${settings}")
-    notes_abs=\$(readlink -f "${notes}")
-
     Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/B.Rmd',
       output_dir='.',
-      params=list(
-        settings='\$settings_abs',
-        notes='\$notes_abs',
-        name = '${params.name}'
-      )
-      )"
+      knit_root_dir='.',
+      args=c('${Name}', '${samplesheet}')
+    )"
+  
+
     """
 }
 
@@ -1132,8 +1019,8 @@ workflow {
         def results_path = file(row.Venomflowresultsfolder).toAbsolutePath() 
         def kallisto_trinity = file("${results_path}/kallisto/trinity/output/abundance.tsv") //1
         def kallisto_trans = file("${results_path}/kallisto/transdecoder/output/abundance.tsv") //2
-        def transdecoder_pep = file("${results_path}/Transdecoder/*.transdecoder.pep").first() //3
-        def transdecoder_cds = file("${results_path}/Transdecoder/*.transdecoder.cds").first() //4
+        def combined_pep = file("${results_path}/ORFprediction/Combined/*combined.deduplicated.pep").first() //3
+        def combined_cds = file("${results_path}/ORFprediction/Combined/*combined.deduplicated.cds").first() //4
         def mature_fasta = file("${results_path}/Signalp/*_mature.fasta").first() //5
         def blastx_files = file("${results_path}/Blast/Blastx/*.blastx.db.6.txt").first() //6
         def blastp_files = file("${results_path}/Blast/Blastp/*.blastp.db.6.txt").first() //7
@@ -1144,15 +1031,25 @@ workflow {
         def blastx0txt = file("${results_path}/Blast/Blastx/*.blastx.db.0.txt").first() //12
         def blastp0txt = file("${results_path}/Blast/Blastp/*.blastp.db.0.txt").first() //13
         def basename = row.basename //14
-        def busco_transcriptome_dir = file("${results_path}/BUSCO/transcriptome/") //15
-        def busco_translatome_dir = file("${results_path}/BUSCO/translatome/") //16
+        def busco_transcriptome_dir = file("${results_path}/BUSCO/transcriptome/Transcriptome1") //15
+        def busco_translatome_dir = file("${results_path}/BUSCO/translatome/Transdecoder/") //16
         def genomeid = row.NCBI_Genome_id //17
         def species = row.Species //18 
         def MS = file(row.massspec_csv) //19
         def Gavailability = row.isgenomeavailble //20
         def MSavailability = row.ismassspecavailable //21
         def ToxinDomains = file(row.Toxin_domains) //22
-        return [row.sample_id, kallisto_trinity, kallisto_trans, transdecoder_pep, transdecoder_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir,genomeid,species, MS, Gavailability, MSavailability,ToxinDomains]
+        def busco_transcriptome_dir2 = file("${results_path}/BUSCO/transcriptome/Transcriptome2") //23
+        def busco_transcriptome_dir3 = file("${results_path}/BUSCO/transcriptome/Combined") //24
+        def busco_translatome_dir2 = file("${results_path}/BUSCO/translatome/TD2/") //25
+        def busco_translatome_dir3 = file("${results_path}/BUSCO/translatome/Combined/") //26
+        def Transcriptome1 = file(row.Transcriptome1) //27
+        def Transcriptome2 = file(row.Transcriptome2) //28
+        def TranscriptomeC = file("${results_path}/Transcriptome/*transcriptome_combined.deduplicated.fasta").first() //29
+        def complete_pep = file("${results_path}/ORFprediction/Combined/*combine.complete.pep").first() //30
+        def complete_cds = file("${results_path}/ORFprediction/Combined/*combine.complete.cds").first() //31
+       
+        return [row.sample_id, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir,genomeid,species, MS, Gavailability, MSavailability,ToxinDomains,busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3,Transcriptome1,Transcriptome2,TranscriptomeC,complete_pep,complete_cds]
     }
 
     // Define Sample Metadata
@@ -1160,44 +1057,64 @@ workflow {
     header_line = csv_file.text.readLines()[0]
     MetadataInput = csv_channel.map { row ->
             def sample_name = row.Sample_name
+            def author_name = row.AnalysisdataAuth
             def csv_content = header_line + '\n' + row.collect { _k, v -> v }.join(',')
-            tuple(sample_name, csv_content)
+            tuple(sample_name, author_name, csv_content)
         }
 
+    // Metadata HTML (B)
+    MetadataInput | RmarkdownB
+
+    def isEmpty(value) {
+    return !value || 
+           value.toString().trim() == "" || 
+           value.toString().trim().toLowerCase() == "null"
+}
+
+
     // Process 1: Define Inputs for kallistoanalysistrinity  sample id + kallisto_file trinity tuple 
-    kallistoanalysistrinityinput = venomflowfiles.map{return [it[0], it[1]]}
+    kallistoanalysistrinityinput = venomflowfiles.map{ [it[0], it[1]]}
     //Run process kallistoAnalysisTrinity
     kallistoanalysistrinityinput | kallistoAnalysisTrinity
 
 
     //Process 2: Define Inputs for kallistoanalysistrans sample id + kallisto_file trans tuple 
-    kallistoanalysistransinput = venomflowfiles.map{return [it[0], it[2]]}
+    kallistoanalysistransinput = venomflowfiles.map{ [it[0], it[2]]}
     //Run process kallistoanalysistrans
     kallistoanalysistransinput | kallistoAnalysisTrans
 
 
 
     //Process 3: Define Inputs for ExtractSignalSequences sample id + transdecoderpep + maturefasta tuple 
-    ExtractSignalSequencesinput = venomflowfiles.map{return [it[0], it[3], it[5]]}
+    ExtractSignalSequencesinput = venomflowfiles.map{ [it[0], it[3], it[5]]}
     //Run process ExtractSignalSequences
     ExtractSignalSequencesinput | ExtractSignalSequences
 
 
     //Process 4: Define Inputs for ExtractCreateTrinityDataframe  sample + trinity_fasta + blastx_file + kallisto_csv  tuple 
-    ExtractSignalSequencesinput = venomflowfiles.map{return [it[0], it[3], it[5]]}.join(kallistoAnalysisTrinity.out.trin_all_csv)
+    
+    CreateTrinityDataframeinput_single = venomflowfiles.filter{isEmpty(it[28])}
+    .map{[it[0], it[27], it[6]]}.join(kallistoAnalysisTrinity.out.trin_all_csv)
+    
+    CreateTrinityDataframeinput_combined = venomflowfiles.filter{!isEmpty(it[28])}
+    .map{[it[0], it[28], it[6]]}.join(kallistoAnalysisTrinity.out.trin_all_csv)
+
+  CreateTrinityDataframeinput = CreateTrinityDataframeinput_single.mix(CreateTrinityDataframeinput_combined)
     //Run process ExtractCreateTrinityDataframe
-    ExtractSignalSequencesinput | ExtractSignalSequences
+    CreateTrinityDataframeinput | CreateTrinityDataframe
 
 
     //Process 5: Define Inputs for CreateInterproscanDataframe  sample + Interproscan + ListFile + PantherFile  tuple 
-    def ListFile = Channel.fromPath(params.input_list)
+    def ListFile = Channel.fromPath(params.input_interproscan)
     def PantherFile = Channel.fromPath(params.input_panther)
     CreateInterproscanDataframeinput = venomflowfiles.map{return [it[0], it[8]]}.combine([ListFile, PantherFile])
     //Run process CreateInterproscanDataframe
     CreateInterproscanDataframeinput | CreateInterproscanDataframe
 
+
     //Process 6: Define Inputs for CreateTransdecoderDataframe  sample + transdecoder_pep + transdecoder_cds + blastp6_file  mature_fasta, Signalp_summary, signalsequences, Interproscan_dataframe, kallistotrans
-    CreateTransdecoderDataframeinput = venomflowfiles.map {return [it[0], it[3], it[4], t[7], it[6], it[9], it[14]]}
+    CreateTransdecoderDataframeinput = venomflowfiles.map {return [it[0], it[3], it[4], t[7], it[5], it[9]]}
+                                      .join(ExtractSignalSequences.out.signalsequences)
                                        .join(CreateInterproscanDataframe.out.Interproscan_dataframe)
                                        .join(kallistoAnalysisTrans.out.trans_all_csv)
     //Run process ExtractCreateTrinityDataframe
@@ -1206,21 +1123,30 @@ workflow {
 
 
     //Process 7: Define Inputs for CreateInterproscanToxinPlotly sample + transdf_distinct_csv  + transtoxinfasta + toxindomains
-    def toxindomains = Channel.fromPath(params.input_toxindomains)
-    CreateInterproscanToxinPlotlyinput = CreateTransdecoderDataframe.out.transdf_distinct.join(CreateTransdecoderDataframe.out.toxin_fasta).combine([toxindomains])
+    def toxindomains = Channel.fromPath(params.input_toxin_domains)
+    CreateInterproscanToxinPlotlyinput = CreateTransdecoderDataframe.out.transdf_distinct.join(CreateTransdecoderDataframe.out.toxin_fastacds).join(CreateTransdecoderDataframe.out.toxin_fastapep).combine([toxindomains])
     // Run process CreateInterproscanToxinPlotly
     CreateInterproscanToxinPlotlyinput | CreateInterproscanToxinPlotly
 
     //Process 8: Define Input BUSCOtranscriptome
-    BUSCOtranscriptomeinput = venomflowfiles.map {return [it[0], it[15]]}
+    BUSCOtranscriptomeinput_1 = venomflowfiles.map {[it[0], it[15], "1"]}
+    BUSCOtranscriptomeinput_2 = venomflowfiles.filter{!isEmpty(it[28])}.map {[it[0], it[23], "2"]}
+    BUSCOtranscriptomeinput_C = venomflowfiles.filter{!isEmpty(it[28])}.map {[it[0], it[24], "C"]}
+    BUSCOtranscriptomeinput = BUSCOtranscriptomeinput_1.mix(BUSCOtranscriptomeinput_2).mix(BUSCOtranscriptomeinput_C)
     //Run Process BUSCOtranscriptome
     BUSCOtranscriptomeinput | BUSCOtranscriptome
 
     //Process 9: Define Input BUSCOtranslatome
-    BUSCOtranslatomeinput = venomflowfiles.map {return [it[0], it[16]]}
+    BUSCOtranslatomeinput_1 = venomflowfiles.map {[it[0], it[16], "1"]}
+    BUSCOtranslatomeinput_2 = venomflowfiles.filter{!isEmpty(it[28])}.map {[it[0], it[25], "2"]}
+    BUSCOtranslatomeinput_C = venomflowfiles.filter{!isEmpty(it[28])}.map {[it[0], it[26], "C"]}
+    BUSCOtranslatomeinput = BUSCOtranscriptomeinput_1.mix(BUSCOtranscriptomeinput_2).mix(BUSCOtranscriptomeinput_C)
+
     //Run Process BUSCOtranslatome
     BUSCOtranslatomeinput | BUSCOtranslatome
 
+    groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome.groupTuple()
+    groupedbuscotranslatome = BUSCOtranslatomeinput.out.busco_transcriptome.groupTuple()
 
     //Process 10: Define Input for TableGenerationTrinity sample+TBK + genomeid + species 
     def genome = venomflowfiles.map{return [it[0], it[17]]}
@@ -1245,42 +1171,6 @@ workflow {
     FigureGenerationTransdecoderinput | FigureGenerationSignalp
 
 
-    // Define Input AddMassSpec
-    SampleswithMS = venomflowfiles.filter { it[21] == 'Y' }
-                                            .map { return [it[0], it[19], it[14], it[18]] }
-    AddMassSpecInput = CreateTransdecoderDataframe.out.transdf.join(SampleswithMS)
-    // Run AddMassSpec 
-    AddMassSpecInput | AddMassSpec
-
-
-
-    // Define Input SkipMassSpec
-    SampleswithNoMS = venomflowfiles.filter { it[21] == 'N' }
-                                            .map { return [it[0], it[14], it[18]] }
-    SkipMassSpecInput = CreateTransdecoderDataframe.out.transdf.join(SampleswithNoMS)
-    // Run SkipMassSpec
-    SkipMassSpecInput | SkipMassSpec
-
-
-    // Define Input BlastnIntegrationwithMassSpec
-    SampleswithMSandGenome = venomflowfiles.filter { it[20] == 'Y' && it[21] == 'Y' }
-                                            .map { return [it[0], it[10]] }
-    
-    BlastnIntegrationwithMassSpecInput = AddMassSpec.out.transdf_massspec.join(SampleswithMSandGenome)
-  
-    // Run BlastnIntegrationwithMassSpec
-    BlastnIntegrationwithMassSpecInput | BlastnIntegrationwithMassSpec
-
-
-    // Define Input BlastnIntegrationwithoutMassSpec
-   SampleswithNoMSandGenome = venomflowfiles.filter { it[20] == 'Y' && it[21] == 'N' }
-                                            .map { return [it[0], it[10]] }
-
-    BlastnIntegrationwithoutMassSpecInput = CreateTransdecoderDataframe.out.transdf.join(SampleswithNoMSandGenome)
-    // Run BlastnIntegrationwithoutMassSpec
-    BlastnIntegrationwithoutMassSpecInput | BlastnIntegrationwithoutMassSpec
-
-
     
     //Process 11: Define 4 possible sample types for table generation transdecoder sample+transdf + genomeid + species 
     SampleGenomeSpecies = venomflowfiles.map { return [it[0], it[17], it[18]] }
@@ -1290,35 +1180,37 @@ workflow {
     //Run Process TableGenerationTrinity
     TableGenerationTransdecoderInput | TableGenerationTransdecoder
 
-    // Input VennOverviewNoMS
-    SamplesnoMSTD = venomflowfiles.filter { it[21] == 'N' }
-                                            .map { return [it[0],it[22]] }
+      //Input 
 
-    VennOverviewNoMSInput = SkipMassSpec.out.filtered_nomasspec.join(SamplesnoMSTD)
-    // Process VennOverviewNoMS
-    VennOverviewNoMSInput   | VennOverviewNoMS
-
-    // Input VennOverviewMS
-    SampleswithMSTD = venomflowfiles.filter { it[21] == 'Y' }
-                                     .map { return [it[0],it[22]] }
-
-
-    VennOverviewMSInput =  AddMassSpec.out.filtered_massspec.join(SampleswithMSTD)                           
+      AddMSGenomeIfAvailableAndCreateOverviewInput_MG = venomflowfiles.filter { it[20] == 'Y' && it[21] == 'Y' }
+                                                        .map([it[0], it[18], it[19],it[10] ])
+                                                        .join(CreateTransdecoderDataframe.out.transdf_distinct)
+                                                        .combine(toxindomains)
+      AddMSGenomeIfAvailableAndCreateOverviewInput_M = venomflowfiles.filter { it[20] == 'N' && it[21] == 'Y' }
+                                                        .map([it[0], it[18], it[19], "NULL" ])
+                                                        .join(CreateTransdecoderDataframe.out.transdf_distinct)
+                                                        .combine(toxindomains)
+      AddMSGenomeIfAvailableAndCreateOverviewInput_G = venomflowfiles.filter { it[20] == 'Y' && it[21] == 'N' }
+                                                         .map([it[0], it[18], "NULL" ,it[10] ])
+                                                        .join(CreateTransdecoderDataframe.out.transdf_distinct)
+                                                        .combine(toxindomains)
+      AddMSGenomeIfAvailableAndCreateOverviewInput_N = venomflowfiles.filter { it[20] == 'N' && it[21] == 'N' }
+                                                        .map([it[0], it[18], "NULL", "NULL" ])
+                                                        .join(CreateTransdecoderDataframe.out.transdf_distinct)
+                                                        .combine(toxindomains)
 
     
+      AddMSGenomeIfAvailableAndCreateOverviewInput_MG = venomflowfiles.filter { it[20] == 'Y' && it[21] == 'Y' }
+    
+    AddMSGenomeIfAvailableAndCreateOverviewInput.mix(AddMSGenomeIfAvailableAndCreateOverviewInput_M).mix(AddMSGenomeIfAvailableAndCreateOverviewInput_G).mix(AddMSGenomeIfAvailableAndCreateOverviewInput_N)
+    // Run process AddMSGenomeIfAvailableAndCreateOverview
+    AddMSGenomeIfAvailableAndCreateOverviewInputAddMSGenomeIfAvailableAndCreateOverview
+
+  /*
+    //RmarkdownCDEGIK()
 
 
-    Metadata | MetadataCreation
-
-    RmarkdownB(
-        MetadataCreation.out.settings,
-        MetadataCreation.out.notes,
-    )
-
-    RmarkdownCDEGIK()
-
-
-    RmarkdownH(
+    //RmarkdownH(
         kallistoAnalysisTrinity.out.trin_top20_png,
         kallistoAnalysisTrinity.out.trin_top500_png,
         BUSCOtranscriptome.out.busco_transcriptome,
@@ -1329,9 +1221,9 @@ workflow {
         FigureGenerationTrinity.out.pie3,
         FigureGenerationTrinity.out.pie4,
         FigureGenerationTrinity.out.Table13,
-    )
+    //)
 
-    RmarkdownJ(
+    //RmarkdownJ(
         kallistoAnalysisTrans.out.trans_top20_png,
         kallistoAnalysisTrans.out.trans_top500_png,
         BUSCOtranslatome.out.busco_translatome,
@@ -1342,9 +1234,9 @@ workflow {
         FigureGenerationTransdecoder.out.pie7,
         FigureGenerationTransdecoder.out.pie8,
         FigureGenerationTransdecoder.out.Table14,
-    )
+    //)
 
-    RmarkdownL(
+   // RmarkdownL(
         FigureGenerationSignalp.out.alluvial5,
         FigureGenerationSignalp.out.alluvial6,
         FigureGenerationSignalp.out.pie9,
@@ -1352,33 +1244,33 @@ workflow {
         FigureGenerationSignalp.out.pie11,
         FigureGenerationSignalp.out.pie12,
         FigureGenerationSignalp.out.Table15,
-    )
+    //)
 
-    RmarkdownM(
+    //RmarkdownM(
         TableGenerationTrinity.out.Table1
-    )
+    //)
 
-    RmarkdownN(
+    //RmarkdownN(
         TableGenerationTrinity.out.Table2,
         TableGenerationTrinity.out.Table3,
-    )
+    //)
 
-    RmarkdownO(
+    //RmarkdownO(
         TableGenerationTrinity.out.Table4
-    )
+   // )
 
-    RmarkdownQ(
+    //RmarkdownQ(
         TableGenerationTransdecoder.out.Table5
-    )
+    //)
 
-    RmarkdownR(
+    //RmarkdownR(
         TableGenerationTransdecoder.out.Table6,
         TableGenerationTransdecoder.out.Table7,
-    )
+   //)
 
-    RmarkdownS(
+   // RmarkdownS(
         TableGenerationTransdecoder.out.Table8
-    )
+    //)
 
     RmarkdownV(
         TableGenerationTransdecoder.out.Table9
@@ -1409,3 +1301,4 @@ workflow {
 }
 row.Sample_name	row.Trinity_fasta			BUSCO_lin1	BUSCO_lin2	Protein_fasta_path_for_Blast	Protein_fasta_name	Strandedness	Genome_fasta_path	Genome_fasta_name	Author_Name	NCBI_Genome_id	Species	isgenomeavailble	ismassspecavailable	basename	SearchAndDownloadURL	massspec_csv	SRA	Access	Published	Age	Animal Length/Size (cm)	Tissue	Tissue mass (mg)	Sex	Source	Bred/Wildcaught	Date Collected	Collected by	Storage conditions  before extraction 	Homogenization method	RNA extraction Method 	Concentration(ng/ul)	Extraction date	Extracted by	Submission for QC/Seq Date	QC/Seq by 	Submission Order Number	RIN	Library Prep	Selection	Strandedness	Library Layout	Platform	ReadLength	Results Received Date	Preprocessing  by 	Trinity Assembly  by 	Venomflow by 	VenomflowAnalysis by 	Related Publications	Lab 	Contact email 	Misc Notes
 
+*//
