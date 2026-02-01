@@ -18,9 +18,9 @@ transdf_distinct_full <- read.csv(transdf_distinct_full, header = TRUE)
 transdf_distinct_sim <- read.csv(transdf_distinct_sim, header = TRUE)
 Blastn_result_read <- read.table(Blastn_result)
 colnames(Blastn_result_read) <- c("Transdecoder_ID", "sseqid", "genome_pident", "genome_length", "genome_mismatch","genome_gapopen","genome_qstart","genome_qend","genome_sstart","genome_send","genome_evalue", "genome_bitscore", "genome_qframe", "genome_qcovs")
-Blastn_result_read_sortedbyBS <- Blastn_result_read[order(Blastn_result_read$bitscore, decreasing = TRUE), ]
+Blastn_result_read_genome_qcovs <- Blastn_result_read[order(Blastn_result_read$genome_qcovs, decreasing = TRUE), ]
 #keep only strongest hit by bitscore
-Blastn_result_read_sortedbyBS_distinct <- Blastn_result_read_sortedbyBS %>% distinct(Transdecoder_ID, .keep_all = TRUE) 
+Blastn_result_read_genome_qcovs_distinct <- Blastn_result_read_genome_qcovs %>% distinct(Transdecoder_ID, .keep_all = TRUE)
 
 
 #full df 
