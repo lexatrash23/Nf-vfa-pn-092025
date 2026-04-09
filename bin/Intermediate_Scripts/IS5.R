@@ -139,10 +139,14 @@ fin_signalplist_mature_signal_kallisto_df <- full_join(kallistotrans_file, signa
 Interproscan <- read.csv(file = Interproscan_file, header = TRUE, sep = ",")
 #merge exisiting dataframe with interproscan
 FINAL_CSV <- left_join(fin_signalplist_mature_signal_kallisto_df,Interproscan, by="Transdecoder_ID")
+FINAL_CSV <- FINAL_CSV %>%
+  mutate(SP = if_else(is.na(Signal_Sequence), "OTHER", "SP"))
+
 
 #keep only columns of interest
-keeps <- c("X", "Transdecoder_ID", "ORF_type", "PEP_Length", "CDS_Length", "SP_Prediction", "Signal_Length", "mature_length","tpm", "percent", "cumulativepercent", "Code", "Hit", "Percentage_Identity", "E_value", "BitScore", "Hit_species", "InterPro_accession_Names","GO_name","Panther_ID_Name", "Phobius_Name", "TMHMM"," Signal_Sequence", "mature_sequence", "PEP_Sequence", "CDS_Sequence")
+keeps <- c("X", "Transdecoder_ID", "ORF_type", "PEP_Length", "CDS_Length", "SP", "Signal_Length", "mature_length","tpm", "percent", "cumulativepercent", "Code", "Hit", "Percentage_Identity", "E_value", "BitScore", "Hit_species", "InterPro_accession_Names","GO_name","Panther_ID_Name", "Phobius_Name", "TMHMM"," Signal_Sequence", "mature_sequence", "PEP_Sequence", "CDS_Sequence")
 FINAL_CSV <- FINAL_CSV[keeps]
+
 
 #write full df to csv
 write.csv(FINAL_CSV, paste0(sample_name, "_transdf.csv"), row.names = FALSE)
