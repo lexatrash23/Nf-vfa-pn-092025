@@ -8,8 +8,8 @@ output:
 params:
   Table6: NULL
   Table7: NULL
-  name: NULL
-  samplename: NULL
+  AuthorName: NULL
+  SampleName: NULL
 
 ---
 
@@ -35,15 +35,15 @@ library(DT)
 library(dplyr)
 library(knitr)
 library(downloadthis)
-Sample_Name <- params$name
-Name <- params$samplename
+Sample_Name <- params$SampleName
+Name <- params$AuthorName
 ```
 
 
 <hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
 
-**`r Name`** ---
   `r Sys.Date()` ---
+**`r Name`** ---
 **`r Sample_Name`** 
 <hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
 <p> </p>

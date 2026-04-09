@@ -12,9 +12,9 @@ Name <- args[2]
 Sample_Name<- args[3]
 ```
 <!-- get current date --> 
-**`r Name`** ---
   `r Sys.Date()` ---
-**`r Sample_Name`**
+**`r Name`** ---
+**`r Sample_Name`** 
 
 <head>
   <meta charset="UTF-8" />

@@ -7,16 +7,15 @@ library(GO.db)
 library(biomaRt)
 library(tidyr)
 
-
+#allow for command line arguments
 args <- commandArgs(trailingOnly = TRUE)
+Interproscan <- args[1] #Interproscan raw output
+List <- args[2] #Metadata Interproscan entry list with names.
+PANTHER_file <- args[3] #Metadata PANTHER name list.
+sample <- args[4]
 
 
-Interproscan <- args[1]
-List <- args[2]
-PANTHER_file <- args[3]
-#Read in our interproscan output tsv file
-
-#load file 
+#load interproscan tsv file
 Interproscan<- read.delim(file = Interproscan, header = FALSE, sep = "\t")
 
 
@@ -28,7 +27,7 @@ data_subset <- subset(Interproscan, select = c(Transdecoder_ID, Analysis,Signatu
 data_subset$InterPro_annotations_accession<-gsub("-","",as.character(data_subset$InterPro_annotations_accession))
 data_subset$GO_annotations<-gsub("-","",as.character(data_subset$GO_annotations))
 data_subset$Pathways_annotations <- gsub("^-$", "", data_subset$Pathways_annotations)
-data_subset <- data.frame(data_subset) #idk if this actually necessary but i always do this just be sure its a dataframe lol
+data_subset <- data.frame(data_subset)
 
 #readingi in the IP tsv metadata file from Interproscan
 IP_name <- read.delim(file = List, header = TRUE, sep = "\t")
@@ -196,4 +195,4 @@ head(Final_interproscan_dataframe)
 keep <- c("Transdecoder_ID","InterPro_accession_Names","GO_name","Panther_ID_Name","Phobius_Name","TMHMM")
 Final_interproscan_dataframe <-Final_interproscan_dataframe[keep]
 
-write.csv(Final_interproscan_dataframe, file = "Final_interproscan_dataframe.csv", row.names = FALSE)
+write.csv(Final_interproscan_dataframe, file = paste0(sample + "_Final_interproscan_dataframe.csv", row.names = FALSE)

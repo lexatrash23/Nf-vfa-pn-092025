@@ -14,8 +14,8 @@ params:
   pie7: NULL
   pie8: NULL
   topkallisto_transdecoder: NULL
-  name: NULL
-  samplename: NULL
+  AuthorName: NULL
+  SampleName: NULL
 
 ---
 
@@ -63,14 +63,14 @@ pie6 <- params$pie6
 pie7 <- params$pie7
 pie8 <- params$pie8
 topkallisto <- params$topkallisto_transdecoder
-Sample_Name <- params$name
-Name <- params$samplename
+Sample_Name <- params$SampleName
+Name <- params$AuthorName
 ```
 <hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
 
 <!-- get current date --> 
-**`r Name`** ---
   `r Sys.Date()` ---
+**`r Name`** ---
 **`r Sample_Name`** 
 <hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
 

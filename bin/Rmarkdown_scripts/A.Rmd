@@ -3,6 +3,11 @@ title: "Main Menu"
 output: 
   html_document:
     css: style.css 
+params:
+  rmd_dir: NULL
+  sampleURL: NULL
+  AuthorName: NULL
+  SampleName: NULL
 
 ---
 
@@ -11,23 +16,17 @@ output:
 # Read command line arguments
 args <- commandArgs(trailingOnly = TRUE)
 
-# Set variables based on passed arguments
-path <- args[1]
-search_url <-args[2]- 
-Name <- args[3]
-Sample_Name <- args[4]
-
+path <- params$rmd_dir
+search_url <- params$sampleURL
+Sample_Name <- params$SampleName
+Name <- params$AuthorName
 
 
 ```
 
-
-
-
-<!-- get current date --> 
-**`r Name`** ---
   `r Sys.Date()` ---
-**`r Sample_Name`**
+**`r Name`** ---
+**`r Sample_Name`** 
 
 <body>
 

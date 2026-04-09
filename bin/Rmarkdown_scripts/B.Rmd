@@ -13,7 +13,8 @@ library(downloadthis)
 knitr::opts_chunk$set(echo = TRUE)
 args <- commandArgs(trailingOnly = TRUE)
 Name <- args[1]
-Samplesheet <- args[2]
+Sample_Name <- args[2]
+Samplesheet <- args[3]
 
 metadata <- read.csv(Samplesheet, header = TRUE)
 names(metadata) <- sub("^X\\.", "", names(metadata))
@@ -23,9 +24,10 @@ m[ ] <- lapply(m, function(x) {
   if (is.character(x)) gsub('"', '', x) else x
 }) 
 ```
+  `r Sys.Date()` ---
 **`r Name`** ---
-`r Sys.Date()` ---
-`r m[["Sample_name"]]`
+**`r Sample_Name`** 
+
 
 <style>
 /* ==================================================================

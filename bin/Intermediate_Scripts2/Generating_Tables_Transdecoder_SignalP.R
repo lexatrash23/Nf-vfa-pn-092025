@@ -17,7 +17,7 @@ species_name  <- args[3]
 
 Trans <- read.csv(Trans, header = TRUE)
 # Reordering columns and keeping only those of interest
-keeps <- c("Transdecoder_ID", "ORF_type", "PEP_Length", "CDS_Length", "SP_Prediction", "Signal_Length", "mature_length", "percent", "cumulativepercent", "Code", "Hit", "Percentage_Identity", "E_value", "BitScore", "Hit_species","InterPro_accession_Names","GO_name","TMHMM","Phobius_Name","Panther_ID_Name", "PEP_Sequence","Signal_Sequence","mature_sequence","CDS_Sequence")
+keeps <- c("Transdecoder_ID", "ORF_type", "PEP_Length", "CDS_Length", "SP", "Signal_Length", "mature_length", "percent", "cumulativepercent", "Code", "Hit", "Percentage_Identity", "E_value", "BitScore", "Hit_species","InterPro_accession_Names","GO_name","TMHMM","Phobius_Name","Panther_ID_Name", "PEP_Sequence","Signal_Sequence","mature_sequence","CDS_Sequence")
 Trans <- Trans[keeps]
 #tables to save
 #order by bitscore
@@ -108,8 +108,8 @@ Table8 <- Trans_hyperlinks_Distinct_Transcripts_increasingcumulativepercent[1:10
 #NEXT set is signalp ones
 #filter only for those with signalp
 Trans_hyperlinks_signalp <- Trans_hyperlinks[
-  Trans_hyperlinks$SP_Prediction == "SP(Sec/SPI)" &
-    !is.na(Trans_hyperlinks$SP_Prediction) &
+  Trans_hyperlinks$SP == "SP" &
+    !is.na(Trans_hyperlinks$SP) &
     grepl("complete", Trans_hyperlinks$ORF_type, ignore.case = TRUE),
 ]
 #Table9

@@ -11,14 +11,15 @@ args <- commandArgs(trailingOnly = TRUE)
 path <- args[1]
 Name <- args[2]
 Sample_Name<- args[3]
+
 ```
 
 
 
 
 <!-- get current date --> 
-**`r Name`** ---
   `r Sys.Date()` ---
+**`r Name`** ---
 **`r Sample_Name`** 
 
 

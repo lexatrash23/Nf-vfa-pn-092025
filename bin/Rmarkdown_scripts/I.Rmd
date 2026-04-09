@@ -10,10 +10,13 @@ args <- commandArgs(trailingOnly = TRUE)
 path <- args[1]
 Name <- args[2]
 Sample_Name<- args[3]
+
+
+
 ```
+`r Sys.Date()` ---
 **`r Name`** ---
-  `r Sys.Date()` ---
-**`r Sample_Name`**
+**`r Sample_Name`**  
 
 
 <div style="display: flex; gap: 25px; justify-content: center;">
