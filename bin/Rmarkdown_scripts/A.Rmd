@@ -3,6 +3,11 @@ title: "Main Menu"
 output: 
   html_document:
     css: style.css 
+params:
+  rmd_dir: NULL
+  sampleURL: NULL
+  sample_name: NULL
+  AuthorName: NULL
 
 ---
 <!-- get current date --> 
@@ -14,16 +19,18 @@ output:
 args <- commandArgs(trailingOnly = TRUE)
 
 # Set variables based on passed arguments
-path <- args[1]
-sampleURL <- args[2]
-Name <- args[3]
+path <- params$rmd_dir
+search_url <- params$sampleURL
+Sample_Name <- params$sample_name
+Sample_Name <- params$AuthorName
 
-# Build the full URL for the Search and Download button
-search_url <-sampleURL
+
 ```
 
 <!-- get current date --> 
+**`r Sample_Name`**
 **`r Name`**
+
   `r Sys.Date()`
 
 <head>
