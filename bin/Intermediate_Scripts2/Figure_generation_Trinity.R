@@ -66,7 +66,7 @@ Distinct_Transcripts_hits <- Distinct_Transcripts[!is.na(Distinct_Transcripts$Hi
 #bitscore 50 cutoff 
 Distinct_Transcripts_50 <- Distinct_Transcripts_hits[(Distinct_Transcripts_hits$BitScore > 50),]
 #bitscore 300 cutoff 
-Distinct_Transcripts_300 <- Distinct_Transcripts_hits[(Distinct_Transcripts_hits$BitScore > 300),]
+Distinct_Transcripts_250 <- Distinct_Transcripts_hits[(Distinct_Transcripts_hits$BitScore > 250),]
 
 alluvial1 <-  ggplot(data = Distinct_Transcripts_50,
                      aes(axis1 =Trinity_ID , axis2 = Hit)) +
@@ -84,7 +84,7 @@ alluvial1 <-  ggplot(data = Distinct_Transcripts_50,
 
 ggsave(filename = file.path("alluvial1.png"), plot = alluvial1, width = 8, height = 6, dpi = 600)
 
-alluvial2 <- ggplot(data = Distinct_Transcripts_300,
+alluvial2 <- ggplot(data = Distinct_Transcripts_250,
                     aes(axis1 =Trinity_ID , axis2 = Hit)) +
   geom_alluvium(aes(fill = Hit)) +
   geom_stratum(aes(fill = Hit)) +
@@ -96,7 +96,7 @@ alluvial2 <- ggplot(data = Distinct_Transcripts_300,
                        legend.key.size = unit(0.5, "cm"),  # Make the legend keys (colored boxes) smaller
                        legend.key.height = unit(0.5, "cm"),  # Adjust height of the key
                        legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = 0.5) ) +
-  labs(title = "Most significant unitprot toxin hit per transcript(Bitscore >300)")
+  labs(title = "Most significant unitprot toxin hit per transcript(Bitscore >250)")
 ggsave(filename = file.path("alluvial2.png"), plot = alluvial2, width = 8, height = 6, dpi = 600)
 
 
