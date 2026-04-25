@@ -30,9 +30,6 @@ library(ggplot2)
 library(GenomicRanges)
 library(igraph)
 
-#For testing
-commandArgs <- function(trailingOnly = TRUE) {
- c("DP3", "Doryteuthispealeii", "/Users/praveena/Desktop/PhD_all/2025/github/oldergithubscripts/results/DP3_transdf_distinct.csv", "ToxNonTox_IP.csv", "/Users/praveena/Desktop/PhD_all/2025/github/oldergithubscripts/DP3_PD.blastn.db.6.txt", "/Users/praveena/Desktop/PhD_all/2025/github/oldergithubscripts/results/DP3_PD_transpep.proteins.csv", "NULL")}
 
 args <- commandArgs(trailingOnly = TRUE)
 Sample_name <- args[1] #sample name 
@@ -65,6 +62,7 @@ transdf_unfiltered <- transdf_distinct
 transdf_filtered <- transdf_distinct
 
 #readinToxinCSV 
+summary_IP <- read.csv(ToxnontoxIP)
 IPInToxins <- summary_IP %>%
   filter(RelativeExpression > 0 )
 
