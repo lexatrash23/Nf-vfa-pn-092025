@@ -1,51 +1,142 @@
 #!/usr/bin/env Rscript
+
 library(dplyr)
+library(GO.db)
 
 
-
-#Allow for command line arguments
 args <- commandArgs(trailingOnly = TRUE)
-Transdf <- args[1] #transdf_distinct
-mass_spec <- args[2] #massspec csv 
-species_name  <- args[3] #species name
-Sample_name <- args[4] #sample name 
+ToxinDataTSV <- args[1] 
+NonToxinDataTSV  <- args[2] 
+IPmetadata <- args[3] 
+
+#Read in IPmetadatafile 
+Interproscan_metadata_csv <- read.csv(IPmetadata) %>%
+ dplyr::select(ENTRY_AC, ENTRY_TYPE,ENTRY_NAME ) %>%
+  dplyr::rename(InterPro = ENTRY_AC )
+
+#Read in ToxinDataTSV, only keep those with InterPro Values
+toxin_data <- read.delim(ToxinDataTSV, header = TRUE) %>%
+  separate_rows(InterPro, sep = ";") %>%    
+  mutate(InterPro = str_trim(InterPro)) %>%  
+  filter(!is.na(InterPro) & str_trim(InterPro) != "")
+
+# Calculate percentage of toxin proteins that have each domain 
+toxin_data <- toxin_data %>%
+  count(InterPro) %>%
+  mutate(ToxPercent = (n/(as.numeric(nrow(toxin_data))))*100) %>%
+  dplyr::select(-n)
+
+#Read in NonToxinDataTSV, only keep those with InterPro Values
+nontoxin_data <- read.delim(NonToxinDataTSV, header = TRUE)  %>%
+  separate_rows(InterPro, sep = ";") %>%    
+  mutate(InterPro = str_trim(InterPro)) %>%  
+  filter(!is.na(InterPro) & str_trim(InterPro) != "")
+
+# Calculate percentage of nontoxin proteins that have each domain , full join with toxindata values, replace NA values with 0
+#Calculate Relative expression, arrange by high to low, assign a rank number, add metadata info anddplyr::select columns of interest
+summary_IP <- nontoxin_data %>%
+  count(InterPro) %>%
+  mutate(NonToxPercent = (n/(as.numeric(nrow(nontoxin_data))))*100) %>%
+  dplyr::select(-n) %>%
+  full_join(toxin_data, by = "InterPro") %>%
+  mutate(NonToxPercent = ifelse(is.na(NonToxPercent), 0, NonToxPercent)) %>% 
+  mutate(ToxPercent = ifelse(is.na(ToxPercent), 0, ToxPercent)) %>% # Replace NA with 0 in NonToxPercent
+  mutate(RelativeExpression = ToxPercent / NonToxPercent) %>%
+  arrange(desc(RelativeExpression)) %>%
+  mutate(Rank = row_number()) %>%
+  dplyr::select(Rank,InterPro,ToxPercent,NonToxPercent,RelativeExpression) %>%
+  left_join(Interproscan_metadata_csv, by = "InterPro") %>%
+  mutate(Name_short = str_extract(ENTRY_NAME, "^[^,]+")) %>%
+  filter(!is.na(ENTRY_NAME)) %>%
+  dplyr::select(Rank,InterPro,,RelativeExpression,ENTRY_TYPE, Name_short) 
+
+#save this file for future processess
+write.csv(summary_IP, "ToxNonTox_IP.csv", row.names = FALSE)
+
+#Read in ToxinDataTSV, only keep those with GO Values
+toxin_data <- read.delim(ToxinDataTSV, header = TRUE) %>%
+  separate_rows(Gene.Ontology.IDs, sep = ";") %>%    
+  mutate(Gene.Ontology.IDs = str_trim(Gene.Ontology.IDs)) %>%  
+  filter(!is.na(Gene.Ontology.IDs) & str_trim(Gene.Ontology.IDs) != "")
+
+# Calculate percentage of toxin proteins that have each GO 
+toxin_data <- toxin_data %>%
+  count(Gene.Ontology.IDs) %>%
+  mutate(ToxPercent = (n/(as.numeric(nrow(toxin_data))))*100) %>%
+  dplyr::select(-n)
+
+#Read in NonToxinDataTSV, only keep those with GO Values
+nontoxin_data <- read.delim(NonToxinDataTSV, header = TRUE)  %>%
+  separate_rows(Gene.Ontology.IDs, sep = ";") %>%    
+  mutate(Gene.Ontology.IDs = str_trim(Gene.Ontology.IDs)) %>%  
+  filter(!is.na(Gene.Ontology.IDs) & str_trim(Gene.Ontology.IDs) != "")
+
+# Calculate percentage of nontoxin proteins that have each GO 
+#join with toxin data, make NA values 0, calculate relative expression and sort 
+summary_IP <- nontoxin_data %>%
+  count(Gene.Ontology.IDs) %>%
+  mutate(NonToxPercent = (n/(as.numeric(nrow(nontoxin_data))))*100) %>%
+  dplyr::select(-n) %>%
+  full_join(toxin_data, by = "Gene.Ontology.IDs") %>%
+  mutate(NonToxPercent = ifelse(is.na(NonToxPercent), 0, NonToxPercent)) %>% 
+  mutate(ToxPercent = ifelse(is.na(ToxPercent), 0, ToxPercent)) %>% # Replace NA with 0 in NonToxPercent
+  mutate(RelativeExpression = ToxPercent / NonToxPercent) %>%
+  arrange(desc(RelativeExpression)) %>%
+  dplyr::select(Gene.Ontology.IDs,ToxPercent,NonToxPercent,RelativeExpression) 
 
 
-#read in files 
-transdf <- read.csv(Transdf, header = TRUE )
-mass_spec <- read.csv(mass_spec, header = TRUE)
-# rename Accession column for later left join
-colnames(mass_spec)[which(names(mass_spec) == "Accession")] <- "Transdecoder_ID" 
+#pull GO metadata
+#defining the columns of the dataframe 
+go_ids <- summary_IP$Gene.Ontology.IDs
+term_names <- character(length(go_ids))
+definitions <- character(length(go_ids))
+ontologies <- character(length(go_ids))
 
+# Loop through our unique df and to metadata
+for (i in seq_along(go_ids)) {
+  go_id <- go_ids[i]
+  go_obj <- GOTERM[[go_id]]
+  
+  if (!is.null(go_obj)) {
+    term_names[i] <- Term(go_obj)
+    definitions[i] <- Definition(go_obj)
+    ontologies[i] <- Ontology(go_obj)
+  } else {
+    term_names[i] <- NA
+    definitions[i] <- NA
+    ontologies[i] <- NA
+  }
+}
 
-#add two columns to the start. One species and one sample name
-transdf$Species <- species_name
-transdf$Sample_name <- Sample_name
+# Combine into a new data frame
+go_metadata <- data.frame(
+  GO_ID = go_ids,
+  Name = term_names,
+  Definition = definitions,
+  Ontology = ontologies,
+  stringsAsFactors = FALSE
+)
 
-#move those to the end
-transdf <- transdf[c("Species", "Sample_name", setdiff(names(transdf), c("Species", "Sample_name")))]
+#add Go_metadata remove rows that refer to cellular compartment 
+summary_IP <- summary_IP %>%
+  dplyr::rename(GO_ID = Gene.Ontology.IDs) %>%
+  left_join(go_metadata, by = "GO_ID") %>%
+  filter(Ontology != "CC") 
 
+#create MF summary and rank 
+Summary_MF <- summary_IP %>%
+  filter(Ontology == "MF") %>%
+  mutate(Rank = row_number()) %>%
+  dplyr::select(Rank,Ontology,GO_ID,Name,RelativeExpression) 
 
-#Fulldf # all transdf distinct all mass spec columns 
-#merge with the mass spec data
-transdf_massspec <- left_join(transdf_filtered,mass_spec, by = "Transdecoder_ID")
+write.csv(Summary_MF, "ToxNonTox_MF.csv", row.names = FALSE)
 
-write.csv(transdf_massspec, paste0(Sample_name, "_transdf_distinct_masspec_full.csv"), row.names = FALSE)
+#create BP summary and rank 
+Summary_BP <- summary_IP %>%
+  filter(Ontology == "BP") %>%
+  mutate(Rank = row_number()) %>%
+  dplyr::select(Rank,Ontology,GO_ID,Name,RelativeExpression) 
 
-
-#Simplified df #only complete and signalp transdf distinct and select mass spec columns 
-#filter for those that are complete + SP(Sec/SPI) + TMHMM is false 
-transdf_filtered <- transdf[
-  (transdf$ORF_type == "complete (+)" | transdf$ORF_type == "complete (-)") &
-    transdf$SP_Prediction == "SP(Sec/SPI)" &
-    transdf$TMHMM == "FALSE",
-]
-
-
-
-massspec_select <- mass_spec %>% dplyr::select(Top, Transdecoder_ID, X.10LgP, Coverage..., X.Peptides, X.Unique, PTM )
-transdf_massspec_select <- left_join(transdf_filtered,massspec_select, by = "Transdecoder_ID")
-write.csv(transdf_massspec_select, paste0(Sample_name, "_transdf_distinct_masspec_simplified.csv"), row.names = FALSE)
-
+write.csv(Summary_BP, "ToxNonTox_BP.csv", row.names = FALSE)
 
 

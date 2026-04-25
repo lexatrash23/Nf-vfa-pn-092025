@@ -190,9 +190,7 @@ Final_interproscan_dataframe <- left_join(Final_interproscan_dataframe,df_collap
 Final_interproscan_dataframe<-left_join(Final_interproscan_dataframe,phobius_panther, by ="Transdecoder_ID")
 colnames(Final_interproscan_dataframe)
 Final_interproscan_dataframe$TMHMM <- grepl("TRANSMEMBRANE\\(Phobius\\)", Final_interproscan_dataframe$Phobius_Name)
-head(Final_interproscan_dataframe)
-head(Final_interproscan_dataframe)
+
 keep <- c("Transdecoder_ID","InterPro_accession_Names","GO_name","Panther_ID_Name","Phobius_Name","TMHMM")
 Final_interproscan_dataframe <-Final_interproscan_dataframe[keep]
-
-write.csv(Final_interproscan_dataframe, file = paste0(sample + "_Final_interproscan_dataframe.csv", row.names = FALSE)
+write.csv(Final_interproscan_dataframe, file = paste0(sample, "_Final_interproscan_dataframe.csv"), row.names = FALSE)

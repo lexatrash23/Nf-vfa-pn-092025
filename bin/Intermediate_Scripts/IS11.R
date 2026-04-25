@@ -1,4 +1,6 @@
 #!/usr/bin/env Rscript
+
+#Script to process blastn0 results that can be used to create interactive search databases downstream
 arg <- commandArgs(trailingOnly = TRUE)
 #read in command line arguments
 # read in sample_name

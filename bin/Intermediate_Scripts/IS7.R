@@ -1,274 +1,837 @@
 #!/usr/bin/env Rscript
 
-
-#installing and loading packages
-library(Biostrings)
 library(dplyr)
-library(tidyr)
-library(htmlwidgets)
-library(plotly)
+library(grid)  
+library(ggplot2)
+library(ggrepel)
 
-
-#command line arguments
+#Save plot and legend separate
 args <- commandArgs(trailingOnly = TRUE)
-Trans <- args[1]
-Toxin_domains_file <- args[2]
-fasta_file_pep <- args[3]
-fasta_file_cds <- args[4]
-sample <- args[4]
+transdf_distinct_csv_file <- args[1] 
+sample <- args[2]
+summary_IP_file <- args[3]
+Summary_MF_file <- args[4]
+Summary_BP_file <- args[5]
+colourRDS <- args[6]
 
-#Generating Interproscan plotly
-#read in transdf_distinct
-Trans <- read.csv(file = Trans, header = TRUE)
+color_palette <- readRDS(colours)
+transdf_distinct <- read.csv(transdf_distinct_csv_file)
 
-# Reordering columns and keeping only those of interest
-keeps <- c("Transdecoder_ID", "ORF_type", "PEP_Length", "CDS_Length", "SP_Prediction", "Signal_Length", "mature_length", "percent", "cumulativepercent", "Code", "Hit", "Percentage_Identity", "E_value", "BitScore", "Hit_species","InterPro_accession_Names","GO_name","TMHMM","Signal_Sequence","mature_sequence", "PEP_Sequence","CDS_Sequence")
-Trans <- Trans[keeps]
-
-
-# sort by bitscore
-Trans_sorted <- Trans[order(Trans$BitScore, decreasing = TRUE),]
-#sort only for those complete with false tmhmm
-FINAL_CSV_distinct_filtered <- Trans_sorted %>%
+#filter only for complete ORFs with signal sequence 
+transdf_distinct <- transdf_distinct %>%
   filter(
     grepl("complete", ORF_type, ignore.case = TRUE),
-    grepl("SP", SP_Prediction, ignore.case = TRUE),
+    grepl("SP", SP, ignore.case = TRUE),
     TMHMM == FALSE
-  )
-#keep only columns of interest
-keeps <- c("Transdecoder_ID","PEP_Length", "InterPro_accession_Names","GO_name")
-df_figures <-FINAL_CSV_distinct_filtered[keeps]
+  ) %>%
+  filter(percent > 0) %>%
+  dplyr::select(Transdecoder_ID, percent,  InterPro_accession_Names, GO_name)
+
+#Filter only for those with IP
+transdf_distinct_IP <- transdf_distinct %>%
+  dplyr::select(Transdecoder_ID, percent, InterPro_accession_Names) %>%
+  filter(!is.na(InterPro_accession_Names) & str_trim(InterPro_accession_Names) != "")
+
+sum(transdf_distinct_IP$percent)
+#Read in IP comparisons only keep those that are more represented in toxins than non-toxin proteins 
+summary_IP <- read.csv(summary_IP_file)
+
+IPOverRepresentedInToxins <- summary_IP %>%
+  filter(RelativeExpression > 0 ) %>%
+  arrange(desc(Rank)) #the script below takes the last match's rank value 
 
 
-
-#separate the interproscan IPs by PIPs
-annotation_list <- strsplit(df_figures$InterPro_accession_Names, split = "\\|")
-#creates one long list of IPs and summarizes the counts for each
-all_annotations <- unlist(annotation_list)
-annotation_counts <- table(all_annotations)
-annotation_counts_df <- as.data.frame(annotation_counts)
-#sort by frequencing of IP
-annotation_counts_df <- annotation_counts_df[order(-annotation_counts_df$Freq), ]
-
-colnames(annotation_counts_df) <- c("Transdf_annotations", "Freq")
-
-write.csv(annotation_counts_df, paste0(sample,"_annotation_counts_trandsf.csv"), row.names = FALSE)
-
-
-#read in toxin domains tsv
-Toxin_domains <- read.delim(file = Toxin_domains_file, header = TRUE, sep = "\t")
-#same as above but different separator for this tsv
-interpro_list <- strsplit(Toxin_domains$InterPro, split = ";")
-all_interpro_ids <- unlist(interpro_list)
-all_interpro_ids <- trimws(all_interpro_ids) #remove ws
-unique_interpro_ids <- unique(all_interpro_ids) #only get unique IDs
-unique_interpro_df <- data.frame(InterPro = unique_interpro_ids)
-annotation_counts_toxin <- table(all_interpro_ids)
-annotation_counts_toxin_df <- as.data.frame(annotation_counts_toxin)
-annotation_counts_toxin_df <- annotation_counts_toxin[order(-annotation_counts_toxin$Freq), ]
-colnames(annotation_counts_toxin_df) <- c("toxin_annotations", "Freq")
-
-write.csv(annotation_counts_toxin_df, paste0(sample,"_annotation_counts_toxins.csv"), row.names = FALSE)
-
-#iterate through the unique_interpro_df$InterPro, search df_figres_interpro_names df with this value as query, save the rows that have a match at least somewhere in  the row
-matched_rows <- data.frame()
-for (interpro_id in unique_interpro_df$InterPro) {
-  # searches
-  matches <- df_figures[apply(df_figures, 1, function(row) any(grepl(interpro_id, row, fixed = TRUE))), ]
-  
-  # add the whole df_Figures row row to a new dataframe
-  if (nrow(matches) > 0) {
-    matched_rows <- rbind(matched_rows, matches)
+#Add the highest rank domain present for each transcript
+for (i in 1:nrow(IPOverRepresentedInToxins)) {
+  entry_ac <- IPOverRepresentedInToxins$InterPro[i]
+  matched_rows <- transdf_distinct_IP[grepl(entry_ac, transdf_distinct_IP$InterPro_accession_Names, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- IPOverRepresentedInToxins[i, ]  # Get the current row in IPInterest (since we're looping over IPInterest)
+    transdf_distinct_IP$Rank[transdf_distinct_IP$InterPro_accession_Names %in% matched_rows$InterPro_accession_Names] <- best_match$Rank
   }
 }
-#unique Transdecoder IDs only
-matched_rows <- distinct(matched_rows, Transdecoder_ID, .keep_all = TRUE)
 
-#remove any na rows
-matched_rows <- matched_rows[!is.na(matched_rows$InterPro_accession_Names), ]
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct_IP <- transdf_distinct_IP %>%
+  filter(!is.na(Rank) & str_trim(Rank) != "") %>%
+  left_join(summary_IP, by = "Rank") %>% 
+  arrange(desc(percent)) %>%
+  group_by(Name_short) %>%
+  mutate(percent = sum(percent, na.rm = TRUE)) %>%
+  ungroup() %>%
+  distinct(Name_short, .keep_all = TRUE) %>%
+  arrange(percent)
 
-#Frequency list of toxin-related domains
-annotation_list_matched <- strsplit(matched_rows$InterPro_accession_Names, split = "\\|")
-all_annotations_matched  <- unlist(annotation_list_matched)
-annotation_counts_matched <- table(all_annotations_matched)
-annotation_counts_df_matched <- as.data.frame(annotation_counts_matched)
-annotation_counts_df_matched <- annotation_counts_df_matched[order(-annotation_counts_df_matched$Freq), ]
+#Total percentage represented by this df 
+PercentSumIPs <- sum(transdf_distinct_IP$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSumIPs, 2), "%")
+#Threshold for labelling
+threshold <- 5
 
-colnames(annotation_counts_df_matched) <- c("matched_toxin_annotations", "Freq")
-
-write.csv(annotation_counts_df_matched, paste0(sample,"_annotation_counts_trandf_matched_to_toxins.csv"), row.names = FALSE)
-
-
-
-
-fasta <- readAAStringSet(file = fasta_file_pep)
-seq_ids <- sapply(strsplit(names(fasta), " "), `[`, 1)
-keep <- seq_ids %in% matched_rows$Transdecoder_ID
-filtered_fasta <- fasta[keep]
-writeXStringSet(filtered_fasta, file.path("filtered_sequences.fasta"))
-
-
-#GROUPING TYPE 
-annotation_counts_df_matched$Group <- ifelse(
-  grepl("immunoglobulin", tolower(annotation_counts_df_matched$all_annotations)), 
-  'Immunoglobulin-related', 
-  ifelse(
-    grepl("cysteine", tolower(annotation_counts_df_matched$all_annotations)),
-    'Cysteine-related',
-    ifelse(
-      grepl("peptidase", tolower(annotation_counts_df_matched$all_annotations)),
-      'Peptidase',
-      ifelse(
-        grepl("serine protease", tolower(annotation_counts_df_matched$all_annotations)),
-        'Serine protease',
-        ifelse(
-          grepl("lipase", tolower(annotation_counts_df_matched$all_annotations)),
-          'Lipases',
-          ifelse(
-            grepl("chitinase", tolower(annotation_counts_df_matched$all_annotations)),
-            'Chitinases',
-            ifelse(
-              grepl("inhibitor", tolower(annotation_counts_df_matched$all_annotations)),
-              'Inhibitors',
-              ifelse(
-                grepl("snake toxin-like", tolower(annotation_counts_df_matched$all_annotations)),
-                'Snake toxin-like superfamily',
-                ifelse(
-                  grepl("kinase", tolower(annotation_counts_df_matched$all_annotations)),
-                  'Kinases',
-                  ifelse(
-                    grepl("hydrolase", tolower(annotation_counts_df_matched$all_annotations)),
-                    'Hydrolase',
-                    ifelse(
-                      grepl("integrin", tolower(annotation_counts_df_matched$all_annotations)),
-                      'Adhesion/Integrin',
-                      ifelse(
-                        grepl("fibrinogen|collagen|laminin", tolower(annotation_counts_df_matched$all_annotations)),
-                        'Coagulation/ECM',
-                        ifelse(
-                          grepl("lectin|galectin", tolower(annotation_counts_df_matched$all_annotations)),
-                          'Lectin-related',
-                          ifelse(
-                            grepl("kunitz", tolower(annotation_counts_df_matched$all_annotations)),
-                            'Protease Inhibitors',
-                            ifelse(
-                              grepl("egf", tolower(annotation_counts_df_matched$all_annotations)),
-                              'Growth Factor Domains',
-                              ifelse(
-                                grepl("notch", tolower(annotation_counts_df_matched$all_annotations)),
-                                'Notch Signaling',
-                                ifelse(
-                                  grepl("interleukin|tir", tolower(annotation_counts_df_matched$all_annotations)),
-                                  'Immune Signaling',
-                                  ifelse(
-                                    grepl("vegf|pdgf", tolower(annotation_counts_df_matched$all_annotations)),
-                                    'Growth Factor Pathways',
-                                    ifelse(
-                                      grepl("kringle", tolower(annotation_counts_df_matched$all_annotations)),
-                                      'Coagulation',
-                                      ifelse(
-                                        grepl("gpcr", tolower(annotation_counts_df_matched$all_annotations)),
-                                        'GPCR/Signaling',
-                                        ifelse(
-                                          grepl("peroxiredoxin", tolower(annotation_counts_df_matched$all_annotations)),
-                                          'Antioxidant Enzymes',
-                                          ifelse(
-                                            grepl("phosphatase", tolower(annotation_counts_df_matched$all_annotations)),
-                                            'Phosphatase',
-                                            ifelse(
-                                              grepl("cap", tolower(annotation_counts_df_matched$all_annotations)),
-                                              'CAP',
-                                              ifelse(
-                                                grepl("fibronectin", tolower(annotation_counts_df_matched$all_annotations)),
-                                                'Fibronectin-related',
-                                                ifelse(
-                                                  grepl("ef", tolower(annotation_counts_df_matched$all_annotations)),
-                                                  'EF-related',
-                                                  ifelse(
-                                                    grepl("von willebrand factor", tolower(annotation_counts_df_matched$all_annotations)),
-                                                    'von Willebrand factor',
-                                                    ifelse(
-                                                      grepl("extracellular matrix assembly and organization", tolower(annotation_counts_df_matched$all_annotations)),
-                                                      'Extracellular Matrix Assembly and Organization',
-                                                      ifelse(
-                                                        grepl("thioredoxin", tolower(annotation_counts_df_matched$all_annotations)),
-                                                        'Thioredoxin',
-                                                        ifelse(
-                                                          grepl("pan/apple", tolower(annotation_counts_df_matched$all_annotations)),
-                                                          'Pan/Apple Domain',
-                                                          ifelse(
-                                                            grepl("chitin binding domain", tolower(annotation_counts_df_matched$all_annotations)),
-                                                            'Chitin Binding Domain',
-                                          ifelse(
-                                            grepl("complement", tolower(annotation_counts_df_matched$all_annotations)),
-                                            'Complement System',
-                                            'Other'
-                                          )
-                                          )
-                                          )
-                                                      
-                                          )
-                                          )
-                                          )
-                                                )
-                                              )
-                                            )
-                                          )
-                                        )
-                                      )
-                                    )
-                                  )
-                                )
-                              )
-                            )
-                          )
-                        )
-                      )
-                    )
-                  )
-                )
-              )
-            )
-          )
-        )
-      )
-    )
-  )
-)
-library(plotly)
-
-group_totals <- annotation_counts_df_matched %>%
-  group_by(Group) %>%
-  summarise(TotalFreq = sum(Freq)) %>%
-  mutate(GroupLabel = paste0(Group, " (", TotalFreq, ")"))
-annotation_counts_df_matched <- annotation_counts_df_matched %>%
-  left_join(group_totals, by = "Group")
-
-fig <- plot_ly(annotation_counts_df_matched, 
-               x = ~all_annotations,      # X-axis = annotations
-               y = ~Freq,  
-               color = ~GroupLabel,
-               colors = "Set1",# Y-axis = frequency
-               type = 'bar',                 # Bar plot
-               text = ~paste('Frequency: ', Freq, 'Annotation: ', all_annotations ),  # Tooltip with frequency
-               hoverinfo = 'text'        # Show tooltip on hover 
-               )  # Color of bars
-
-# Set plot title and axis labels, reduce x-axis text size
-fig <- fig %>% layout(
-  title = 'Frequency of InterPro Annotations found in known Toxins',
-  xaxis = list(
-    title = 'Annotation',
-    tickangle = 45,               # Rotate the x-axis labels for better readability
-    tickfont = list(size = 3)     # Reduce the sample label text size (x-axis labels)
-  ),
-  yaxis = list(title = 'Frequency')
-)
-
-# Show the plot
-fig
+#Add relativeproportion column, text labels, and positions for labels 
+transdf_distinct_IP <- transdf_distinct_IP %>%
+  mutate(RelativeProportion = round(((percent/PercentSumIPs)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Name_short,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Name_short, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Name_short) %>% 
+  mutate(csum = rev(cumsum(rev(RelativeProportion))), 
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
 
 
 
-# Save as static image (PNG)
-htmlwidgets::saveWidget(fig, file.path("plotly_graph.html"))
+#plot 
+IP_plot <- ggplot(transdf_distinct_IP, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name_short))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
+  coord_polar(theta = "y") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_IP$RelativeProportion),
+           fill = "white", color = NA) +
+  theme_void() +
+  labs(fill = "Venom-associated InterPro domains") +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(),
+    legend.text = element_text(size = 4, color = "#000000"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.key.height = unit(0.3, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
+  ) +
+  geom_label_repel(data = transdf_distinct_IP,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of Toxin-associated domains") 
+
+ggsave("Plot_1_IP.png", IP_plot)
+
+
+#Filter only for those with GO
+transdf_distinct_GO <- transdf_distinct %>%
+  dplyr::select(Transdecoder_ID, percent, GO_name) %>%
+  filter(!is.na(GO_name) & str_trim(GO_name) != "")
+transdf_distinct_MF <- transdf_distinct_GO 
+#Molecular Functions
+Summary_MF <- read.csv(Summary_MF_file)
+MFOverRepresentedInToxins <- Summary_MF %>%
+  filter(RelativeExpression > 0 ) %>%
+  arrange(desc(Rank)) #the script below takes the last match's rank value 
+
+#Add the highest MF  present for each transcript
+for (i in 1:nrow(MFOverRepresentedInToxins)) {
+  GO <- MFOverRepresentedInToxins$GO_ID[i]
+  matched_rows <- transdf_distinct_MF[grepl(GO, transdf_distinct_MF$GO_name, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- MFOverRepresentedInToxins[i, ]  # Get the current row in GO 
+    transdf_distinct_MF$Rank[transdf_distinct_MF$GO_name %in% matched_rows$GO_name] <- best_match$Rank
+  }
+}
+
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct_MF <- transdf_distinct_MF %>%
+  filter(!is.na(Rank) & str_trim(Rank) != "") %>%
+  left_join(Summary_MF, by = "Rank") %>% 
+  arrange(desc(percent)) %>%
+  group_by(Name) %>%
+  mutate(percent = sum(percent, na.rm = TRUE)) %>%
+  ungroup() %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  arrange(percent)
+
+#Total percentage represented by this df 
+PercentSumMFs <- sum(transdf_distinct_MF$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSumMFs, 2), "%")
+#Threshold for labelling
+threshold <- 5
+
+#Add relativeproportion column, text labels, and positions for labels 
+transdf_distinct_MF <- transdf_distinct_MF %>%
+  mutate(RelativeProportion = round(((percent/PercentSumMFs)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Name,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Name, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Name) %>% 
+  mutate(csum = rev(cumsum(rev(RelativeProportion))), 
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
+
+
+
+MF_plot <- ggplot(transdf_distinct_MF, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
+  coord_polar(theta = "y") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_MF$RelativeProportion),
+           fill = "white", color = NA) +
+  theme_void() +
+  labs(fill = "Venom-associated Molecular Functions") +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(),
+    legend.text = element_text(size = 4, color = "#000000"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.key.height = unit(0.3, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
+  ) +
+  geom_label_repel(data = transdf_distinct_MF,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of Toxin-associated Molecular Functions") 
+
+ggsave("Plot_1_MF.png", MF_plot)
+
+#Biological Processess
+Summary_BP <- read.csv(Summary_BP_file)
+BPOverRepresentedInToxins <- Summary_BP %>%
+  filter(RelativeExpression > 0 )%>%
+  arrange(desc(Rank)) #the script below takes the last match's rank value 
+transdf_distinct_BP <- transdf_distinct_GO 
+
+#Add the highest MF  present for each transcript
+for (i in 1:nrow(BPOverRepresentedInToxins)) {
+  GO <- BPOverRepresentedInToxins$GO_ID[i]
+  matched_rows <- transdf_distinct_BP[grepl(GO, transdf_distinct_BP$GO_name, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- BPOverRepresentedInToxins[i, ]  # Get the current row in GO 
+    transdf_distinct_BP$Rank[transdf_distinct_BP$GO_name %in% matched_rows$GO_name] <- best_match$Rank
+  }
+}
+
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct_BP <- transdf_distinct_BP %>%
+  filter(!is.na(Rank) & str_trim(Rank) != "") %>%
+  left_join(Summary_BP, by = "Rank") %>% 
+  arrange(desc(percent)) %>%
+  group_by(Name) %>%
+  mutate(percent = sum(percent, na.rm = TRUE)) %>%
+  ungroup() %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  arrange(percent)
+
+#Total percentage represented by this df 
+PercentSumBPs <- sum(transdf_distinct_BP$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSumBPs, 2), "%")
+#Threshold for labelling
+threshold <- 5
+
+#Add relativeproportion column, text labels, and positions for labels 
+transdf_distinct_BP <- transdf_distinct_BP %>%
+  mutate(RelativeProportion = round(((percent/PercentSumBPs)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Name,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Name, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Name) %>% 
+  mutate(csum = rev(cumsum(rev(RelativeProportion))), 
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
+
+
+
+BP_plot <- ggplot(transdf_distinct_BP, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
+  coord_polar(theta = "y") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_BP$RelativeProportion),
+           fill = "white", color = NA) +
+  theme_void() +
+  labs(fill = "Venom-associated Molecular Functions") +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(),
+    legend.text = element_text(size = 4, color = "#000000"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.key.height = unit(0.3, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
+  ) +
+  geom_label_repel(data = transdf_distinct_BP,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of Toxin-associated Biological Processess") 
+
+ggsave("Plot_1_BP.png", BP_plot)
+
+##Now just those that are overrepresented in toxins RE>1
+
+transdf_distinct <- read.csv(transdf_distinct_csv_file)
+
+
+
+#filter only for complete ORFs with signal sequence 
+transdf_distinct <- transdf_distinct %>%
+  filter(
+    grepl("complete", ORF_type, ignore.case = TRUE),
+    grepl("SP", SP, ignore.case = TRUE),
+    TMHMM == FALSE
+  ) %>%
+  filter(percent > 0) %>%
+  dplyr::select(Transdecoder_ID, percent,  InterPro_accession_Names, GO_name)
+
+#Filter only for those with IP
+transdf_distinct_IP <- transdf_distinct %>%
+  dplyr::select(Transdecoder_ID, percent, InterPro_accession_Names) %>%
+  filter(!is.na(InterPro_accession_Names) & str_trim(InterPro_accession_Names) != "")
+
+
+#Read in IP comparisons only keep those that are more represented in toxins than non-toxin proteins 
+summary_IP <- read.csv(summary_IP_file)
+IPOverRepresentedInToxins <- summary_IP %>%
+  filter(RelativeExpression > 1 ) %>%
+  arrange(desc(Rank)) #the script below takes the last match's rank value 
+
+#Add the highest rank domain present for each transcript
+for (i in 1:nrow(IPOverRepresentedInToxins)) {
+  entry_ac <- IPOverRepresentedInToxins$InterPro[i]
+  matched_rows <- transdf_distinct_IP[grepl(entry_ac, transdf_distinct_IP$InterPro_accession_Names, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- IPOverRepresentedInToxins[i, ]  # Get the current row in IPInterest (since we're looping over IPInterest)
+    transdf_distinct_IP$Rank[transdf_distinct_IP$InterPro_accession_Names %in% matched_rows$InterPro_accession_Names] <- best_match$Rank
+  }
+}
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct_IP <- transdf_distinct_IP %>%
+  filter(!is.na(Rank) & str_trim(Rank) != "") %>%
+  left_join(summary_IP, by = "Rank") %>% 
+  arrange(desc(percent)) %>%
+  group_by(Name_short) %>%
+  mutate(percent = sum(percent, na.rm = TRUE)) %>%
+  ungroup() %>%
+  distinct(Name_short, .keep_all = TRUE) %>%
+  arrange(percent)
+
+#Total percentage represented by this df 
+PercentSumIPs <- sum(transdf_distinct_IP$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSumIPs, 2), "%")
+#Threshold for labelling
+threshold <- 5
+
+#Add relativeproportion column, text labels, and positions for labels 
+transdf_distinct_IP <- transdf_distinct_IP %>%
+  mutate(RelativeProportion = round(((percent/PercentSumIPs)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Name_short,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Name_short, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Name_short) %>% 
+  mutate(csum = rev(cumsum(rev(RelativeProportion))), 
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
+
+
+
+#plot 
+IP_plot <- ggplot(transdf_distinct_IP, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name_short))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
+  coord_polar(theta = "y") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_IP$RelativeProportion),
+           fill = "white", color = NA) +
+  theme_void() +
+  labs(fill = "Venom-associated InterPro domains") +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(),
+    legend.text = element_text(size = 4, color = "#000000"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.key.height = unit(0.3, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
+  ) +
+  geom_label_repel(data = transdf_distinct_IP,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of InterPro domains overrepresented in Venom") 
+ggsave("Plot_2_IP.png", IP_plot)
+
+
+#Filter only for those with GO
+transdf_distinct_GO <- transdf_distinct %>%
+  dplyr::select(Transdecoder_ID, percent, GO_name) %>%
+  filter(!is.na(GO_name) & str_trim(GO_name) != "")
+transdf_distinct_MF <- transdf_distinct_GO
+#Molecular Functions
+Summary_MF <- read.csv(Summary_MF_file)
+MFOverRepresentedInToxins <- Summary_MF %>%
+  filter(RelativeExpression > 1 ) %>%
+  arrange(desc(Rank)) #the script below takes the last match's rank value 
+
+#Add the highest MF  present for each transcript
+for (i in 1:nrow(MFOverRepresentedInToxins)) {
+  GO <- MFOverRepresentedInToxins$GO_ID[i]
+  matched_rows <- transdf_distinct_MF[grepl(GO, transdf_distinct_MF$GO_name, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- MFOverRepresentedInToxins[i, ]  # Get the current row in GO 
+    transdf_distinct_MF$Rank[transdf_distinct_MF$GO_name %in% matched_rows$GO_name] <- best_match$Rank
+  }
+}
+
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct_MF <- transdf_distinct_MF %>%
+  filter(!is.na(Rank) & str_trim(Rank) != "") %>%
+  left_join(Summary_MF, by = "Rank") %>% 
+  arrange(desc(percent)) %>%
+  group_by(Name) %>%
+  mutate(percent = sum(percent, na.rm = TRUE)) %>%
+  ungroup() %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  arrange(percent)
+
+#Total percentage represented by this df 
+PercentSumMFs <- sum(transdf_distinct_MF$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSumMFs, 2), "%")
+#Threshold for labelling
+threshold <- 5
+
+#Add relativeproportion column, text labels, and positions for labels 
+transdf_distinct_MF <- transdf_distinct_MF %>%
+  mutate(RelativeProportion = round(((percent/PercentSumMFs)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Name,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Name, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Name) %>% 
+  mutate(csum = rev(cumsum(rev(RelativeProportion))), 
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
+
+
+
+MF_plot <- ggplot(transdf_distinct_MF, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
+  coord_polar(theta = "y") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_MF$RelativeProportion),
+           fill = "white", color = NA) +
+  theme_void() +
+  labs(fill = "Venom-associated Molecular Functions") +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(),
+    legend.text = element_text(size = 4, color = "#000000"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.key.height = unit(0.3, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
+  ) +
+  geom_label_repel(data = transdf_distinct_MF,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of Molecular Functions overrepresented in Venom") 
+
+ggsave("Plot_2_MF.png", MF_plot)
+
+#Biological Processess
+Summary_BP <- read.csv(Summary_BP_file)
+BPOverRepresentedInToxins <- Summary_BP %>%
+  filter(RelativeExpression > 1 ) %>%
+  arrange(desc(Rank)) #the script below takes the last match's rank value 
+transdf_distinct_BP <- transdf_distinct_GO 
+
+#Add the highest MF  present for each transcript
+for (i in 1:nrow(BPOverRepresentedInToxins)) {
+  GO <- BPOverRepresentedInToxins$GO_ID[i]
+  matched_rows <- transdf_distinct_BP[grepl(GO, transdf_distinct_BP$GO_name, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- BPOverRepresentedInToxins[i, ]  # Get the current row in GO 
+    transdf_distinct_BP$Rank[transdf_distinct_BP$GO_name %in% matched_rows$GO_name] <- best_match$Rank
+  }
+}
+
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct_BP <- transdf_distinct_BP %>%
+  filter(!is.na(Rank) & str_trim(Rank) != "") %>%
+  left_join(Summary_BP, by = "Rank") %>% 
+  arrange(desc(percent)) %>%
+  group_by(Name) %>%
+  mutate(percent = sum(percent, na.rm = TRUE)) %>%
+  ungroup() %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  arrange(percent)
+
+#Total percentage represented by this df 
+PercentSumBPs <- sum(transdf_distinct_BP$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSumBPs, 2), "%")
+#Threshold for labelling
+threshold <- 5
+
+#Add relativeproportion column, text labels, and positions for labels 
+transdf_distinct_BP <- transdf_distinct_BP %>%
+  mutate(RelativeProportion = round(((percent/PercentSumBPs)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Name,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Name, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Name) %>% 
+  mutate(csum = rev(cumsum(rev(RelativeProportion))), 
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
+
+
+
+BP_plot <- ggplot(transdf_distinct_BP, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
+  coord_polar(theta = "y") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_BP$RelativeProportion),
+           fill = "white", color = NA) +
+  theme_void() +
+  labs(fill = "Venom-associated Biological Processess") +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(),
+    legend.text = element_text(size = 4, color = "#000000"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.key.height = unit(0.3, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
+  ) +
+  geom_label_repel(data = transdf_distinct_BP,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of Biological Processess overrepresented in Venom") 
+
+ggsave("Plot_2_BP.png", BP_plot)
+
+
+# NOW ALL domains and MF and BP 
+
+transdf_distinct <- read.csv(transdf_distinct_csv_file)
+
+
+#filter only for complete ORFs with signal sequence 
+transdf_distinct <- transdf_distinct %>%
+  filter(
+    grepl("complete", ORF_type, ignore.case = TRUE),
+    grepl("SP", SP, ignore.case = TRUE),
+    TMHMM == FALSE
+  ) %>%
+  filter(percent > 0) %>%
+  dplyr::select(Transdecoder_ID, percent,  InterPro_accession_Names, GO_name)
+
+#Filter only for those with IP
+transdf_distinct_IP <- transdf_distinct %>%
+  dplyr::select(Transdecoder_ID, percent, InterPro_accession_Names) %>%
+  filter(!is.na(InterPro_accession_Names) & str_trim(InterPro_accession_Names) != "")
+
+
+#Read in IP comparisons only keep those that are more represented in toxins than non-toxin proteins 
+summary_IP <- read.csv(summary_IP_file)
+IPOverRepresentedInToxins <- summary_IP %>%
+  arrange(desc(Rank)) #the script below takes the last match's rank value 
+
+#Add the highest rank domain present for each transcript
+for (i in 1:nrow(IPOverRepresentedInToxins)) {
+  entry_ac <- IPOverRepresentedInToxins$InterPro[i]
+  matched_rows <- transdf_distinct_IP[grepl(entry_ac, transdf_distinct_IP$InterPro_accession_Names, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- IPOverRepresentedInToxins[i, ]  # Get the current row in IPInterest (since we're looping over IPInterest)
+    transdf_distinct_IP$Rank[transdf_distinct_IP$InterPro_accession_Names %in% matched_rows$InterPro_accession_Names] <- best_match$Rank
+  }
+}
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct_IP <- transdf_distinct_IP %>%
+  filter(!is.na(Rank) & str_trim(Rank) != "") %>%
+  left_join(summary_IP, by = "Rank") %>% 
+  arrange(desc(percent)) %>%
+  group_by(Name_short) %>%
+  mutate(percent = sum(percent, na.rm = TRUE)) %>%
+  ungroup() %>%
+  distinct(Name_short, .keep_all = TRUE) %>%
+  arrange(percent)
+
+#Total percentage represented by this df 
+PercentSumIPs <- sum(transdf_distinct_IP$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSumIPs, 2), "%")
+#Threshold for labelling
+threshold <- 5
+
+#Add relativeproportion column, text labels, and positions for labels 
+transdf_distinct_IP <- transdf_distinct_IP %>%
+  mutate(RelativeProportion = round(((percent/PercentSumIPs)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Name_short,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Name_short, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Name_short) %>% 
+  mutate(csum = rev(cumsum(rev(RelativeProportion))), 
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
+
+
+
+#plot 
+IP_plot <- ggplot(transdf_distinct_IP, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name_short))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
+  coord_polar(theta = "y") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_IP$RelativeProportion),
+           fill = "white", color = NA) +
+  theme_void() +
+  labs(fill = "InterPro domains") +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(),
+    legend.text = element_text(size = 4, color = "#000000"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.key.height = unit(0.3, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
+  ) +
+  geom_label_repel(data = transdf_distinct_IP,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of InterPro domains") 
+ggsave("Plot_3_IP.png", IP_plot, width = 20, height = 16)
+
+#Filter only for those with GO
+transdf_distinct_GO <- transdf_distinct %>%
+  dplyr::select(Transdecoder_ID, percent, GO_name) %>%
+  filter(!is.na(GO_name) & str_trim(GO_name) != "")
+transdf_distinct_MF <- transdf_distinct_GO
+#Molecular Functions
+Summary_MF <- read.csv(Summary_MF_file)
+MFOverRepresentedInToxins <- Summary_MF %>%
+  arrange(desc(Rank)) #the script below takes the last match's rank value 
+
+#Add the highest MF  present for each transcript
+for (i in 1:nrow(MFOverRepresentedInToxins)) {
+  GO <- MFOverRepresentedInToxins$GO_ID[i]
+  matched_rows <- transdf_distinct_MF[grepl(GO, transdf_distinct_MF$GO_name, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- MFOverRepresentedInToxins[i, ]  # Get the current row in GO 
+    transdf_distinct_MF$Rank[transdf_distinct_MF$GO_name %in% matched_rows$GO_name] <- best_match$Rank
+  }
+}
+
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct_MF <- transdf_distinct_MF %>%
+  filter(!is.na(Rank) & str_trim(Rank) != "") %>%
+  left_join(Summary_MF, by = "Rank") %>% 
+  arrange(desc(percent)) %>%
+  group_by(Name) %>%
+  mutate(percent = sum(percent, na.rm = TRUE)) %>%
+  ungroup() %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  arrange(percent)
+
+#Total percentage represented by this df 
+PercentSumMFs <- sum(transdf_distinct_MF$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSumMFs, 2), "%")
+#Threshold for labelling
+threshold <- 5
+
+#Add relativeproportion column, text labels, and positions for labels 
+transdf_distinct_MF <- transdf_distinct_MF %>%
+  mutate(RelativeProportion = round(((percent/PercentSumMFs)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Name,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Name, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Name) %>% 
+  mutate(csum = rev(cumsum(rev(RelativeProportion))), 
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
+
+
+
+MF_plot <- ggplot(transdf_distinct_MF, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
+  coord_polar(theta = "y") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_MF$RelativeProportion),
+           fill = "white", color = NA) +
+  theme_void() +
+  labs(fill = "Molecular Functions") +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(),
+    legend.text = element_text(size = 4, color = "#000000"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.key.height = unit(0.3, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
+  ) +
+  geom_label_repel(data = transdf_distinct_MF,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of Molecular Functions") 
+
+ggsave("Plot_3_MF.png", MF_plot, width = 20, height = 16)
+
+#Biological Processess
+Summary_BP <- read.csv(Summary_BP_file)
+BPOverRepresentedInToxins <- Summary_BP  %>%
+  arrange(desc(Rank)) 
+transdf_distinct_BP <- transdf_distinct_GO  #the script below takes the last match's rank value 
+
+#Add the highest BP  present for each transcript
+for (i in 1:nrow(BPOverRepresentedInToxins)) {
+  GO <- BPOverRepresentedInToxins$GO_ID[i]
+  matched_rows <- transdf_distinct_BP[grepl(GO, transdf_distinct_BP$GO_name, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- BPOverRepresentedInToxins[i, ]  # Get the current row in GO 
+    transdf_distinct_BP$Rank[transdf_distinct_BP$GO_name %in% matched_rows$GO_name] <- best_match$Rank
+  }
+}
+
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct_BP <- transdf_distinct_BP %>%
+  filter(!is.na(Rank) & str_trim(Rank) != "") %>%
+  left_join(Summary_BP, by = "Rank") %>% 
+  arrange(desc(percent)) %>%
+  group_by(Name) %>%
+  mutate(percent = sum(percent, na.rm = TRUE)) %>%
+  ungroup() %>%
+  distinct(Name, .keep_all = TRUE) %>%
+  arrange(percent)
+
+#Total percentage represented by this df 
+PercentSumBPs <- sum(transdf_distinct_BP$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSumBPs, 2), "%")
+#Threshold for labelling
+threshold <- 5
+
+#Add relativeproportion column, text labels, and positions for labels 
+transdf_distinct_BP <- transdf_distinct_BP %>%
+  mutate(RelativeProportion = round(((percent/PercentSumBPs)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Name,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Name, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Name) %>% 
+  mutate(csum = rev(cumsum(rev(RelativeProportion))), 
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
+
+
+
+BP_plot <- ggplot(transdf_distinct_BP, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
+  coord_polar(theta = "y") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_BP$RelativeProportion),
+           fill = "white", color = NA) +
+  theme_void() +
+  labs(fill = "Biological Processess") +
+  theme(
+    legend.position = "right",
+    legend.title = element_text(),
+    legend.text = element_text(size = 4, color = "#000000"),
+    legend.key.size = unit(0.5, "cm"),
+    legend.key.height = unit(0.3, "cm"),
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
+  ) +
+  geom_label_repel(data = transdf_distinct_BP,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of Biological Processess") 
+
+ggsave("Plot_3_BP.png", BP_plot, width = 20, height = 16)
+
+##ANNOTATION 
+#Labelling the csv with this information - Will be used in annotate script 
+
+transdf_distinct <- read.csv(transdf_distinct_csv_file)
+
+
+#filter only for complete ORFs with signal sequence 
+transdf_distinct <- transdf_distinct %>%
+  filter(
+    grepl("complete", ORF_type, ignore.case = TRUE),
+    grepl("SP", SP, ignore.case = TRUE),
+    TMHMM == FALSE
+  ) %>%
+  filter(percent > 0) %>%
+  dplyr::select(Transdecoder_ID,  InterPro_accession_Names, GO_name)
+
+
+summary_IP <- read.csv(summary_IP_file) %>%
+  dplyr::rename(IPRank = Rank) %>%
+  arrange(desc(IPRank)) #the script below takes the last match's rank value 
+
+#Add the highest rank domain present for each transcript
+for (i in 1:nrow(summary_IP)) {
+  entry_ac <- summary_IP$InterPro[i]
+  matched_rows <- transdf_distinct[grepl(entry_ac, transdf_distinct$InterPro_accession_Names, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- summary_IP[i, ]  # Get the current row in IPInterest (since we're looping over IPInterest)
+    transdf_distinct$IPRank[transdf_distinct$InterPro_accession_Names %in% matched_rows$InterPro_accession_Names] <- best_match$IPRank
+  }
+}
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct <- transdf_distinct %>%
+  left_join(summary_IP, by = "IPRank") %>% 
+  dplyr::select(Transdecoder_ID,GO_name, Name_short) %>%
+  dplyr::rename(Domain_label = Name_short )
+
+
+
+#Molecular Functions
+Summary_MF <- read.csv(Summary_MF_file)
+MFOverRepresentedInToxins <- Summary_MF %>%
+  arrange(desc(Rank)) #the script below takes the last match's rank value 
+
+#Add the highest MF  present for each transcript
+for (i in 1:nrow(MFOverRepresentedInToxins)) {
+  GO <- MFOverRepresentedInToxins$GO_ID[i]
+  matched_rows <- transdf_distinct[grepl(GO, transdf_distinct$GO_name, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- MFOverRepresentedInToxins[i, ]  # Get the current row in GO 
+    transdf_distinct$Rank[transdf_distinct$GO_name %in% matched_rows$GO_name] <- best_match$Rank
+  }
+}
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct <- transdf_distinct %>%
+  left_join(MFOverRepresentedInToxins, by = "Rank") %>% 
+  dplyr::select(-GO_ID,-RelativeExpression, -Rank, -Ontology) %>%
+  dplyr::rename(Molecular_Function = Name )
+
+
+#Biological Processess
+Summary_BP <- read.csv(Summary_BP_file)
+BPOverRepresentedInToxins <- Summary_BP %>%
+  arrange(desc(Rank)) 
+
+#Add the highest MF  present for each transcript
+for (i in 1:nrow(BPOverRepresentedInToxins)) {
+  GO <- BPOverRepresentedInToxins$GO_ID[i]
+  matched_rows <- transdf_distinct[grepl(GO, transdf_distinct$GO_name, ignore.case = TRUE), ]
+  if (nrow(matched_rows) > 0) {
+    best_match <- BPOverRepresentedInToxins[i, ]  # Get the current row in GO 
+    transdf_distinct$Rank[transdf_distinct$GO_name %in% matched_rows$GO_name] <- best_match$Rank
+  }
+}
+
+# Only keep those that are ranked, and join with metadata, calculate combined percent for those with the same domain name
+transdf_distinct <- transdf_distinct %>%
+  left_join(BPOverRepresentedInToxins, by = "Rank") %>% 
+  dplyr::select(-GO_ID,-RelativeExpression, -Rank, -Ontology,-GO_name) %>%
+  dplyr::rename(Biological_Process = Name )
+
+
+write.csv(transdf_distinct, "Transdf_cORFSP_Domain_Annotation.csv")
+
