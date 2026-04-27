@@ -1509,7 +1509,7 @@ venomflowfiles = csv_channel.map { row ->
     //Process 3: Define Inputs for ExtractSignalSequences sample id + transdecoderpep + maturefasta tuple 
 
     def ExtractSignalSequencesinput = venomflowfiles.map { item ->
-        def maturefasta = item[32] && file(item[32]).exists() ? item[32] : item[5]
+            def maturefasta = (item[32] && item[32] != '') ? item[32] : item[5]
         [item[0], item[30], maturefasta]
     }
     //Run process ExtractSignalSequences
@@ -1547,15 +1547,13 @@ venomflowfiles = csv_channel.map { row ->
     //Process 6: Define Inputs for CreateTransdecoderDataframe  sample + transdecoder_pep + transdecoder_cds + blastp6_file  mature_fasta, Signalp_summary, signalsequences, Interproscan_dataframe, kallistotrans
     CreateTransdecoderDataframeinput = venomflowfiles
         .map { item ->
-            def maturefasta = file((item[32]), checkIfExists: false).exists()
-                ? file(item[32])
-                : file(item[5])
-            def combinedpep = item[3] && file(item[3]).exists()
+            def maturefasta = (item[32] && item[32] != '') ? item[32] : item[5]
+             def combinedpep = (item[3] && item[3] != '')
                 ? item[3]
-                : (item[34] && file(item[34]).exists() ? item[34] : item[35])
-            def combinedcds = item[4] && file(item[4]).exists()
+                : ((item[34] && item[34] != '') ? item[34] : item[35])
+            def combinedcds = (item[4] && item[4] != '')
                 ? item[4]
-                : (item[36] && file(item[36]).exists() ? item[36] : item[37])
+                : ((item[36] && item[36] != '') ? item[36] : item[37])
             [item[0], combinedpep, combinedcds, item[7], maturefasta]
         }
         .join(ExtractSignalSequences.out.signalsequences)
