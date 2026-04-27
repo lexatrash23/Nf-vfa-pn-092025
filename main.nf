@@ -1535,7 +1535,8 @@ venomflowfiles = csv_channel.map { row ->
         .map {
             return [it[0], it[8]]
         }
-        .combine([InterproscanMetadata, PantherMetadata])
+        .combine(InterproscanMetadata)
+        .combine(PantherMetadata)
     //Run process CreateInterproscanDataframe
     CreateInterproscanDataframeinput | CreateInterproscanDataframe
 
