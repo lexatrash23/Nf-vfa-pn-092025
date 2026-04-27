@@ -1510,7 +1510,12 @@ venomflowfiles = csv_channel.map { row ->
     //Process 3: Define Inputs for ExtractSignalSequences sample id + transdecoderpep + maturefasta tuple 
 
     def ExtractSignalSequencesinput = venomflowfiles.map { item ->
-        def maturefasta = item[32] && file(item[32]).exists() ? item[32] : item[5]
+        def maturefasta = ''
+            if (item[32] && !(item[32] instanceof List) && item[32] != '') {
+             maturefasta = item[32]
+            } else if (item[5] && !(item[5] instanceof List) && item[5] != '') {
+        maturefasta = item[5]
+            }
         [item[0], item[30], maturefasta]
     }
     //Run process ExtractSignalSequences
@@ -1547,15 +1552,30 @@ venomflowfiles = csv_channel.map { row ->
 
     //Process 6: Define Inputs for CreateTransdecoderDataframe  sample + transdecoder_pep + transdecoder_cds + blastp6_file  mature_fasta, Signalp_summary, signalsequences, Interproscan_dataframe, kallistotrans
     CreateTransdecoderDataframeinput = venomflowfiles
-        .map { item ->
-            def maturefasta = item[32] && file(item[32]).exists() ? item[32] : item[5]
-            def combinedpep = item[3] && file(item[3]).exists()
-                ? item[3]
-                : (item[34] && file(item[34]).exists() ? item[34] : item[35])
-            def combinedcds = item[4] && file(item[4]).exists()
-                ? item[4]
-                : (item[36] && file(item[36]).exists() ? item[36] : item[37])
-            [item[0], combinedpep, combinedcds, item[7], maturefasta]
+    .map { item ->
+        def maturefasta = ''
+        if (item[32] && !(item[32] instanceof List) && item[32] != '') {
+            maturefasta = item[32]
+        } else if (item[5] && !(item[5] instanceof List) && item[5] != '') {
+            maturefasta = item[5]
+        }
+        def combinedpep = ''
+        if (item[3] && !(item[3] instanceof List) && item[3] != '') {
+            combinedpep = item[3]
+        } else if (item[34] && !(item[34] instanceof List) && item[34] != '') {
+            combinedpep = item[34]
+        } else if (item[35] && !(item[35] instanceof List) && item[35] != '') {
+            combinedpep = item[35]
+        }
+        def combinedcds = ''
+        if (item[4] && !(item[4] instanceof List) && item[4] != '') {
+            combinedcds = item[4]
+        } else if (item[36] && !(item[36] instanceof List) && item[36] != '') {
+            combinedcds = item[36]
+        } else if (item[37] && !(item[37] instanceof List) && item[37] != '') {
+            combinedcds = item[37]
+        } 
+        [item[0], combinedpep, combinedcds, item[7], maturefasta]
         }
         .join(ExtractSignalSequences.out.signalsequences)
         .join(CreateInterproscanDataframe.out.Interproscan_dataframe)
