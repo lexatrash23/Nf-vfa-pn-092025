@@ -1387,15 +1387,15 @@ venomflowfiles = csv_channel.map { row ->
     //1
     def kallisto_trans = results_path ? file("${results_path}/kallisto/transdecoder/output/abundance.tsv") : []
     //2
-    def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*combined.deduplicated.pep") : []
+    def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*.pep") : []
     //3
-    def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*combined.deduplicated.cds") : []
+    def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*.cds") : []
     //4
     def mature_fasta = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_mature.fasta") : []
     //5
-    def blastx_files = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.6.txt") : []
+    def blastx_files = results_path ? file("${results_path}/Blast/Blastx/*.6.txt") : []
     //6
-    def blastp_files = results_path ? file("${results_path}/Blast/Blastp/*.blastp.db.6.txt") : []
+    def blastp_files = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.6.txt") : []
     //7
     def Interproscan_file = results_path ? file("${results_path}/Interproscan/*.tsv") : []
     //8
@@ -1407,7 +1407,7 @@ venomflowfiles = csv_channel.map { row ->
     //11
     def blastx0txt = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.0.txt") : []
     //12
-    def blastp0txt = results_path ? file("${results_path}/Blast/Blastp/*.blastp.db.0.txt") : []
+    def blastp0txt = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.blastp.db.0.txt") : []
     //13
     def basename = row.basename
     //14
@@ -1439,11 +1439,11 @@ venomflowfiles = csv_channel.map { row ->
     //27
     def Transcriptome2 = row.Transcriptome2 ? file(row.Transcriptome2) : ''
     //28
-    def TranscriptomeC = results_path ? file("${results_path}/Transcriptome/*transcriptome_combined.deduplicated.fasta") : []
+    def TranscriptomeC = results_path ? file("${results_path}/Combined_Transcriptome/*.cdhit95.fasta") : []
     //29
-    def complete_pep = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*combine.complete.pep") : []
+    def complete_pep = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.pep") : []
     //30
-    def complete_cds = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*combine.complete.cds") : []
+    def complete_cds = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.cds") : []
     //31
     def combined_mature = results_path ? file("${results_path}/Secreted/Mature/Combined/*.combined.mature.deduplicated.pep.fasta") : []
     //32
