@@ -1678,9 +1678,8 @@ workflow {
 
 
     samplesheets = CreateSampleSheet(MetadataInput)
-    RmarkdownBInput = samplesheets.out.samplesheet
     // Then pass to RmarkdownB
-    RmarkdownBInput | RmarkdownB
+    samplesheets | RmarkdownB
 
 
     //RmarkdownA 
