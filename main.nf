@@ -1383,37 +1383,37 @@ venomflowfiles = csv_channel.map { row ->
     //0
     def results_path = row.Venomflowresultsfolder ? file(row.Venomflowresultsfolder).toAbsolutePath() : null
 
-    def kallisto_trinity = results_path ? file("${results_path}/kallisto/trinity/output/abundance.tsv") : []
+    def kallisto_trinity = results_path ? file("${results_path}/kallisto/trinity/output/abundance.tsv") : ''
     //1
-    def kallisto_trans = results_path ? file("${results_path}/kallisto/transdecoder/output/abundance.tsv") : []
+    def kallisto_trans = results_path ? file("${results_path}/kallisto/transdecoder/output/abundance.tsv") : ''
     //2
-    def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*.pep") : []
+    def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*.pep") : ''
     //3
-    def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*.cds") : []
+    def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*.cds") : ''
     //4
-    def mature_fasta = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_mature.fasta") : []
+    def mature_fasta = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_mature.fasta") : ''
     //5
-    def blastx_files = results_path ? file("${results_path}/Blast/Blastx/*.6.txt") : []
+    def blastx_files = results_path ? file("${results_path}/Blast/Blastx/*.6.txt") : ''
     //6
-    def blastp_files = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.6.txt") : []
+    def blastp_files = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.6.txt") : ''
     //7
-    def Interproscan_file = results_path ? file("${results_path}/Interproscan/*.tsv") : []
+    def Interproscan_file = results_path ? file("${results_path}/Interproscan/*.tsv") : ''
     //8
-    def signalp_summary = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_summary.signalp5") : []
+    def signalp_summary = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_summary.signalp5") : ''
     //9
-    def Blastn6 = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.6.txt") : []
+    def Blastn6 = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.6.txt") : ''
     //10
-    def blastn0txt = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.0.txt") : []
+    def blastn0txt = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.0.txt") : ''
     //11
-    def blastx0txt = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.0.txt") : []
+    def blastx0txt = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.0.txt") : ''
     //12
-    def blastp0txt = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.blastp.db.0.txt") : []
+    def blastp0txt = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.blastp.db.0.txt") : ''
     //13
     def basename = row.basename
     //14
-    def busco_transcriptome_dir = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome1") : []
+    def busco_transcriptome_dir = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome1") : ''
     //15
-    def busco_translatome_dir = results_path ? file("${results_path}/BUSCO/translatome/Transdecoder/") : []
+    def busco_translatome_dir = results_path ? file("${results_path}/BUSCO/translatome/Transdecoder/") : ''
     //16
     def genomeid = row.NCBI_Genome_id ?: ''
     //17
@@ -1427,39 +1427,39 @@ venomflowfiles = csv_channel.map { row ->
     //21
     def ToxinDomains = row.Toxin_domains ? file(row.Toxin_domains) : ''
     //22
-    def busco_transcriptome_dir2 = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome2") : []
+    def busco_transcriptome_dir2 = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome2") : ''
     //23
-    def busco_transcriptome_dir3 = results_path ? file("${results_path}/BUSCO/transcriptome/Combined") : []
+    def busco_transcriptome_dir3 = results_path ? file("${results_path}/BUSCO/transcriptome/Combined") : ''
     //24
-    def busco_translatome_dir2 = results_path ? file("${results_path}/BUSCO/translatome/TD2/") : []
+    def busco_translatome_dir2 = results_path ? file("${results_path}/BUSCO/translatome/TD2/") : ''
     //25
-    def busco_translatome_dir3 = results_path ? file("${results_path}/BUSCO/translatome/Combined/") : []
+    def busco_translatome_dir3 = results_path ? file("${results_path}/BUSCO/translatome/Combined/") : ''
     //26
     def Transcriptome1 = row.Transcriptome1 ? file(row.Transcriptome1) : ''
     //27
     def Transcriptome2 = row.Transcriptome2 ? file(row.Transcriptome2) : ''
     //28
-    def TranscriptomeC = results_path ? file("${results_path}/Combined_Transcriptome/*.cdhit95.fasta") : []
+    def TranscriptomeC = results_path ? file("${results_path}/Combined_Transcriptome/*.cdhit95.fasta") : ''
     //29
-    def complete_pep = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.pep") : []
+    def complete_pep = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.pep") : ''
     //30
-    def complete_cds = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.cds") : []
+    def complete_cds = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.cds") : ''
     //31
-    def combined_mature = results_path ? file("${results_path}/Secreted/Mature/Combined/*.combined.mature.deduplicated.pep.fasta") : []
+    def combined_mature = results_path ? file("${results_path}/Secreted/Mature/Combined/*.combined.mature.deduplicated.pep.fasta") : ''
     //32
     def SampleURL = row.SearchAndDownloadURL ?: ''
     //33
-    def TD_pep = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.pep") : []
+    def TD_pep = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.pep") : ''
     //34
-    def TD2_pep = results_path ? file("${results_path}/ORFprediction/TD2/*.pep") : []
+    def TD2_pep = results_path ? file("${results_path}/ORFprediction/TD2/*.pep") : ''
     //35
-    def TD_cds = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.cds") : []
+    def TD_cds = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.cds") : ''
     //36
-    def TD2_cds = results_path ? file("${results_path}/ORFprediction/TD2/*.cds") : []
+    def TD2_cds = results_path ? file("${results_path}/ORFprediction/TD2/*.cds") : ''
     //37
     def Diamondblast6 = row.Diamondblast6Path ? file(row.Diamondblast6Path) : ''
     //38
-    def BlastpNonToxin = results_path ? file("${results_path}/Blast/Blastp_NonToxin/*.blastp.db.6.txt") : []
+    def BlastpNonToxin = results_path ? file("${results_path}/Blast/Blastp_NonToxin/*.blastp.db.6.txt") : ''
     //39
     def AuthorName = row.AnalysisdataAuth ?: ''
     //40
