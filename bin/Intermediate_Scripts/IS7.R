@@ -4,10 +4,11 @@ library(dplyr)
 library(grid)  
 library(ggplot2)
 library(ggrepel)
+library(cowplot)
 
 #Save plot and legend separate
 args <- commandArgs(trailingOnly = TRUE)
-transdf_distinct_csv_file <- args[1] 
+Transdf_distinct_file <- args[1] 
 sample <- args[2]
 summary_IP_file <- args[3]
 Summary_MF_file <- args[4]
@@ -15,7 +16,7 @@ Summary_BP_file <- args[5]
 colourRDS <- args[6]
 
 color_palette <- readRDS(colours)
-transdf_distinct <- read.csv(transdf_distinct_csv_file)
+transdf_distinct <- read.csv(Transdf_distinct_file)
 
 #filter only for complete ORFs with signal sequence 
 transdf_distinct <- transdf_distinct %>%
@@ -106,8 +107,15 @@ IP_plot <- ggplot(transdf_distinct_IP, aes(x = 2, y = RelativeProportion, fill =
   annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
   labs(title = "Relative expression of Toxin-associated domains") 
 
-ggsave("Plot_1_IP.png", IP_plot)
 
+
+plot_nolegend <- IP_plot + theme(legend.position = "none")
+
+legend <- get_legend(IP_plot)
+legend_plot <- ggdraw(legend)
+
+ggsave("Plot_1_IP.png", plot_nolegend)
+ggsave("Legend_1_IP.png", legend_plot)
 
 #Filter only for those with GO
 transdf_distinct_GO <- transdf_distinct %>%
@@ -185,7 +193,13 @@ MF_plot <- ggplot(transdf_distinct_MF, aes(x = 2, y = RelativeProportion, fill =
   annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
   labs(title = "Relative expression of Toxin-associated Molecular Functions") 
 
-ggsave("Plot_1_MF.png", MF_plot)
+
+plot_nolegend <- MF_plot + theme(legend.position = "none")
+legend <- get_legend(MF_plot)
+legend_plot <- ggdraw(legend)
+
+ggsave("Plot_1_MF.png", plot_nolegend)
+ggsave("Legend_1_MF.png", legend_plot)
 
 #Biological Processess
 Summary_BP <- read.csv(Summary_BP_file)
@@ -259,11 +273,15 @@ BP_plot <- ggplot(transdf_distinct_BP, aes(x = 2, y = RelativeProportion, fill =
   annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
   labs(title = "Relative expression of Toxin-associated Biological Processess") 
 
-ggsave("Plot_1_BP.png", BP_plot)
+plot_nolegend <- BP_plot + theme(legend.position = "none")
+legend <- get_legend(BP_plot)
+legend_plot <- ggdraw(legend)
 
+ggsave("Plot_1_BP.png", plot_nolegend)
+ggsave("Legend_1_BP.png", legend_plot)
 ##Now just those that are overrepresented in toxins RE>1
 
-transdf_distinct <- read.csv(transdf_distinct_csv_file)
+transdf_distinct <- read.csv(Transdf_distinct_file)
 
 
 
@@ -353,8 +371,13 @@ IP_plot <- ggplot(transdf_distinct_IP, aes(x = 2, y = RelativeProportion, fill =
                    point.padding = 0.5, force =5,hjust = 0.5) +
   annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
   labs(title = "Relative expression of InterPro domains overrepresented in Venom") 
-ggsave("Plot_2_IP.png", IP_plot)
 
+plot_nolegend <- IP_plot + theme(legend.position = "none")
+legend <- get_legend(IP_plot)
+legend_plot <- ggdraw(legend)
+
+ggsave("Plot_2_IP.png", plot_nolegend)
+ggsave("Legend_2_IP.png", legend_plot)
 
 #Filter only for those with GO
 transdf_distinct_GO <- transdf_distinct %>%
@@ -432,8 +455,12 @@ MF_plot <- ggplot(transdf_distinct_MF, aes(x = 2, y = RelativeProportion, fill =
   annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
   labs(title = "Relative expression of Molecular Functions overrepresented in Venom") 
 
-ggsave("Plot_2_MF.png", MF_plot)
+plot_nolegend <- MF_plot + theme(legend.position = "none")
+legend <- get_legend(MF_plot)
+legend_plot <- ggdraw(legend)
 
+ggsave("Plot_2_MF.png", plot_nolegend)
+ggsave("Legend_2_MF.png", legend_plot)
 #Biological Processess
 Summary_BP <- read.csv(Summary_BP_file)
 BPOverRepresentedInToxins <- Summary_BP %>%
@@ -506,12 +533,16 @@ BP_plot <- ggplot(transdf_distinct_BP, aes(x = 2, y = RelativeProportion, fill =
   annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
   labs(title = "Relative expression of Biological Processess overrepresented in Venom") 
 
-ggsave("Plot_2_BP.png", BP_plot)
+plot_nolegend <- BP_plot + theme(legend.position = "none")
+legend <- get_legend(BP_plot)
+legend_plot <- ggdraw(legend)
 
+ggsave("Plot_2_BP.png", plot_nolegend)
+ggsave("Legend_2_BP.png", legend_plot)
 
 # NOW ALL domains and MF and BP 
 
-transdf_distinct <- read.csv(transdf_distinct_csv_file)
+transdf_distinct <- read.csv(Transdf_distinct_file)
 
 
 #filter only for complete ORFs with signal sequence 
@@ -599,8 +630,12 @@ IP_plot <- ggplot(transdf_distinct_IP, aes(x = 2, y = RelativeProportion, fill =
                    point.padding = 0.5, force =5,hjust = 0.5) +
   annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
   labs(title = "Relative expression of InterPro domains") 
-ggsave("Plot_3_IP.png", IP_plot, width = 20, height = 16)
+plot_nolegend <- IP_plot + theme(legend.position = "none")
+legend <- get_legend(IP_plot)
+legend_plot <- ggdraw(legend)
 
+ggsave("Plot_3_IP.png", plot_nolegend)
+ggsave("Legend_3_IP.png", legend_plot, width = 20, height = 16)
 #Filter only for those with GO
 transdf_distinct_GO <- transdf_distinct %>%
   dplyr::select(Transdecoder_ID, percent, GO_name) %>%
@@ -676,7 +711,11 @@ MF_plot <- ggplot(transdf_distinct_MF, aes(x = 2, y = RelativeProportion, fill =
   annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
   labs(title = "Relative expression of Molecular Functions") 
 
-ggsave("Plot_3_MF.png", MF_plot, width = 20, height = 16)
+plot_nolegend <- MF_plot + theme(legend.position = "none")
+legend <- get_legend(MF_plot)
+legend_plot <- ggdraw(legend)
+ggsave("Plot_3_MF.png", plot_nolegend)
+ggsave("Legend_3_MF.png", legend_plot, width = 20, height = 16)
 
 #Biological Processess
 Summary_BP <- read.csv(Summary_BP_file)
@@ -749,12 +788,16 @@ BP_plot <- ggplot(transdf_distinct_BP, aes(x = 2, y = RelativeProportion, fill =
   annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
   labs(title = "Relative expression of Biological Processess") 
 
-ggsave("Plot_3_BP.png", BP_plot, width = 20, height = 16)
+plot_nolegend <- BP_plot + theme(legend.position = "none")
+legend <- get_legend(BP_plot)
+legend_plot <- ggdraw(legend)
 
+ggsave("Plot_3_BP.png", plot_nolegend)
+ggsave("Legend_3_BP.png", legend_plot, width = 20, height = 16)
 ##ANNOTATION 
 #Labelling the csv with this information - Will be used in annotate script 
 
-transdf_distinct <- read.csv(transdf_distinct_csv_file)
+transdf_distinct <- read.csv(Transdf_distinct_file)
 
 
 #filter only for complete ORFs with signal sequence 

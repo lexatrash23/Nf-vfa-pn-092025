@@ -3,7 +3,7 @@
 // Process 1: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrinity {
 
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
     label 'process_single'
@@ -33,7 +33,7 @@ process kallistoAnalysisTrinity {
 // Process 2: For kallistoanalysistrans.py dependencies:python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrans {
 
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -63,7 +63,7 @@ process kallistoAnalysisTrans {
 
 // Process 3: Extract Signal Sequences dependencies python biopython
 process ExtractSignalSequences {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -90,7 +90,7 @@ process ExtractSignalSequences {
 
 // Process 4: Create Trinity Dataframe dependecies : R, biocmanager 
 process CreateTrinityDataframe {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -119,7 +119,7 @@ process CreateTrinityDataframe {
 
 // Process 5: Create Interproscan Dataframe dependecies : R, biocmanager 
 process CreateInterproscanDataframe {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -147,7 +147,7 @@ process CreateInterproscanDataframe {
 
 // Process 6: Create Transdecoder Dataframe dependecies : R, biocmanager 
 process CreateTransdecoderDataframe {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -181,7 +181,7 @@ process CreateTransdecoderDataframe {
 
 // Process 8: Create BUSCOgraphtranscriptome  
 process BUSCOtranscriptome {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -210,7 +210,7 @@ process BUSCOtranscriptome {
 
 // Process 9: Create BUSCOgraphtranslatome 
 process BUSCOtranslatome {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -239,7 +239,7 @@ process BUSCOtranslatome {
 
 // Process 10: Create FigureGenerationTrinity
 process FigureGenerationTrinity {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -276,7 +276,7 @@ process FigureGenerationTrinity {
 
 // Process 11: Create FigureGenerationTransdecoder
 process FigureGenerationTransdecoder {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -313,7 +313,7 @@ process FigureGenerationTransdecoder {
 
 // Process 13: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -348,7 +348,7 @@ process FigureGenerationSignalp {
 
 // Process 12: Create TableGenerationTrinity
 process TableGenerationTrinity {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -380,7 +380,7 @@ process TableGenerationTrinity {
 
 // Process 11: Create TableGenerationTransdecoder  
 process TableGenerationTransdecoder {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -417,7 +417,7 @@ process TableGenerationTransdecoder {
 
 process ToxinVsNonToxin {
 
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -451,7 +451,7 @@ process ToxinVsNonToxin {
 
 process AddMSGenomeIfAvailableAndCreateOverview {
 
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -501,7 +501,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
 // Process 7: Create Interproscantoxinplotly
 process CreateInterproscanFigures {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -538,7 +538,7 @@ process CreateInterproscanFigures {
 
 // Process 21: RmarkdownB
 process RmarkdownB {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -572,11 +572,37 @@ process RmarkdownB {
     """
 }
 
+process CreateSampleSheet {
+
+    errorStrategy 'ignore'
+    maxRetries 4
+
+
+    label 'process_single'
+    label 'process_long'
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
+
+    input:
+    tuple val(sample_name), val(author_name), val(csv_content)
+
+    output:
+    tuple val(sample_name), val(author_name), path("${sample_name}_metadata.csv"), emit: samplesheet
+
+    script:
+    """
+    cat << 'EOF' > ${sample_name}_metadata.csv
+    ${csv_content}
+    EOF
+    """
+}
+
 
 
 // Process 20: RmarkdownA
 process RmarkdownA {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -615,7 +641,7 @@ process RmarkdownA {
 
 // Process 22:
 process RmarkdownCDEGIK {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -652,7 +678,7 @@ process RmarkdownCDEGIK {
 
 // Process 23:
 process RmarkdownH {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -708,7 +734,7 @@ process RmarkdownH {
 
 // Process 24:
 process RmarkdownJ {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -763,7 +789,7 @@ process RmarkdownJ {
 
 // Process 25:
 process RmarkdownL {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -813,7 +839,7 @@ process RmarkdownL {
 
 // Process 26:
 process RmarkdownM {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -852,7 +878,7 @@ process RmarkdownM {
 
 // Process 27:
 process RmarkdownN {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -893,7 +919,7 @@ process RmarkdownN {
 
 // Process 28:
 process RmarkdownO {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -932,7 +958,7 @@ process RmarkdownO {
 
 // Process 29:
 process RmarkdownQ {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -971,7 +997,7 @@ process RmarkdownQ {
 
 // Process 30:
 process RmarkdownR {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1012,7 +1038,7 @@ process RmarkdownR {
 
 // Process 31:
 process RmarkdownS {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1053,7 +1079,7 @@ process RmarkdownS {
 
 // Process 32:
 process RmarkdownV {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1092,7 +1118,7 @@ process RmarkdownV {
 
 // Process 33:
 process RmarkdownW {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1133,7 +1159,7 @@ process RmarkdownW {
 
 // Process 34:
 process RmarkdownX {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1172,7 +1198,7 @@ process RmarkdownX {
 
 // Process 35:
 process RmarkdownZ {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1213,7 +1239,7 @@ process RmarkdownZ {
 
 // Process 36:
 process Blast0Chunks {
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1245,7 +1271,7 @@ process Blast0Chunks {
 
 process Blast0Chunksn {
 
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1275,7 +1301,7 @@ process Blast0Chunksn {
 
 process Annotate {
 
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1314,7 +1340,7 @@ process Annotate {
 
 process ProtSpace {
 
-    errorStrategy 'retry'
+    errorStrategy 'ignore'
     maxRetries 4
 
 
@@ -1642,6 +1668,7 @@ workflow {
     // Define Sample Metadata
     csv_file = file(params.input_csv)
     header_line = csv_file.text.readLines()[0]
+
     MetadataInput = csv_channel.map { row ->
         def sample_name = row.Sample_name
         def author_name = row.AnalysisdataAuth
@@ -1649,8 +1676,11 @@ workflow {
         tuple(sample_name, author_name, csv_content)
     }
 
-    // Metadata HTML (B)
-    MetadataInput | RmarkdownB
+
+    samplesheets = CreateSampleSheet(MetadataInput)
+    RmarkdownBInput = samplesheets.out.samplesheet
+    // Then pass to RmarkdownB
+    RmarkdownBInput | RmarkdownB
 
 
     //RmarkdownA 
