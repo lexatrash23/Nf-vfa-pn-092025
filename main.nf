@@ -1378,95 +1378,93 @@ workflow {
     //Define CSV channel.. channel factory creates the channel from a csv file. can be defined in the config or command line 
     csv_channel = channel.fromPath(params.input_csv).splitCsv(header: true, sep: ',').map { row -> row.collectEntries { key, value -> [key.replaceAll('"', ''), value?.toString()?.replaceAll('"', '')] } }
     //Define results folder from the Venomflow 
- venomflowfiles = csv_channel.map { row ->
-    def samplename = row.Sample_name
-    
-    //0
-    def results_path = row.Venomflowresultsfolder ? file(row.Venomflowresultsfolder).toAbsolutePath() : null
-    def kallisto_trinity = results_path && file("${results_path}/kallisto/trinity/output/abundance.tsv").exists() ? 
-                          file("${results_path}/kallisto/trinity/output/abundance.tsv") : []
-    //1
-    def kallisto_trans = results_path && file("${results_path}/kallisto/transdecoder/output/abundance.tsv").exists() ? 
-                        file("${results_path}/kallisto/transdecoder/output/abundance.tsv") : []
-    //2
-    def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*combined.deduplicated.pep") : []
-    //3
-    def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*combined.deduplicated.cds") : []
-    //4
-    def mature_fasta = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_mature.fasta") : []
-    //5
-    def blastx_files = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.6.txt") : []
-    //6
-    def blastp_files = results_path ? file("${results_path}/Blast/Blastp/*.blastp.db.6.txt") : []
-    //7
-    def Interproscan_file = results_path ? file("${results_path}/Interproscan/*.cleaned.pep.tsv") : []
-    //8
-    def signalp_summary = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_summary.signalp5") : []
-    //9
-    def Blastn6 = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.6.txt") : []
-    //10
-    def blastn0txt = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.0.txt") : []
-    //11
-    def blastx0txt = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.0.txt") : []
-    //12
-    def blastp0txt = results_path ? file("${results_path}/Blast/Blastp/*.blastp.db.0.txt") : []
-    //13
-    def basename = row.basename ?: ''
-    //14
-    def busco_transcriptome_dir = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome1") : []
-    //15
-    def busco_translatome_dir = results_path ? file("${results_path}/BUSCO/translatome/Transdecoder/") : []
-    //16
-    def genomeid = row.NCBI_Genome_id ?: ''
-    //17
-    def species = row.Species ?: ''
-    //18 
-    def MS = row.massspec_csv ? file(row.massspec_csv) : []
-    //19
-    def Gavailability = row.isgenomeavailble ?: ''
-    //20
-    def MSavailability = row.ismassspecavailable ?: ''
-    //21
-    def ToxinDomains = row.Toxin_domains ? file(row.Toxin_domains) : []
-    //22
-    def busco_transcriptome_dir2 = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome2") : []
-    //23
-    def busco_transcriptome_dir3 = results_path ? file("${results_path}/BUSCO/transcriptome/Combined") : []
-    //24
-    def busco_translatome_dir2 = results_path ? file("${results_path}/BUSCO/translatome/TD2/") : []
-    //25
-    def busco_translatome_dir3 = results_path ? file("${results_path}/BUSCO/translatome/Combined/") : []
-    //26
-    def Transcriptome1 = row.Transcriptome1 ? file(row.Transcriptome1) : []
-    //27
-    def Transcriptome2 = row.Transcriptome2 ? file(row.Transcriptome2) : []
-    //28
-    def TranscriptomeC = results_path ? file("${results_path}/Transcriptome/*transcriptome_combined.deduplicated.fasta") : []
-    //29
-    def complete_pep = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*combine.complete.pep") : []
-    //30
-    def complete_cds = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*combine.complete.cds") : []
-    //31
-    def combined_mature = results_path ? file("${results_path}/Secreted/Mature/Combined/*.combined.mature.deduplicated.pep.fasta") : []
-    //32
-    def SampleURL = row.SearchAndDownloadURL ?: ''
-    //33
-    def TD_pep = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.pep") : []
-    //34
-    def TD2_pep = results_path ? file("${results_path}/ORFprediction/TD2/*.pep") : []
-    //35
-    def TD_cds = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.cds") : []
-    //36
-    def TD2_cds = results_path ? file("${results_path}/ORFprediction/TD2/*.cds") : []
-    //37
-    def Diamondblast6 = row.Diamondblast6Path ? file(row.Diamondblast6Path) : []
-    //38
-    def BlastpNonToxin = results_path ? file("${results_path}/Blast/Blastp_NonToxin/*.blastp.db.6.txt") : []
-    //39
-    def AuthorName = row.AnalysisdataAuth ?: ''
-    //40
-    return [samplename, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir, genomeid, species, MS, Gavailability, MSavailability, ToxinDomains, busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3, Transcriptome1, Transcriptome2, TranscriptomeC, complete_pep, complete_cds, combined_mature, SampleURL, TD_pep, TD2_pep, TD_cds, TD2_cds, Diamondblast6, BlastpNonToxin, AuthorName]
-}
+    venomflowfiles = csv_channel.map { row ->
+        def samplename = row.Sample_name
+        //0
+        def results_path = file(row.Venomflowresultsfolder).toAbsolutePath()
+
+        def kallisto_trinity = results_path ? file("${results_path}/kallisto/trinity/output/abundance.tsv") : []
+        //1
+        def kallisto_trans = results_path ? file("${results_path}/kallisto/transdecoder/output/abundance.tsv") : []
+        //2
+        def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*combined.deduplicated.pep") : []
+        //3
+        def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*combined.deduplicated.cds") : []
+        //4
+        def mature_fasta = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_mature.fasta") : []
+        //5
+        def blastx_files = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.6.txt") : []
+        //6
+        def blastp_files = results_path ? file("${results_path}/Blast/Blastp/*.blastp.db.6.txt") : []
+        //7
+        def Interproscan_file = results_path ? file("${results_path}/Interproscan/*.tsv") : []
+        //8
+        def signalp_summary = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_summary.signalp5") : []
+        //9
+        def Blastn6 = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.6.txt") : []
+        //10
+        def blastn0txt = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.0.txt") : []
+        //11
+        def blastx0txt = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.0.txt") : []
+        //12
+        def blastp0txt = results_path ? file("${results_path}/Blast/Blastp/*.blastp.db.0.txt") : []
+        //13
+        def basename = row.basename
+        //14
+        def busco_transcriptome_dir = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome1") : []
+        //15
+        def busco_translatome_dir = results_path ? file("${results_path}/BUSCO/translatome/Transdecoder/") : []
+        //16
+        def genomeid = row.NCBI_Genome_id ?: ''
+        //17
+        def species = row.Species ?: ''
+        //18 
+        def MS = file(row.massspec_csv) ?: ''
+        //19
+        def Gavailability = row.isgenomeavailble ?: ''
+        //20
+        def MSavailability = row.ismassspecavailable ?: ''
+        //21
+        def ToxinDomains = file(row.Toxin_domains) ?: ''
+        //22
+        def busco_transcriptome_dir2 = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome2") : []
+        //23
+        def busco_transcriptome_dir3 = results_path ? file("${results_path}/BUSCO/transcriptome/Combined") : []
+        //24
+        def busco_translatome_dir2 = results_path ? file("${results_path}/BUSCO/translatome/TD2/") : []
+        //25
+        def busco_translatome_dir3 = results_path ? file("${results_path}/BUSCO/translatome/Combined/") : []
+        //26
+        def Transcriptome1 = file(row.Transcriptome1) ?: ''
+        //27
+        def Transcriptome2 = file(row.Transcriptome2) ?: ''
+        //28
+        def TranscriptomeC = results_path ? file("${results_path}/Transcriptome/*transcriptome_combined.deduplicated.fasta") : []
+        //29
+        def complete_pep = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*combine.complete.pep") : []
+        //30
+        def complete_cds = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*combine.complete.cds") : []
+        //31
+        def combined_mature = results_path ? file("${results_path}/Secreted/Mature/Combined/*.combined.mature.deduplicated.pep.fasta") : []
+        //32
+        def SampleURL = row.SearchAndDownloadURL ?: ''
+        //33
+        def TD_pep = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.pep") : []
+        //34
+        def TD2_pep = results_path ? file("${results_path}/ORFprediction/TD2/*.pep") : []
+        //35
+        def TD_cds = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.cds") : []
+        //36
+        def TD2_cds = results_path ? file("${results_path}/ORFprediction/TD2/*.cds") : []
+        //37
+        def Diamondblast6 = file(row.Diamondblast6Path) ?: ''
+        //38
+        def BlastpNonToxin = results_path ? file("${results_path}/Blast/Blastp_NonToxin/*.blastp.db.6.txt") : []
+        //39
+        def AuthorName = row.AnalysisdataAuth ?: ''
+        //40
+        return [samplename, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir, genomeid, species, MS, Gavailability, MSavailability, ToxinDomains, busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3, Transcriptome1, Transcriptome2, TranscriptomeC, complete_pep, complete_cds, combined_mature, SampleURL, TD_pep, TD2_pep, TD_cds, TD2_cds, Diamondblast6, BlastpNonToxin, AuthorName]
+    }
 
     // Metadafiles 
     // IP entry list
