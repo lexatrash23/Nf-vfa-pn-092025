@@ -1471,25 +1471,28 @@ venomflowfiles = csv_channel.map { row ->
     def interproscan_metadata_file = file(params.input_interproscan, checkIfExists: false).exists()
         ? file(params.input_interproscan)
         : file(params.Fallback_interproscan)
-    InterproscanMetadata = Channel.fromPath(interproscan_metadata_file)
-
+    InterproscanMetadata1 = Channel.fromPath(interproscan_metadata_file)
+    InterproscanMetadata = InterproscanMetadata1.first()
     // Panther names entry list
     def panther_metadata_file = file(params.input_panther, checkIfExists: false).exists()
         ? file(params.input_panther)
         : file(params.Fallback_panther)
-    PantherMetadata = Channel.fromPath(panther_metadata_file)
+    PantherMetadata1 = Channel.fromPath(panther_metadata_file)
+    PantherMetadata = PantherMetadata1.first()
 
     // Toxin metadata TSV
     def toxin_metadata_file = file(params.input_toxin_metadata, checkIfExists: false).exists()
         ? file(params.Fallback_toxin_metadata)
         : file(params.Fallback_toxin_metadata)
-    ToxinMetadata = Channel.fromPath(toxin_metadata_file)
+    ToxinMetadata1 = Channel.fromPath(toxin_metadata_file)
+    ToxinMetadata = ToxinMetadata1.first()
 
     // NonToxin metadata TSV
     def nontoxin_metadata_file = file(params.input_nontoxin_metadata, checkIfExists: false).exists()
         ? file(params.Fallback_nontoxin_metadata)
         : file(params.Fallback_nontoxin_metadata)
-    NonToxinMetadata = Channel.fromPath(nontoxin_metadata_file)
+    NonToxinMetadata1 = Channel.fromPath(nontoxin_metadata_file)
+    NonToxinMetadata = NonToxinMetadata1.first()
 
 
     // Process 1: Define Inputs for kallistoanalysistrinity  sample id + kallisto_file trinity tuple 
@@ -1535,8 +1538,8 @@ venomflowfiles = csv_channel.map { row ->
         .map {
             return [it[0], it[8]]
         }
-        .combine(InterproscanMetadata.first())
-        .combine(PantherMetadata.first())
+        .combine(InterproscanMetadata)
+        .combine(PantherMetadata)
     //Run process CreateInterproscanDataframe
     CreateInterproscanDataframeinput | CreateInterproscanDataframe
 
