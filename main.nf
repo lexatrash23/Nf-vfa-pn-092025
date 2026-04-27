@@ -26,7 +26,7 @@ process kallistoAnalysisTrinity {
 
     script:
     """
-    python3 ${workflow.projectDir}/bin/Intermediate_Scripts/kallistoanalysistrinity.py ./ ${params.basename} ${kallisto_file_trinity}
+    python3 ${workflow.projectDir}/bin/Intermediate_Scripts/kallistoanalysistrinity.py ./ ${sample} ${kallisto_file_trinity}
     """
 }
 
@@ -57,7 +57,7 @@ process kallistoAnalysisTrans {
 
     script:
     """
-    python3 ${workflow.projectDir}/bin/Intermediate_Scripts/kallistoanalysistrans.py ./ "${params.basename}trans" ${kallisto_file_transdecoder}
+    python3 ${workflow.projectDir}/bin/Intermediate_Scripts/kallistoanalysistrans.py ./ "${sample}" ${kallisto_file_transdecoder}
     """
 }
 
@@ -1263,7 +1263,7 @@ process Blast0Chunks {
 
     """
 
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0}
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${sample} ${blastx0} ${blastp0}
     """
 }
 
@@ -1295,7 +1295,7 @@ process Blast0Chunksn {
 
     """
 
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${params.basename} ${blastx0} ${blastp0} ${blastn0}
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${sample} ${blastx0} ${blastp0} ${blastn0}
     """
 }
 
@@ -1466,6 +1466,7 @@ venomflowfiles = csv_channel.map { row ->
     return [samplename, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir, genomeid, species, MS, Gavailability, MSavailability, ToxinDomains, busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3, Transcriptome1, Transcriptome2, TranscriptomeC, complete_pep, complete_cds, combined_mature, SampleURL, TD_pep, TD2_pep, TD_cds, TD2_cds, Diamondblast6, BlastpNonToxin, AuthorName]
 }
 
+    venomflowfiles.view()
     // Metadafiles 
     // IP entry list
     def interproscan_metadata_file = file(params.input_interproscan, checkIfExists: false).exists()
