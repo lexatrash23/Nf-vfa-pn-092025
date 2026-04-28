@@ -549,7 +549,7 @@ process RmarkdownB {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra'
+    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -633,7 +633,7 @@ process RmarkdownA {
       '${workflow.projectDir}/bin/Rmarkdown_scripts/A.Rmd',
       output_dir='.',
       params=list(
-        rmd_dir="${workflow.projectDir}/bin/Rmarkdown_scripts/",
+        rmd_dir='${workflow.projectDir}/bin/Rmarkdown_scripts/',
         sampleURL=${sampleURL},
         sample_name=${sample},
         AuthorName=${author}
@@ -669,12 +669,12 @@ process RmarkdownCDEGIK {
     script:
     """
 
-    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/C.Rmd', output_dir = '.')" "${workflow.projectDir}/bin/Rmarkdown_scripts/" ${sample} ${author}
-    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/D.Rmd', output_dir = '.')" "${workflow.projectDir}/bin/Rmarkdown_scripts/" ${sample} ${author}
-    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/E.Rmd', output_dir = '.')" "${workflow.projectDir}/bin/Rmarkdown_scripts/" ${sample} ${author}
-    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/G.Rmd', output_dir = '.')" "${workflow.projectDir}/bin/Rmarkdown_scripts/" ${sample} ${author}
-    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/I.Rmd', output_dir = '.')" "${workflow.projectDir}/bin/Rmarkdown_scripts/" ${sample} ${author}
-    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/K.Rmd', output_dir = '.')" "${workflow.projectDir}/bin/Rmarkdown_scripts/" ${sample} ${author}
+    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/C.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
+    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/D.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
+    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/E.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
+    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/G.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
+    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/I.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
+    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/K.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
 
 
     """

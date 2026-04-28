@@ -16,7 +16,7 @@ species_name <- args[3]
 
 TBK <- read.csv(TBK, header = TRUE)
 # Reordering columns and keeping only those of interest
-keeps <- c("Trinity_ID", "Length", "percent", "cumulativepercent", "Code", "Hit", "E_value", "BitScore", "Frame", "pident", "alignment_length", "mismatch", "Hit_species", "Sequence")
+keeps <- c("Trinity_ID", "Length", "percent", "cumulativepercent", "Code", "Hit", "E_value", "BitScore", "Frame", "pident", "alignment_length", "query_coverage", "mismatch", "Hit_species", "Sequence")
 Kallisto_Blastx_Trinity <- TBK[keeps]
 #Sort this table by decreasing BitScore
 KBT_sortedbybitscore <- Kallisto_Blastx_Trinity[order(Kallisto_Blastx_Trinity$BitScore, decreasing = TRUE), ]
