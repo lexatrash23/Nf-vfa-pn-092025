@@ -65,7 +65,7 @@ combined_kallisto_unitox_trinity <- merge(Trinity_Kallisto_merge_all, Unitox_bla
 
 
 #now we save this dataframe as a csv file
-filename1 <- paste0(sample_name + "_TBK.csv")
+filename1 <- paste0(sample_name,"_TBK.csv")
 
 write.csv(combined_kallisto_unitox_trinity, filename1, row.names = FALSE)
 
@@ -76,5 +76,5 @@ combined_kallisto_unitox_trinity_distinct <- distinct(combined_kallisto_unitox_t
 
 
 #this is saved as a .csv.gz, this file is used in the R shiny app to parse the dataframe. zipped and filtered for distinct to reduce file size
-filename2 <- paste0(sample_name + "_TBK_distinct.csv.gz")
+filename2 <- paste0(sample_name ,"_TBK_distinct.csv.gz")
 write.csv(combined_kallisto_unitox_trinity_distinct, file=gzfile(filename2), row.names = FALSE)
