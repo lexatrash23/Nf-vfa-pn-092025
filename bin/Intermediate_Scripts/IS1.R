@@ -32,7 +32,7 @@ Trinity_Fasta_df$Trinity_ID <- sub(" .*", "", Trinity_Fasta_df$Trinity_ID)
 #load in the unitox txt file
 Unitox_blastx_6 <- read.table(blastxunitox6_file, header = FALSE, sep = "\t", stringsAsFactors = FALSE)
 #name the columns of the file
-colnames(Unitox_blastx_6) <- c("Trinity_ID", "Hit", "Percentage_Identity", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "ssend" "E_value", "BitScore", "Frame", "query_coverage") #name columns
+colnames(Unitox_blastx_6) <- c("Trinity_ID", "Hit", "Percentage_Identity", "length", "mismatch", "gapopen", "qstart", "qend", "sstart", "ssend", "E_value", "BitScore", "Frame", "query_coverage") #name columns
 
 #Default hit column is sp|Code|Hit_Species, this separates that to make three separate columns one with just the Code, one with the Hit and one that has Hit_Species
 #this removes the sp| that precedes each Hit
