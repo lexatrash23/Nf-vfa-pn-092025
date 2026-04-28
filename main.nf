@@ -169,7 +169,8 @@ process CreateTransdecoderDataframe {
     output:
     tuple val(sample), path("*transdf.csv"), emit: transdf
     tuple val(sample), path("*transdf_distinct.csv"), emit: transdf_distinct
-    tuple val(sample), path("*secreted_proteins.pep.fasta"), emit: secretedpep
+    tuple val(sample), path("*_secreted_proteins.pep"), emit: secretedpep
+    tuple val(sample), path("*_secreted_proteins.cds"), emit: secretedcds
 
     script:
     """
