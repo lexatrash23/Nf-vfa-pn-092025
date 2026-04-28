@@ -55,7 +55,8 @@ write.csv(summary_IP, "ToxNonTox_IP.csv", row.names = FALSE)
 
 #Read in ToxinDataTSV, only keep those with GO Values
 toxin_data <- read.delim(ToxinDataTSV, header = TRUE) %>%
-  separate_rows(Gene.Ontology.IDs, sep = ";") %>%    
+  rename_with(~ make.names(.), everything()) %>%
+  separate_rows(Gene.Ontology.IDs, sep = ";") %>%
   mutate(Gene.Ontology.IDs = str_trim(Gene.Ontology.IDs)) %>%  
   filter(!is.na(Gene.Ontology.IDs) & str_trim(Gene.Ontology.IDs) != "")
 
@@ -67,7 +68,8 @@ toxin_data <- toxin_data %>%
 
 #Read in NonToxinDataTSV, only keep those with GO Values
 nontoxin_data <- read.delim(NonToxinDataTSV, header = TRUE)  %>%
-  separate_rows(Gene.Ontology.IDs, sep = ";") %>%    
+  rename_with(~ make.names(.), everything()) %>%
+  separate_rows(Gene.Ontology.IDs, sep = ";") %>%
   mutate(Gene.Ontology.IDs = str_trim(Gene.Ontology.IDs)) %>%  
   filter(!is.na(Gene.Ontology.IDs) & str_trim(Gene.Ontology.IDs) != "")
 

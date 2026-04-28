@@ -17,7 +17,7 @@ species_name  <- args[3]
 
 Trans <- read.csv(Trans, header = TRUE)
 # Reordering columns and keeping only those of interest
-keeps <- c("Transdecoder_ID", "ORF_type", "PEP_Length", "CDS_Length", "SP", "Signal_Length", "mature_length", "percent", "cumulativepercent", "Code", "Hit", "Percentage_Identity", "E_value", "BitScore", "Hit_species","InterPro_accession_Names","GO_name","TMHMM","Phobius_Name","Panther_ID_Name", "PEP_Sequence","Signal_Sequence","mature_sequence","CDS_Sequence")
+keeps <- c("Transdecoder_ID", "ORF_type", "PEP_Length", "CDS_Length", "SP", "Signal_Length", "Mature_Length","CysPer", "tpm", "percent", "cumulativepercent", "Code", "Hit", "Percentage_Identity", "E_value", "BitScore", "Hit_species","InterPro_accession_Names","GO_name","TMHMM","Phobius_Name","Panther_ID_Name", "PEP_Sequence","Signal_Sequence","Mature_Sequence","CDS_Sequence")
 Trans <- Trans[keeps]
 #tables to save
 #order by bitscore

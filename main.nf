@@ -549,7 +549,7 @@ process RmarkdownB {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis'
+    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -561,7 +561,7 @@ process RmarkdownB {
 
     script:
     """
-
+    samplesheet_abs=\$(readlink -f "${samplesheet}")
    Rscript -e "rmarkdown::render(
   '${workflow.projectDir}/bin/Rmarkdown_scripts/B.Rmd',
   output_dir='.',
@@ -569,7 +569,7 @@ process RmarkdownB {
   params=list(
     author='${author}',
     sample='${sample}',
-    samplesheet='${samplesheet}'
+    samplesheet='\$samplesheet_abs'
   )
 )"
   
@@ -617,7 +617,7 @@ process RmarkdownA {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr'
+    conda 'r-base=4.3 r-knitr r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -634,7 +634,7 @@ process RmarkdownA {
       output_dir='.',
       params=list(
         rmd_dir='${workflow.projectDir}/bin/Rmarkdown_scripts/',
-        sampleURL=${sampleURL},
+        sampleURL='${sampleURL}',
         sample_name=${sample},
         AuthorName=${author}
       )
@@ -656,7 +656,7 @@ process RmarkdownCDEGIK {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr'
+    conda 'r-base=4.3 r-knitr r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -693,7 +693,7 @@ process RmarkdownH {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-grid r-DT r-downloadthis'
+    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-grid r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -749,7 +749,7 @@ process RmarkdownJ {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-grid r-DT r-downloadthis'
+    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-grid r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -804,7 +804,7 @@ process RmarkdownL {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-grid r-DT r-downloadthis'
+    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-grid r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -854,7 +854,7 @@ process RmarkdownM {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -893,7 +893,7 @@ process RmarkdownN {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -934,7 +934,7 @@ process RmarkdownO {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -973,7 +973,7 @@ process RmarkdownQ {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -1012,7 +1012,7 @@ process RmarkdownR {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -1053,7 +1053,7 @@ process RmarkdownS {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -1094,7 +1094,7 @@ process RmarkdownV {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -1133,7 +1133,7 @@ process RmarkdownW {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -1174,7 +1174,7 @@ process RmarkdownX {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -1213,7 +1213,7 @@ process RmarkdownZ {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3'
+    conda 'r-base=4.3 r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -1702,8 +1702,10 @@ venomflowfiles = csv_channel.map { row ->
         return [it[0], it[40]]
     })
     RmarkdownCDEGIKInput | RmarkdownCDEGIK
-    groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome.groupTuple()
-    groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome.groupTuple()
+    //groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome.groupTuple()
+    //groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome.groupTuple()
+    groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome
+    groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome
     // RmarkdownH
     RmarkdownHInput = RmarkdownCDEGIKInput
         .join(kallistoAnalysisTrinity.out.trin_top20_png)
