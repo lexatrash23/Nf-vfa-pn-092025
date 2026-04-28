@@ -3,7 +3,10 @@ title: "Metadata"
 output:
   html_document:
     self_contained: false
-
+params:
+  author: NULL
+  sample: NULL
+  samplesheet: NULL
 ---
 
 
@@ -11,10 +14,7 @@ output:
 library(downloadthis)
 
 knitr::opts_chunk$set(echo = TRUE)
-args <- commandArgs(trailingOnly = TRUE)
-Name <- args[1]
-Sample_Name <- args[2]
-Samplesheet <- args[3]
+
 
 metadata <- read.csv(Samplesheet, header = TRUE)
 names(metadata) <- sub("^X\\.", "", names(metadata))

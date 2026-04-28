@@ -427,7 +427,7 @@ process ToxinVsNonToxin {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-GO.db r-dplyr'
+    conda 'r-base=4.3 bioconductor-go.db r-dplyr'
 
     publishDir "CommonMetadata/VenomFlowAnalysis/results/ToxinVsNonToxinMetaData/", mode: 'copy'
 
@@ -561,12 +561,16 @@ process RmarkdownB {
     script:
     """
 
-    Rscript -e "rmarkdown::render(
-      '${workflow.projectDir}/bin/Rmarkdown_scripts/B.Rmd',
-      output_dir='.',
-      knit_root_dir='.',
-      args=c('${author}', '${sample}', '${samplesheet}')
-    )"
+   Rscript -e "rmarkdown::render(
+  '${workflow.projectDir}/bin/Rmarkdown_scripts/B.Rmd',
+  output_dir='.',
+  knit_root_dir='.',
+  params=list(
+    author='${author}',
+    sample='${sample}',
+    samplesheet='${samplesheet}'
+  )
+)"
   
 
     """
