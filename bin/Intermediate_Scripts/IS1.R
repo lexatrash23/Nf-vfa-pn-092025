@@ -65,7 +65,7 @@ combined_kallisto_unitox_trinity <- merge(Trinity_Kallisto_merge_all, Unitox_bla
 
 
 #now we save this dataframe as a csv file
-write.csv(combined_kallisto_unitox_trinity, paste0(basename + "_TBK.csv"), row.names = FALSE)
+write.csv(combined_kallisto_unitox_trinity, paste0(sample_name + "_TBK.csv"), row.names = FALSE)
 
 
 #Distinct list where each trinity ID is only present once, retaining the result with the highest blast bitscore if any
