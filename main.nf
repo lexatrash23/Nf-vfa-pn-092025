@@ -830,7 +830,7 @@ process RmarkdownL {
         pie10='\$pie10_abs',
         pie11='\$pie11_abs',
         pie12='\$pie12_abs',
-        topkallisto_signalp='\$topka.llisto_signalp_abs',
+        topkallisto_signalp='\$topkallisto_signalp_abs',
         AuthorName = '${author}',
         SampleName = '${sample}'
       )
