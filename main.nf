@@ -635,8 +635,8 @@ process RmarkdownA {
       params=list(
         rmd_dir='${workflow.projectDir}/bin/Rmarkdown_scripts/',
         sampleURL='${sampleURL}',
-        sample_name="${sample}",
-        AuthorName="${author}"
+        sample_name=""${sample}","
+        AuthorName=""${author}""
       )
     )"
     """

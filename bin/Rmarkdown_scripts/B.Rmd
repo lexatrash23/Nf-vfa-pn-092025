@@ -15,7 +15,9 @@ library(downloadthis)
 
 knitr::opts_chunk$set(echo = TRUE)
 
-
+Samplesheet <- params$samplesheet
+Name <- params$author
+Sample_Name <-params$sample
 metadata <- read.csv(Samplesheet, header = TRUE)
 names(metadata) <- sub("^X\\.", "", names(metadata))
 names(metadata) <- sub("\\.", "", names(metadata))
