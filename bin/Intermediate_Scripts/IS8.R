@@ -3,6 +3,7 @@
 library(dplyr)
 library(GO.db)
 library(tidyr)
+library(stringr)
 
 
 args <- commandArgs(trailingOnly = TRUE)
