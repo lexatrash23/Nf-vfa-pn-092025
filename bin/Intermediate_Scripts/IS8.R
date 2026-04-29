@@ -13,7 +13,6 @@ IPmetadata <- args[3]
 Interproscan_metadata_csv <- read.delim(file = IPmetadata, header = TRUE, sep = "\t") %>%
  dplyr::select(ENTRY_AC, ENTRY_TYPE,ENTRY_NAME ) %>%
   dplyr::rename(InterPro = ENTRY_AC )
-read.delim(file = Interproscan, header = FALSE, sep = "\t")
 #Read in ToxinDataTSV, only keep those with InterPro Values
 toxin_data <- read.delim(ToxinDataTSV, header = TRUE) %>%
   separate_rows(InterPro, sep = ";") %>%    

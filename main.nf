@@ -629,16 +629,9 @@ process RmarkdownA {
 
     script:
     """
-    Rscript -e "rmarkdown::render(
-      '${workflow.projectDir}/bin/Rmarkdown_scripts/A.Rmd',
-      output_dir='.',
-      params=list(
-        rmd_dir='${workflow.projectDir}/bin/Rmarkdown_scripts/',
-        sampleURL='${sampleURL}',
-        sample_name=""${sample}","
-        AuthorName=""${author}""
-      )
-    )"
+
+    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/A.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sampleURL} ${sample} ${author}
+
     """
 }
 
@@ -730,7 +723,8 @@ process RmarkdownH {
         pie3='\$pie3_abs',
         pie4='\$pie4_abs',
         topkallisto='\$topkallisto_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -786,7 +780,8 @@ process RmarkdownJ {
         pie7='\$pie7_abs',
         pie8='\$pie8_abs',
         topkallisto_transdecoder='\$topkallisto_transdecoder_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -836,7 +831,8 @@ process RmarkdownL {
         pie11='\$pie11_abs',
         pie12='\$pie12_abs',
         topkallisto_signalp='\$topka.llisto_signalp_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -875,7 +871,8 @@ process RmarkdownM {
       output_dir='.',
       params=list(
         Table1='\$Table1_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -916,7 +913,8 @@ process RmarkdownN {
       params=list(
         Table2='\$Table2_abs',
         Table3='\$Table3_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -955,7 +953,8 @@ process RmarkdownO {
       output_dir='.',
       params=list(
         Table4='\$Table4_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -994,7 +993,8 @@ process RmarkdownQ {
       output_dir='.',
       params=list(
         Table5='\$Table5_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -1035,7 +1035,8 @@ process RmarkdownR {
       params=list(
         Table6='\$Table6_abs',
         Table7='\$Table7_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -1074,7 +1075,8 @@ process RmarkdownS {
       output_dir='.',
       params=list(
         Table8='\$Table8_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -1115,7 +1117,8 @@ process RmarkdownV {
       output_dir='.',
       params=list(
         Table9='\$Table9_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -1156,7 +1159,8 @@ process RmarkdownW {
       params=list(
         Table10='\$Table10_abs',
         Table11='\$Table11_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -1195,7 +1199,8 @@ process RmarkdownX {
       output_dir='.',
       params=list(
         Table12='\$Table12_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """
@@ -1236,7 +1241,8 @@ process RmarkdownZ {
       params=list(
         VENN='\$Venn_abs',
         TABLE='\$table_abs',
-        name = '${sample}'
+        AuthorName = '${author}',
+        SampleName = '${sample}'
       )
     )"
     """

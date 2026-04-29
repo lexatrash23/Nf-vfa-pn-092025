@@ -3,11 +3,7 @@ title: "Main Menu"
 output: 
   html_document:
     css: style.css 
-params:
-  rmd_dir: NULL
-  sampleURL: NULL
-  AuthorName: NULL
-  SampleName: NULL
+
 
 ---
 
@@ -15,11 +11,11 @@ params:
 ```{r, echo=FALSE, results='hide'}
 # Read command line arguments
 args <- commandArgs(trailingOnly = TRUE)
+path <- args[1]
+search_url <- args[2]
+Sample_Name<- args[3]
+Name<- args[4]
 
-path <- params$rmd_dir
-search_url <- params$sampleURL
-Sample_Name <- params$SampleName
-Name <- params$AuthorName
 
 
 ```
