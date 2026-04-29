@@ -391,7 +391,7 @@ process TableGenerationTransdecoder {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-dplyr r-DT'
+    conda 'r-base=4.3 r-dplyr r-DT r-stringr'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/Transdecoder", pattern: "*{5,6,7,8}.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/SignalP", pattern: "*{9,10,11,12}.csv", mode: 'copy'
@@ -462,7 +462,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-grid'
+    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/Overview/Dataframes", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
@@ -512,7 +512,7 @@ process CreateInterproscanFigures {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-dplyr r-grid  r-ggplot2 r-ggrepel'
+    conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Images/SignalP/", pattern: "*.png", mode: 'copy'
 
@@ -569,7 +569,7 @@ process RmarkdownB {
   params=list(
     author='${author}',
     sample='${sample}',
-    samplesheet='\$samplesheet_abs'
+    samplesheet='\${samplesheet_abs}'
   )
 )"
   
@@ -635,8 +635,8 @@ process RmarkdownA {
       params=list(
         rmd_dir='${workflow.projectDir}/bin/Rmarkdown_scripts/',
         sampleURL='${sampleURL}',
-        sample_name=${sample},
-        AuthorName=${author}
+        sample_name="${sample}",
+        AuthorName="${author}"
       )
     )"
     """
@@ -693,7 +693,7 @@ process RmarkdownH {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-grid r-DT r-downloadthis r-rmarkdown'
+    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -749,7 +749,7 @@ process RmarkdownJ {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-grid r-DT r-downloadthis r-rmarkdown'
+    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -804,7 +804,7 @@ process RmarkdownL {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-grid r-DT r-downloadthis r-rmarkdown'
+    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
