@@ -443,11 +443,8 @@ process ToxinVsNonToxin {
     script:
 
     """
-    toxprotblastmetadata_abs=\$(readlink -f "${toxprotblastmetadata}")
-    nontoxprotblastmetadata_abs=\$(readlink -f "${nontoxprotmetadata}")
 
-
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS8.R" '\${toxprotblastmetadata_abs}' '\${nontoxprotblastmetadata_abs}' ${IP_metadata} 
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS8.R" ${toxprotblastmetadata} ${nontoxprotmetadata} ${IP_metadata} 
     """
 }
 
@@ -1209,7 +1206,7 @@ process RmarkdownX {
     """
 }
 
-// Process 35:
+// Process 35 STRICT:
 process RmarkdownZ {
     errorStrategy 'ignore'
     maxRetries 4
@@ -1226,7 +1223,48 @@ process RmarkdownZ {
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
     input:
-    tuple val(sample), path(Venn), path(table)
+    tuple val(sample), val(author), path(Venn), path(table)
+
+    output:
+    tuple val(sample), path("*.html")
+
+    script:
+    """
+
+    Venn_abs=\$(readlink -f "${Venn}")
+    table_abs=\$(readlink -f "${table}")
+
+
+    Rscript -e "rmarkdown::render(
+      '${workflow.projectDir}/bin/Rmarkdown_scripts/Z.Rmd',
+      output_dir='.',
+      params=list(
+        VENN='\$Venn_abs',
+        TABLE='\$table_abs',
+        AuthorName = '${author}',
+        SampleName = '${sample}'
+      )
+    )"
+    """
+}
+//LAX
+process RmarkdownY {
+    errorStrategy 'ignore'
+    maxRetries 4
+
+
+    label 'process_single'
+    label 'process_long'
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
+
+    conda 'r-base=4.3 r-rmarkdown'
+
+    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+
+    input:
+    tuple val(sample), val(author), path(Venn), path(table)
 
     output:
     tuple val(sample), path("*.html")
@@ -1327,13 +1365,13 @@ process Annotate {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/RappData/Alignmentapp", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/AnnotatedData/", pattern: "*.csv", mode: 'copy'
 
     input:
     tuple val(sample), path(final_filtered_lax), path(toxprotblast6), path(nontoxprotblast6), path(Diamondblast6), path(toxprotblastmetadata), path(nontoxprotmetadata), path(toxvsnontoxIP), path(toxvsnontoxMF), path(toxvsnontoxBP)
 
     output:
-    tuple val(sample), path("*.csv"), emit: AnnotatedCSV
+    tuple val(sample), path("*.csv")
     tuple val(sample), path("*ProtSpaceAnnotation.csv"), emit: ProtSpaceAnnotatedCSV
     tuple val(sample), path("*.fasta"), emit: FilteredLaxPep
 
@@ -1382,6 +1420,65 @@ process ProtSpace {
     """
 }
 
+// Missing html file just move it to the right folder 
+process MissingHTML {
+    errorStrategy 'ignore'
+    maxRetries 4
+    label 'process_single'
+
+    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+
+    input:
+    tuple val(sample), path(MissingHTML)
+
+    output:
+    path "*.html"
+
+    script:
+    """
+    """
+}
+// Process 35 ProtSpace Page // Optional:
+process RmarkdownU {
+    errorStrategy 'ignore'
+    maxRetries 4
+
+
+    label 'process_single'
+    label 'process_long'
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
+
+    conda 'r-base=4.3 r-rmarkdown'
+
+    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+
+    input:
+    tuple val(sample), val(author), path(parquet), path(metadata)
+
+    output:
+    tuple val(sample), path("*.html")
+
+    script:
+    """
+
+    parquet_abs=\$(readlink -f "${parquet}")
+    metadata_abs=\$(readlink -f "${metadata}")
+
+
+    Rscript -e "rmarkdown::render(
+      '${workflow.projectDir}/bin/Rmarkdown_scripts/Z.Rmd',
+      output_dir='.',
+      params=list(
+        VENN='\$parquet_abs',
+        TABLE='\$metadata_abs',
+        AuthorName = '${author}',
+        SampleName = '${sample}'
+      )
+    )"
+    """
+}
 
 // Define input file patterns via parameters
 
@@ -1392,121 +1489,117 @@ workflow {
     //Define CSV channel.. channel factory creates the channel from a csv file. can be defined in the config or command line 
     csv_channel = channel.fromPath(params.input_csv).splitCsv(header: true, sep: ',').map { row -> row.collectEntries { key, value -> [key.replaceAll('"', ''), value?.toString()?.replaceAll('"', '')] } }
     //Define results folder from the Venomflow 
-venomflowfiles = csv_channel.map { row ->
-    def samplename = row.Sample_name
-    //0
-    def results_path = row.Venomflowresultsfolder ? file(row.Venomflowresultsfolder).toAbsolutePath() : null
+    venomflowfiles = csv_channel.map { row ->
+        def samplename = row.Sample_name
+        //0
+        def results_path = row.Venomflowresultsfolder ? file(row.Venomflowresultsfolder).toAbsolutePath() : null
 
-    def kallisto_trinity = results_path ? file("${results_path}/kallisto/trinity/output/abundance.tsv") : ''
-    //1
-    def kallisto_trans = results_path ? file("${results_path}/kallisto/transdecoder/output/abundance.tsv") : ''
-    //2
-    def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*.pep") : ''
-    //3
-    def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*.cds") : ''
-    //4
-    def mature_fasta = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_mature.fasta") : ''
-    //5
-    def blastx_files = results_path ? file("${results_path}/Blast/Blastx/*.6.txt") : ''
-    //6
-    def blastp_files = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.6.txt") : ''
-    //7
-    def Interproscan_file = results_path ? file("${results_path}/Interproscan/*.tsv") : ''
-    //8
-    def signalp_summary = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_summary.signalp5") : ''
-    //9
-    def Blastn6 = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.6.txt") : ''
-    //10
-    def blastn0txt = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.0.txt") : ''
-    //11
-    def blastx0txt = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.0.txt") : ''
-    //12
-    def blastp0txt = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.blastp.db.0.txt") : ''
-    //13
-    def basename = row.basename
-    //14
-    def busco_transcriptome_dir = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome1") : ''
-    //15
-    def busco_translatome_dir = results_path ? file("${results_path}/BUSCO/translatome/Transdecoder/") : ''
-    //16
-    def genomeid = row.NCBI_Genome_id ?: ''
-    //17
-    def species = row.Species ?: ''
-    //18 
-    def MS = row.massspec_csv ? file(row.massspec_csv) : ''
-    //19
-    def Gavailability = row.isgenomeavailble ?: ''
-    //20
-    def MSavailability = row.ismassspecavailable ?: ''
-    //21
-    def ToxinDomains = row.Toxin_domains ? file(row.Toxin_domains) : ''
-    //22
-    def busco_transcriptome_dir2 = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome2") : ''
-    //23
-    def busco_transcriptome_dir3 = results_path ? file("${results_path}/BUSCO/transcriptome/Combined") : ''
-    //24
-    def busco_translatome_dir2 = results_path ? file("${results_path}/BUSCO/translatome/TD2/") : ''
-    //25
-    def busco_translatome_dir3 = results_path ? file("${results_path}/BUSCO/translatome/Combined/") : ''
-    //26
-    def Transcriptome1 = row.Transcriptome1 ? file(row.Transcriptome1) : ''
-    //27
-    def Transcriptome2 = row.Transcriptome2 ? file(row.Transcriptome2) : ''
-    //28
-    def TranscriptomeC = results_path ? file("${results_path}/Combined_Transcriptome/*.cdhit95.fasta") : ''
-    //29
-    def complete_pep = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.pep") : ''
-    //30
-    def complete_cds = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.cds") : ''
-    //31
-    def combined_mature = results_path ? file("${results_path}/Secreted/Mature/Combined/*.combined.mature.deduplicated.pep.fasta") : ''
-    //32
-    def SampleURL = row.SearchAndDownloadURL ?: ''
-    //33
-    def TD_pep = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.pep") : ''
-    //34
-    def TD2_pep = results_path ? file("${results_path}/ORFprediction/TD2/*.pep") : ''
-    //35
-    def TD_cds = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.cds") : ''
-    //36
-    def TD2_cds = results_path ? file("${results_path}/ORFprediction/TD2/*.cds") : ''
-    //37
-    def Diamondblast6 = row.Diamondblast6Path ? file(row.Diamondblast6Path) : ''
-    //38
-    def BlastpNonToxin = results_path ? file("${results_path}/Blast/Blastp_NonToxin/*.blastp.db.6.txt") : ''
-    //39
-    def AuthorName = row.AnalysisdataAuth ?: ''
-    //40
-    return [samplename, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir, genomeid, species, MS, Gavailability, MSavailability, ToxinDomains, busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3, Transcriptome1, Transcriptome2, TranscriptomeC, complete_pep, complete_cds, combined_mature, SampleURL, TD_pep, TD2_pep, TD_cds, TD2_cds, Diamondblast6, BlastpNonToxin, AuthorName]
-}
+        def kallisto_trinity = results_path ? file("${results_path}/kallisto/trinity/output/abundance.tsv") : ''
+        //1
+        def kallisto_trans = results_path ? file("${results_path}/kallisto/transdecoder/output/abundance.tsv") : ''
+        //2
+        def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*.pep") : ''
+        //3
+        def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*.cds") : ''
+        //4
+        def mature_fasta = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_mature.fasta") : ''
+        //5
+        def blastx_files = results_path ? file("${results_path}/Blast/Blastx/*.6.txt") : ''
+        //6
+        def blastp_files = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.6.txt") : ''
+        //7
+        def Interproscan_file = results_path ? file("${results_path}/Interproscan/*.tsv") : ''
+        //8
+        def signalp_summary = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_summary.signalp5") : ''
+        //9
+        def Blastn6 = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.6.txt") : ''
+        //10
+        def blastn0txt = results_path ? file("${results_path}/Blast/Blastn/*.blastn.db.0.txt") : ''
+        //11
+        def blastx0txt = results_path ? file("${results_path}/Blast/Blastx/*.blastx.db.0.txt") : ''
+        //12
+        def blastp0txt = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.blastp.db.0.txt") : ''
+        //13
+        def basename = row.basename
+        //14
+        def busco_transcriptome_dir = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome1") : ''
+        //15
+        def busco_translatome_dir = results_path ? file("${results_path}/BUSCO/translatome/Transdecoder/") : ''
+        //16
+        def genomeid = row.NCBI_Genome_id ?: ''
+        //17
+        def species = row.Species ?: ''
+        //18 
+        def MS = row.massspec_csv ? file(row.massspec_csv) : ''
+        //19
+        def Gavailability = row.isgenomeavailble ?: ''
+        //20
+        def MSavailability = row.ismassspecavailable ?: ''
+        //21
+        def ToxinDomains = row.Toxin_domains ? file(row.Toxin_domains) : ''
+        //22
+        def busco_transcriptome_dir2 = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome2") : ''
+        //23
+        def busco_transcriptome_dir3 = results_path ? file("${results_path}/BUSCO/transcriptome/Combined") : ''
+        //24
+        def busco_translatome_dir2 = results_path ? file("${results_path}/BUSCO/translatome/TD2/") : ''
+        //25
+        def busco_translatome_dir3 = results_path ? file("${results_path}/BUSCO/translatome/Combined/") : ''
+        //26
+        def Transcriptome1 = row.Transcriptome1 ? file(row.Transcriptome1) : ''
+        //27
+        def Transcriptome2 = row.Transcriptome2 ? file(row.Transcriptome2) : ''
+        //28
+        def TranscriptomeC = results_path ? file("${results_path}/Combined_Transcriptome/*.cdhit95.fasta") : ''
+        //29
+        def complete_pep = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.pep") : ''
+        //30
+        def complete_cds = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.cds") : ''
+        //31
+        def combined_mature = results_path ? file("${results_path}/Secreted/Mature/Combined/*.combined.mature.deduplicated.pep.fasta") : ''
+        //32
+        def SampleURL = row.SearchAndDownloadURL ?: ''
+        //33
+        def TD_pep = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.pep") : ''
+        //34
+        def TD2_pep = results_path ? file("${results_path}/ORFprediction/TD2/*.pep") : ''
+        //35
+        def TD_cds = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.cds") : ''
+        //36
+        def TD2_cds = results_path ? file("${results_path}/ORFprediction/TD2/*.cds") : ''
+        //37
+        def Diamondblast6 = row.Diamondblast6Path ? file(row.Diamondblast6Path) : ''
+        //38
+        def BlastpNonToxin = results_path ? file("${results_path}/Blast/Blastp_NonToxin/*.blastp.db.6.txt") : ''
+        //39
+        def AuthorName = row.AnalysisdataAuth ?: ''
+        //40
+        return [samplename, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir, genomeid, species, MS, Gavailability, MSavailability, ToxinDomains, busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3, Transcriptome1, Transcriptome2, TranscriptomeC, complete_pep, complete_cds, combined_mature, SampleURL, TD_pep, TD2_pep, TD_cds, TD2_cds, Diamondblast6, BlastpNonToxin, AuthorName]
+    }
 
     // Metadafiles 
     // IP entry list
     def interproscan_metadata_file = file(params.input_interproscan, checkIfExists: false).exists()
         ? file(params.input_interproscan)
         : file(params.Fallback_interproscan)
-    InterproscanMetadata1 = Channel.fromPath(interproscan_metadata_file)
-    InterproscanMetadata = InterproscanMetadata1.first()
+    InterproscanMetadata = Channel.fromPath(interproscan_metadata_file)
     // Panther names entry list
     def panther_metadata_file = file(params.input_panther, checkIfExists: false).exists()
         ? file(params.input_panther)
         : file(params.Fallback_panther)
-    PantherMetadata1 = Channel.fromPath(panther_metadata_file)
-    PantherMetadata = PantherMetadata1.first()
+    PantherMetadata = Channel.fromPath(panther_metadata_file)
 
     // Toxin metadata TSV
     def toxin_metadata_file = file(params.input_toxin_metadata, checkIfExists: false).exists()
-        ? file(params.Fallback_toxin_metadata)
+        ? file(params.input_toxin_metadata)
         : file(params.Fallback_toxin_metadata)
-    ToxinMetadata1 = Channel.fromPath(toxin_metadata_file)
-    ToxinMetadata = ToxinMetadata1.first()
+    ToxinMetadata = Channel.fromPath(toxin_metadata_file)
 
     // NonToxin metadata TSV
     def nontoxin_metadata_file = file(params.input_nontoxin_metadata, checkIfExists: false).exists()
-        ? file(params.Fallback_nontoxin_metadata)
+        ? file(params.input_nontoxin_metadata)
         : file(params.Fallback_nontoxin_metadata)
-    NonToxinMetadata1 = Channel.fromPath(nontoxin_metadata_file)
-    NonToxinMetadata = NonToxinMetadata1.first()
+    NonToxinMetadata = Channel.fromPath(nontoxin_metadata_file)
 
 
     // Process 1: Define Inputs for kallistoanalysistrinity  sample id + kallisto_file trinity tuple 
@@ -1523,7 +1616,7 @@ venomflowfiles = csv_channel.map { row ->
     //Process 3: Define Inputs for ExtractSignalSequences sample id + transdecoderpep + maturefasta tuple 
 
     def ExtractSignalSequencesinput = venomflowfiles.map { item ->
-            def maturefasta = (item[32] && item[32] != '') ? item[32] : item[5]
+        def maturefasta = item[32] && item[32] != '' ? item[32] : item[5]
         [item[0], item[30], maturefasta]
     }
     //Run process ExtractSignalSequences
@@ -1561,13 +1654,13 @@ venomflowfiles = csv_channel.map { row ->
     //Process 6: Define Inputs for CreateTransdecoderDataframe  sample + transdecoder_pep + transdecoder_cds + blastp6_file  mature_fasta, Signalp_summary, signalsequences, Interproscan_dataframe, kallistotrans
     CreateTransdecoderDataframeinput = venomflowfiles
         .map { item ->
-            def maturefasta = (item[32] && item[32] != '') ? item[32] : item[5]
-             def combinedpep = (item[3] && item[3] != '')
+            def maturefasta = item[32] && item[32] != '' ? item[32] : item[5]
+            def combinedpep = item[3] && item[3] != ''
                 ? item[3]
-                : ((item[34] && item[34] != '') ? item[34] : item[35])
-            def combinedcds = (item[4] && item[4] != '')
+                : (item[34] && item[34] != '' ? item[34] : item[35])
+            def combinedcds = item[4] && item[4] != ''
                 ? item[4]
-                : ((item[36] && item[36] != '') ? item[36] : item[37])
+                : (item[36] && item[36] != '' ? item[36] : item[37])
             [item[0], combinedpep, combinedcds, item[7], maturefasta]
         }
         .join(ExtractSignalSequences.out.signalsequences)
@@ -1794,9 +1887,14 @@ venomflowfiles = csv_channel.map { row ->
     // RmarkdownX
     RmarkdownXInput = RmarkdownCDEGIKInput.join(TableGenerationTransdecoder.out.Table12)
     RmarkdownXInput | RmarkdownX
-
+    RmarkdownZInput = RmarkdownCDEGIKInput.join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict).join(AddMSGenomeIfAvailableAndCreateOverview.out.VennCsvStrict)
+    RmarkdownZInput | RmarkdownZ
+    RmarkdownYInput = RmarkdownCDEGIKInput.join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax).join(AddMSGenomeIfAvailableAndCreateOverview.out.VennCsvLax)
+    RmarkdownYInput | RmarkdownY
+    // RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
+    // RmarkdownUInput | RmarkdownU
     /*
-
+    Rmarkdown
 
     //RmarkdownZ(TableGenerationTransdecoder.out.Table12)
 

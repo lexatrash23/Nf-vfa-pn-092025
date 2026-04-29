@@ -1,0 +1,84 @@
+---
+title: "Overview "
+output: 
+  html_document:
+    css: style.css 
+    theme: flatly
+params:
+  VENN: NULL
+  TABLE: NULL
+  AuthorName: NULL
+  SampleName: NULL
+
+---
+<style>
+.dt-button.buttons-columnVisibility {
+              background: black !important;
+              color: white !important;
+              opacity: 0.5;
+           }
+.dt-button.buttons-columnVisibility.active {
+              background: black !important;
+              color: white !important;
+              opacity: 1;
+           }"
+</style>
+
+```{r setup, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+
+```
+
+
+```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+library(DT)
+library(dplyr)
+library(knitr)
+library(png)
+library(grid)
+library(downloadthis)
+Sample_Name <- params$SampleName
+Name <- params$AuthorName
+```
+
+
+<hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
+
+`r Sys.Date()` ---
+**`r Name`** ---
+**`r Sample_Name`**  
+<hr style="border: 1px solid white; width: 100%; margin-bottom:3px;  padding:0px;" />
+
+
+
+
+```{r, results='asis',fig.align='center'}
+Venndiagram  <- readPNG(params$VENN)
+
+Venndiagram <- grid.raster(Venndiagram)
+cat(" \n\n Figure 1. Venn diagram of Transdecoder-predicted complete ORFs with predicted signal peptide. Sequences with at least one domain in common with a ToxProt annoated protein in red(TD). Sequences with BLAST match of bitscore of at least 250 to a ToxProt annotated protein in green(TP). Sequences with Kallisto-predicted expression of at least 1 % of Total expression in yellow(KE). Sequence with at least 50% sequence coverage by mass spectrometry in blue (MS), where available  \n\n ") 
+
+```
+
+
+### Table of Transdecoder-predicted complete ORFs with predicted signal peptide from venn diagram above
+```{r , echo=FALSE}
+Uniontable <- read.csv(params$TABLE)
+datatable(
+  Uniontable,
+  options = list(
+    lengthMenu = c(5, 10, 15, 20),
+    dom = 'Blfrtip',
+    buttons = list(
+      'copy',
+      'csv',
+      list(extend = 'colvis', text = 'Column Visibility')
+    )
+  ),
+  extensions = 'Buttons'
+)
+
+
+```
+
+
