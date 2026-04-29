@@ -443,8 +443,11 @@ process ToxinVsNonToxin {
     script:
 
     """
+    toxprotblastmetadata_abs=\$(readlink -f "${toxprotblastmetadata}")
+    nontoxprotblastmetadata_abs=\$(readlink -f "${nontoxprotmetadata}")
 
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS8.R" ${toxprotblastmetadata} ${nontoxprotmetadata} ${IP_metadata} 
+
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS8.R" '\${toxprotblastmetadata_abs}' '\${nontoxprotblastmetadata_abs}' ${IP_metadata} 
     """
 }
 
