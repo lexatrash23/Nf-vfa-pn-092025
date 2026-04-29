@@ -75,7 +75,7 @@ Table8 %>%
 Table8 %>%
   kable("html", 
         booktabs = TRUE, 
-        escape = FALSE) %>%  %>%  
+        escape = FALSE) %>% 
   kable_styling(bootstrap_options = c("hover", "condensed", "responsive", "bordered"),fixed_thead = TRUE, 
                 full_width = TRUE, 
                 position = "center") %>% 
