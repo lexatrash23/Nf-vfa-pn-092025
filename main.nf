@@ -1741,7 +1741,7 @@ workflow {
     // Overview 
 
     AddMSGenomeIfAvailableAndCreateOverviewInput = venomflowfiles
-        .map { [it[0], it[18], it[19] ?: "NULL", it[10] ?: "NULL"] }
+        .map { [it[0], it[18], it[19] ?: null, it[10] ?: null] }
         .join(CreateTransdecoderDataframe.out.transdf_distinct)
         .combine(ToxinVsNonToxin.out.toxvsnontoxIP)
 
@@ -1751,7 +1751,7 @@ workflow {
     WithDiamond = venomflowfiles.filter { it[38] }.map { [it[0], it[7], it[39], it[38]] }
     //sample, blastptox, blastpnontox, diamond
 
-    WithoutDiamond = venomflowfiles.filter { !it[38] }.map { [it[0], it[7], it[39], "NULL"] }
+    WithoutDiamond = venomflowfiles.filter { !it[38] }.map { [it[0], it[7], it[39], null] }
     //sample, blastptox, blastpnontox, null
 
     SpeciesSpecificBlastInputs = WithDiamond.mix(WithoutDiamond)
@@ -1900,7 +1900,7 @@ workflow {
 
 */
 
-    BlastChunksInput = venomflowfiles.map { [it[0], it[12], it[13], it[11] ? it[11] : "NULL"] }
+    BlastChunksInput = venomflowfiles.map { [it[0], it[12], it[13], it[11] ? it[11] : null] }
 
     BlastChunksInput | Blast0Chunksn
 }
