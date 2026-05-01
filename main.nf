@@ -462,7 +462,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn'
+    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn r-GenomicRanges'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/Overview/Dataframes", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
