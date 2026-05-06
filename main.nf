@@ -1492,7 +1492,7 @@ workflow {
     venomflowfiles = csv_channel.map { row ->
         def samplename = row.Sample_name
         //0
-        def results_path = row.Venomflowresultsfolder.toAbsolutePath()
+        def results_path = file(row.Venomflowresultsfolder).toAbsolutePath()
 
         def kallisto_trinity = results_path ? file("${results_path}/kallisto/trinity/output/abundance.tsv") : ''
         //1
