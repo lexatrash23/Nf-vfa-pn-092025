@@ -19,8 +19,8 @@
 #unfiltered: contains all columns of genome blast and mass if available, contain transcripts with overlapping regions, save everything no other criteria applied
 #filtered:, distinct cds sequences
 
-#for those with genomes, cd-hit was only run on transcriptomes not ORF, transcripts that overlap the same genomic locus are clustered only best blast match is kept
-#for those without genomes, cd-hit was on both transcriptomes and ORFs, before running kallisto_transdecoder, only distinct pep will be kept there will likely be redudancy/isoforms that need to be handled downstream
+#for those with genomes, transcripts that overlap the same genomic locus are clustered only best blast match is kept
+#!/usr/bin/env Rscript
 
 library(dplyr)
 library(tidyr)
@@ -29,107 +29,171 @@ library(ggvenn)
 library(ggplot2)
 library(GenomicRanges)
 library(igraph)
-
-
+#load in command line arguments
 args <- commandArgs(trailingOnly = TRUE)
-Sample_name <- args[1] #sample name 
-species_name  <- args[2] #species name
-Transdf_distinct_file <- args[3] #transdf_distinct
+Sample_name <- args[1] 
+species_name  <- args[2]
+Transdf_distinct_file <- args[3]
 ToxnontoxIP <- args[4]
-Blastn_result <- args[5] #blastn_result 
-mass_spec <- args[6] #massspec csv 
+Blastn_result <- args[5]
+mass_spec_file <- args[6]
 
-#read in transdf_distinct 
-transdf <- read.csv(Transdf_distinct_file, header = TRUE )
-#add sample and species name to df and move to the end 
-transdf$Species <- species_name
-transdf$Sample_name <- Sample_name
-transdf <- transdf[c("Species", "Sample_name", setdiff(names(transdf), c("Species", "Sample_name")))]
-#addUniqueNameColumn for when multiple datasets might be binded downstream 
-transdf$UniqueSequenceName = paste(Sample_name, transdf$Transdecoder_ID, sep = "_")
 
-#should already have been removed but just in case  duplicates in CDS, keep one with higher BitScore to ToxinProtein (should already have been made distinct)
-transdf_distinct <- transdf[order(-transdf$BitScore, transdf$E_value, -transdf$tpm ), ]
-transdf_distinct <- distinct(transdf_distinct, Transdecoder_ID, .keep_all = TRUE)
-transdf_distinct <- transdf_distinct %>%
-  group_by(CDS_Sequence) %>%
-  mutate(percent = sum(percent, na.rm = TRUE)) %>%
-  mutate(tpm = sum(tpm, na.rm = TRUE)) %>%
-  ungroup() %>%
-  distinct(Transdecoder_ID, CDS_Sequence, .keep_all = TRUE)
+# Function to read in transdf and make transdf_distinct, filter for complete ORF with signal P //slightly different from other transdf distincct
+read_transdf <- function(file) {
+  df <- read.csv(file, header = TRUE)
+  df$Species <- species_name
+  df$Sample_name <- Sample_name
+  df <- df[c("Species", "Sample_name", setdiff(names(df), c("Species", "Sample_name")))]
+  df$UniqueSequenceName <- paste(Sample_name, df$Transdecoder_ID, sep = "_")
+  
+  df <- df %>% 
+    arrange(desc(BitScore), E_value, desc(tpm)) %>%
+    distinct(Transdecoder_ID, .keep_all = TRUE) %>%
+    group_by(CDS_Sequence) %>%
+    mutate(percent = sum(percent, na.rm = TRUE),
+           tpm = sum(tpm, na.rm = TRUE)) %>%
+    ungroup() %>%
+    distinct(Transdecoder_ID, CDS_Sequence, .keep_all = TRUE)
+  df <- df %>% filter(grepl("complete", ORF_type, ignore.case = TRUE),
+                      grepl("SP", SP, ignore.case = TRUE),
+                      TMHMM %in% c(FALSE, "FALSE"))
+  for(col in c("BitScore","percent","CysPer","Coverage")) if(col %in% names(df)) df[[col]] <- as.numeric(df[[col]])
 
-transdf_unfiltered <- transdf_distinct
-transdf_filtered <- transdf_distinct
-
-#readinToxinCSV 
-summary_IP <- read.csv(ToxnontoxIP)
-IPInToxins <- summary_IP %>%
-  filter(RelativeExpression > 0 )
-
-Toxin_IPs <- data.frame(unique(IPInToxins$InterPro)) 
-colnames(Toxin_IPs)[colnames(Toxin_IPs) == "unique.IPInToxins.InterPro."] <- "IP"
-pattern <- paste0("\\b(", paste(Toxin_IPs$IP, collapse = "|"), ")\\b")
-if (length(Toxin_IPs$IP) == 0) {
-  pattern <- "$^"  
-}
-IPOverRepresentedInToxins <- summary_IP %>%
-  filter(RelativeExpression > 1 )
-
-OverExpressedIPs <- data.frame(unique(IPOverRepresentedInToxins$InterPro)) 
-colnames(OverExpressedIPs)[colnames(OverExpressedIPs) == "unique.IPOverRepresentedInToxins.InterPro."] <- "IP"
-pattern2 <- paste0("\\b(", paste(OverExpressedIPs$IP, collapse = "|"), ")\\b")
-if (length(OverExpressedIPs$IP) == 0) {
-  pattern2 <- "$^"  
+  return(df)
 }
 
-#Mass Columns expected 
-#Accession, Coverage, Top, Unique
-
-
-
-if (
-  mass_spec != "NULL" &&
-  Blastn_result != "NULL"
-)
-{
-  #read in mass spec   #rename mass spec column 
-  mass_spec <- read.csv(mass_spec, header = TRUE) 
-  colnames(mass_spec)[which(names(mass_spec) == "Accession")] <- "Transdecoder_ID" 
-  #left_join full massspec 
-  transdf_unfiltered <- left_join(transdf_unfiltered,mass_spec, by = "Transdecoder_ID")
-  mass_spec <- mass_spec %>%
-    dplyr::select(Transdecoder_ID,Top,Coverage,Unique)
-  transdf_filtered <- left_join(transdf_filtered,mass_spec, by = "Transdecoder_ID")
-  #read in Blastn   #rename blastn columns 
-  Blastn_result_read <- read.table(Blastn_result,sep = "\t",header = FALSE,stringsAsFactors = FALSE)  
-  colnames(Blastn_result_read) <- c("Transdecoder_ID", "genome_sseqid", "genome_pident", "genome_length", "genome_mismatch","genome_gapopen","genome_qstart","genome_qend","genome_sstart","genome_send", "genome_sstrand","genome_evalue", "genome_bitscore", "genome_qframe", "genome_qcovs")
-  #order by genome_bitscore   #only keep distinct hit per transcript, keeping the hit  with higher bitscore
-  Blastn_result_read_genome_bitscore <- Blastn_result_read[order(Blastn_result_read$genome_bitscore, decreasing = TRUE), ]
-  Blastn_result_read_genome_bitscore_distinct <- Blastn_result_read_genome_bitscore %>% distinct(Transdecoder_ID, .keep_all = TRUE)
-  #left join blastn
-  transdf_unfiltered <- left_join(transdf_unfiltered,Blastn_result_read_genome_bitscore_distinct, by = "Transdecoder_ID")
-  transdf_filtered <- left_join(transdf_filtered, Blastn_result_read_genome_bitscore_distinct, by = "Transdecoder_ID")
+# Read in summary data for pattern generation
+prepare_patterns <- function(file) {
+  summary_IP <- read.csv(file)
+  IPInToxins <- summary_IP %>% filter(RelativeExpression > 0)
+  Toxin_IPs <- unique(IPInToxins$InterPro)
+  pattern <- if(length(Toxin_IPs) == 0) "$^" else paste0("\\b(", paste(Toxin_IPs, collapse="|"), ")\\b")
   
-  #save unfiltered csv 
-  write.csv(transdf_unfiltered, paste0(Sample_name, "_transdf_distinct_final_unfiltered.csv"), row.names = FALSE)
+  IPOver <- summary_IP %>% filter(RelativeExpression > 1)
+  Over_IPs <- unique(IPOver$InterPro)
+  pattern2 <- if(length(Over_IPs) == 0) "$^" else paste0("\\b(", paste(Over_IPs, collapse="|"), ")\\b")
   
-  transdf_blastn <- transdf_blastn %>%
+  return(list(pattern = pattern, pattern2 = pattern2))
+}
+
+# Read mass spec if available 
+read_mass_spec <- function(file) {
+  mass <- read.csv(file)
+  colnames(mass)[colnames(mass)=="Accession"] <- "Transdecoder_ID"
+  return(mass)
+}
+
+# Read in blastn data if available
+read_blast <- function(file) {
+  blast <- read.table(file, sep="\t", header=FALSE, stringsAsFactors = FALSE)
+  colnames(blast) <- c("Transdecoder_ID", "genome_sseqid", "genome_pident", "genome_length",
+                       "genome_mismatch","genome_gapopen","genome_qstart","genome_qend",
+                       "genome_sstart","genome_send", "genome_sstrand","genome_evalue", 
+                       "genome_bitscore", "genome_qframe", "genome_qcovs")
+  blast <- blast %>% arrange(desc(genome_bitscore)) %>% distinct(Transdecoder_ID, .keep_all = TRUE)
+  return(blast)
+}
+
+# Filter and prepare Base
+prepare_base <- function(df) {
+  df <- df %>% filter(grepl("complete", ORF_type, ignore.case = TRUE),
+                      grepl("SP", SP, ignore.case = TRUE),
+                      TMHMM == FALSE)
+  for(col in c("BitScore","percent","CysPer","Coverage")) if(col %in% names(df)) df[[col]] <- as.numeric(df[[col]])
+  return(df)
+}
+
+# Filtering function
+filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE, Sample_name) {
+  # patterns depending on strict vs lax
+  pat <- if(strict) pattern2 else pattern
+  
+  matching_rows <- Base[!is.na(Base$InterPro_accession_Names) & grepl(pat, Base$InterPro_accession_Names), ]
+  
+  # thresholds
+  if(strict) {
+    sets <- list(
+      TD = matching_rows$Transdecoder_ID,
+      MS = if(mass) Base[Base$Coverage >= 50 & Base$Top == TRUE,]$Transdecoder_ID else NULL,
+      TP = Base[Base$BitScore >= 250,]$Transdecoder_ID,
+      KE = Base[Base$percent >= 1,]$Transdecoder_ID,
+      CP = Base[Base$CysPer >= 5,]$Transdecoder_ID
+    )
+    file_suffix <- "strict"
+  } else {
+    sets <- list(
+      TD = matching_rows$Transdecoder_ID,
+      MS = if(mass) Base[Base$Coverage >= 0 & Base$Top == TRUE,]$Transdecoder_ID else NULL,
+      TP = Base[Base$BitScore >= 50,]$Transdecoder_ID,
+      KE = Base[Base$percent >= 0,]$Transdecoder_ID,
+      CP = Base[Base$CysPer >= 1,]$Transdecoder_ID
+    )
+    file_suffix <- "lax"
+  }
+  
+  #set colours
+  color_map <- c(
+    TD = "#E41A1C",
+    MS = "#377EB8",
+    TP = "#4DAF4A",
+    KE = "#EBAC4D",
+    CP = "#782DC8"
+  )
+  # remove NULL to remove MS if not available. only keep relevant colours
+  sets <- sets[!sapply(sets, is.null)]
+  fill_colors <- color_map[names(sets)]
+  
+  p <- ggvenn(sets, names(sets), fill_color = fill_colors)
+  ggsave(paste0(Sample_name,"_Venn_",file_suffix,".png"), plot = p, width = 6, height = 4, dpi = 300)
+  
+  union_ids <- Reduce(union, sets)
+  Base_union <- Base[Base$Transdecoder_ID %in% union_ids, ] %>% mutate(Filter = if(strict) "Strict" else "Lax")
+  return(Base_union)
+}
+
+## Loading files
+transdf <- read_transdf(Transdf_distinct_file)
+
+
+patterns <- prepare_patterns(ToxnontoxIP)
+
+# handle mass spec and blast conditions
+mass_spec <- if(mass_spec_file != "NULL") read_mass_spec(mass_spec_file) else NULL
+blastn <- if(Blastn_result != "NULL") read_blast(Blastn_result) else NULL
+
+# Join mass spec and blast unfiltered
+transdf_unfiltered <- transdf
+if(!is.null(mass_spec)) transdf_unfiltered <- left_join(transdf_unfiltered, mass_spec, by="Transdecoder_ID")
+if(!is.null(blastn)) transdf_unfiltered <- left_join(transdf_unfiltered, blastn, by="Transdecoder_ID")
+
+write.csv(transdf_unfiltered, paste0(Sample_name,"_transdf_distinct_final_unfiltered.csv"), row.names = FALSE)
+
+#Join mass spec and blast filtered
+transdf_filtered <- transdf 
+if(!is.null(mass_spec))transdf_filtered <- left_join(transdf_filtered, mass_spec %>% select(Transdecoder_ID, Top, Coverage, Unique), by = "Transdecoder_ID")
+if(!is.null(blastn)) {
+  transdf_filtered <- left_join(transdf_filtered, blastn %>% select(Transdecoder_ID, genome_sseqid, genome_pident, genome_length,
+                                                                                         genome_mismatch,genome_sstart,genome_send, genome_sstrand,genome_evalue, 
+                                                                                         genome_bitscore, genome_qframe, genome_qcovs), by = "Transdecoder_ID") %>%
+    filter(!is.na(genome_sseqid)) %>%
+    filter(genome_sseqid != "")
+  
+  transdf_filtered <- transdf_filtered %>%
     mutate(genome_sstrand = case_when(
       genome_sstrand == "plus" ~ "+",
       genome_sstrand == "minus" ~ "-"
-    )) %>%
-    filter(!is.na(genome_sseqid))
+    )) 
   
-  #Filtering genome 
   #create genome range object
   gr <- GRanges(
-    seqnames = trimws(as.character(transdf_blastn$genome_sseqid)),
+    seqnames = trimws(as.character(transdf_filtered$genome_sseqid)),
     ranges = IRanges(
-      start = pmin(transdf_blastn$genome_sstart, transdf_blastn$genome_send),
-      end   = pmax(transdf_blastn$genome_sstart, transdf_blastn$genome_send)
+      start = pmin(transdf_filtered$genome_sstart, transdf_filtered$genome_send),
+      end   = pmax(transdf_filtered$genome_sstart, transdf_filtered$genome_send)
     ),
-    query_id = transdf_blastn$Transdecoder_ID,
-    strand = transdf_blastn$genome_sstrand
+    query_id = transdf_filtered$Transdecoder_ID,
+    strand = transdf_filtered$genome_sstrand
   )
   
   #find overalps
@@ -142,414 +206,28 @@ if (
   #identify clusters
   g <- graph_from_data_frame(edges, directed = FALSE)
   clusters <- components(g)$membership
-  transdf_blastn$cluster <- clusters[seq_along(transdf_blastn$Transdecoder_ID)]
+  transdf_filtered$cluster <- clusters[seq_along(transdf_filtered$Transdecoder_ID)]
   
-  transdf_blastn <- transdf_blastn%>%
+  transdf_filtered <- transdf_filtered%>%
     group_by(cluster) %>%
     mutate(tpm_aggregates = sum(tpm)) %>%
     relocate(tpm_aggregates, .after = CysPer)
   
-  transdf_blastn <- transdf_blastn %>% arrange (
+  transdf_filtered <- transdf_filtered %>% arrange (
     desc(genome_qcovs),
     desc(genome_pident),
     desc(genome_bitscore)
   ) %>%
     distinct(cluster, .keep_all = TRUE) %>%
     select(-cluster)
-  
-  
-  #only those with genome matches 
-  
-  #Filtering 
-  #completeORF + SignalP + no Transmembrane
-  Base <- transdf_blastn %>%
-    filter(
-      grepl("complete", ORF_type, ignore.case = TRUE),
-      grepl("SP", SP, ignore.case = TRUE),
-      TMHMM == FALSE
-    )
-  #changing criteria to numeric for filtering 
-  Base[["Coverage"]] <- as.numeric(Base[["Coverage"]])
-  Base[["BitScore"]] <- as.numeric(Base[["BitScore"]])
-  Base[["percent"]] <- as.numeric(Base[["percent"]])
-  Base[["CysPer"]] <- as.numeric(Base[["CysPer"]])
-  ##VennDiagram & Filtering (Strict)
-  matching_rows <- Base[
-    !is.na(Base$InterPro_accession_Names) &
-      grepl(pattern2, Base$InterPro_accession_Names),
-  ]
-  set_A<-matching_rows
-  set_B <- Base[Base[["Coverage"]] >= 50 & !is.na(Base[["Coverage"]]) & Base[["Top"]] == TRUE, ]
-  set_C <- Base[Base[["BitScore"]] >= 200 & !is.na(Base[["BitScore"]]), ]
-  set_D <-Base[Base[["percent"]] >= 1 & !is.na(Base[["percent"]]), ]
-  set_E <-Base[Base[["CysPer"]] >= 5 & !is.na(Base[["CysPer"]]), ]
-  venn_list <- list(
-    TD = set_A$Transdecoder_ID,
-    MS = set_B$Transdecoder_ID,
-    TP = set_C$Transdecoder_ID,
-    KE = set_D$Transdecoder_ID,
-    CP = set_E$Transdecoder_ID
-    
-  )
-  p <-ggvenn(venn_list,c("TD", "MS","TP","KE", "CP"), fill_color = c("#E41A1C", "#377EB8", "#4DAF4A", "#EBAC4D","#782DC8" ))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_B$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID,set_E$Transdecoder_ID))
-  ggsave(paste0(Sample_name,"_Venn_strict.png"), plot = p, width = 6, height = 4, dpi = 300)
-  Base_union <- Base[Base$Transdecoder_ID %in% Union_ABC, ]  %>%
-    dplyr::mutate(Filter = "Strict")
-  transdf_final_filtered_strict <- Base_union %>%
-    select(-genome_length, -genome_gapopen, -genome_qstart,-genome_qend,-genome_sstart,-genome_send,-genome_sstrand,-genome_qframe)
-  write.csv(transdf_final_filtered_strict, paste0(Sample_name, "_transdf_distinct_final_filtered_strict.csv"), row.names = FALSE)
-  
-  ##VennDiagram & Filtering (Lax)
-  matching_rows <- Base[
-    !is.na(Base$InterPro_accession_Names) &
-      grepl(pattern, Base$InterPro_accession_Names),
-  ]
-  set_A<-matching_rows
-  set_B <- Base[Base[["Coverage"]] >= 0 & !is.na(Base[["Coverage"]]) & Base[["Top"]] == TRUE, ]
-  set_C <- Base[Base[["BitScore"]] >= 50 & !is.na(Base[["BitScore"]]), ]
-  set_D <-Base[Base[["percent"]] >= 0 & !is.na(Base[["percent"]]), ]
-  set_E <-Base[Base[["CysPer"]] >= 1 & !is.na(Base[["CysPer"]]), ]
-  venn_list <- list(
-    TD = set_A$Transdecoder_ID,
-    MS = set_B$Transdecoder_ID,
-    TP = set_C$Transdecoder_ID,
-    KE = set_D$Transdecoder_ID,
-    CP = set_E$Transdecoder_ID
-    
-  )
-  p <- ggvenn(venn_list,c("TD", "MS","TP","KE", "CP"), fill_color = c("#E41A1C", "#377EB8", "#4DAF4A", "#EBAC4D","#782DC8" ))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_B$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID,set_E$Transdecoder_ID))
-  ggsave(paste0(Sample_name,"_Venn_lax.png"), plot = p, width = 6, height = 4, dpi = 300)
-  Base_union <- Base[Base$Transdecoder_ID %in% Union_ABC, ] 
-  transdf_final_filtered_lax <- transdf_final_filtered_strict %>%
-    select(UniqueSequenceName, Filter) %>% 
-    right_join(Base_union, by = "UniqueSequenceName") %>%
-    mutate(Filter = case_when(
-      Filter == "Strict" ~ "Strict",
-      TRUE ~ "Lax"
-    ))  %>%
-    select(-genome_length, -genome_gapopen, -genome_qstart,-genome_qend,-genome_sstart,-genome_send,-genome_sstrand,-genome_qframe)
-  
-  write.csv(transdf_final_filtered_lax, paste0(Sample_name, "_transdf_distinct_final_filtered_lax.csv"), row.names = FALSE)
-}
-
-else if (  mass_spec == "NULL" &&
-       Blastn_result == "NULL")
-{
-  #just save the modified transdf 
-  write.csv(transdf, paste0(Sample_name, "_transdf_distinct_final_unfiltered.csv"), row.names = FALSE)
-  #Filtering 
-  
-  #Filtering 
-  transdf_distinct <- transdf[order(-transdf$BitScore, transdf$E_value, -transdf$tpm ), ]
-  transdf_distinct <- distinct(transdf_distinct, PEP_Sequence, .keep_all = TRUE)
-  
-  #completeORF + SignalP + no Transmembrane
-  Base <- transdf_distinct %>%
-    filter(
-      grepl("complete", ORF_type, ignore.case = TRUE),
-      grepl("SP", SP, ignore.case = TRUE),
-      TMHMM == FALSE
-    )
-  #changing criteria to numeric for filtering 
-  Base[["BitScore"]] <- as.numeric(Base[["BitScore"]])
-  Base[["percent"]] <- as.numeric(Base[["percent"]])
-  Base[["CysPer"]] <- as.numeric(Base[["CysPer"]])
-  ##VennDiagram & Filtering (Strict)
-  matching_rows <- Base[
-    !is.na(Base$InterPro_accession_Names) &
-      grepl(pattern2, Base$InterPro_accession_Names),
-  ]
-  set_A<-matching_rows
-  set_C <- Base[Base[["BitScore"]] >= 200 & !is.na(Base[["BitScore"]]), ]
-  set_D <-Base[Base[["percent"]] >= 1 & !is.na(Base[["percent"]]), ]
-  set_E <-Base[Base[["CysPer"]] >= 5 & !is.na(Base[["CysPer"]]), ]
-  venn_list <- list(
-    TD = set_A$Transdecoder_ID,
-    TP = set_C$Transdecoder_ID,
-    KE = set_D$Transdecoder_ID,
-    CP = set_E$Transdecoder_ID
-    
-  )
-  p <-ggvenn(venn_list,c("TD","TP","KE", "CP"), fill_color = c("#E41A1C", "#4DAF4A", "#EBAC4D","#782DC8" ))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID,set_E$Transdecoder_ID))
-  ggsave(paste0(Sample_name,"_Venn_strict.png"), plot = p, width = 6, height = 4, dpi = 300)
-  Base_union <- Base[Base$Transdecoder_ID %in% Union_ABC, ]  %>%
-    dplyr::mutate(Filter = "Strict")
-  transdf_final_filtered_strict <- Base_union %>%
-    select(-genome_length, -genome_gapopen, -genome_qstart,-genome_qend,-genome_sstart,-genome_send,-genome_sstrand,-genome_qframe)
-  
-  
-  write.csv(transdf_final_filtered_strict, paste0(Sample_name, "_transdf_distinct_final_filtered_strict.csv"), row.names = FALSE)
-  
-  ##VennDiagram & Filtering (Lax)
-  matching_rows <- Base[
-    !is.na(Base$InterPro_accession_Names) &
-      grepl(pattern, Base$InterPro_accession_Names),
-  ]
-  set_A<-matching_rows
-  set_C <- Base[Base[["BitScore"]] >= 50 & !is.na(Base[["BitScore"]]), ]
-  set_D <-Base[Base[["percent"]] >= 0 & !is.na(Base[["percent"]]), ]
-  set_E <-Base[Base[["CysPer"]] >= 1 & !is.na(Base[["CysPer"]]), ]
-  venn_list <- list(
-    TD = set_A$Transdecoder_ID,
-    TP = set_C$Transdecoder_ID,
-    KE = set_D$Transdecoder_ID,
-    CP = set_E$Transdecoder_ID
-    
-  )
-  p <- ggvenn(venn_list,c("TD","TP","KE", "CP"), fill_color = c("#E41A1C", "#4DAF4A", "#EBAC4D","#782DC8" ))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID,set_E$Transdecoder_ID))
-  ggsave(paste0(Sample_name,"_Venn_lax.png"), plot = p, width = 6, height = 4, dpi = 300)
-  Base_union <- Base[Base$Transdecoder_ID %in% Union_ABC, ]
-  transdf_final_filtered_lax <- transdf_final_filtered_strict %>%
-    select(UniqueSequenceName, Filter) %>% 
-    right_join(Base_union, by = "UniqueSequenceName") %>%
-    mutate(Filter = case_when(
-      Filter == "Strict" ~ "Strict",
-      TRUE ~ "Lax"
-    ))  %>%
-    select(-genome_length, -genome_gapopen, -genome_qstart,-genome_qend,-genome_sstart,-genome_send,-genome_sstrand,-genome_qframe)
-  
-  
-  write.csv(transdf_final_filtered_lax, paste0(Sample_name, "_transdf_distinct_final_filtered_lax.csv"), row.names = FALSE)
 
 }
 
-else if ( mass_spec == "NULL" &&
-        Blastn_result != "NULL"
-) {
+base <- transdf_filtered
+# strict filter
+Base_strict <- filter_and_venn(Base, patterns$pattern, patterns$pattern2, mass = !is.null(mass_spec), strict = TRUE, Sample_name = Sample_name)
+write.csv(Base_strict, paste0(Sample_name,"_transdf_distinct_final_filtered_strict.csv"), row.names = FALSE)
 
-  #read in Blastn   #rename blastn columns 
-  Blastn_result_read <- read.table(Blastn_result,sep = "\t",header = FALSE,stringsAsFactors = FALSE)  
-  colnames(Blastn_result_read) <- c("Transdecoder_ID", "genome_sseqid", "genome_pident", "genome_length", "genome_mismatch","genome_gapopen","genome_qstart","genome_qend","genome_sstart","genome_send", "genome_sstrand","genome_evalue", "genome_bitscore", "genome_qframe", "genome_qcovs")
-  #order by genome_bitscore   #only keep distinct hit per transcript, keeping the hit  with higher bitscore
-  Blastn_result_read_genome_qcovs <- Blastn_result_read[order(Blastn_result_read$genome_bitscore, decreasing = TRUE), ]
-  Blastn_result_read_genome_bitscore_distinct <- Blastn_result_read_genome_qcovs %>% distinct(Transdecoder_ID, .keep_all = TRUE)
-  #left join blastn
-  transdf_massspec_blastn <- left_join(transdf,Blastn_result_read_genome_bitscore_distinct, by = "Transdecoder_ID")
-  transdf_blastn <- left_join(transdf_distinct, Blastn_result_read_genome_bitscore_distinct, by = "Transdecoder_ID")
-  
-  #save unfiltered csv 
-  write.csv(transdf_massspec_blastn, paste0(Sample_name, "_transdf_distinct_final_unfiltered.csv"), row.names = FALSE)
-  
-  transdf_blastn <- transdf_blastn %>%
-    mutate(genome_sstrand = case_when(
-      genome_sstrand == "plus" ~ "+",
-      genome_sstrand == "minus" ~ "-"
-    )) %>%
-    filter(!is.na(genome_sseqid))
-  
-  #Filtering genome 
-  #create genome range object
-  gr <- GRanges(
-    seqnames = trimws(as.character(transdf_blastn$genome_sseqid)),
-    ranges = IRanges(
-      start = pmin(transdf_blastn$genome_sstart, transdf_blastn$genome_send),
-      end   = pmax(transdf_blastn$genome_sstart, transdf_blastn$genome_send)
-    ),
-    query_id = transdf_blastn$Transdecoder_ID,
-    strand = transdf_blastn$genome_sstrand
-  )
-  
-  #find overalps
-  hits <- findOverlaps(gr, gr, ignore.strand = FALSE)
-  #create dataframe of overlaps
-  edges <- data.frame(
-    from = queryHits(hits),
-    to   = subjectHits(hits)
-  )
-  #identify clusters
-  g <- graph_from_data_frame(edges, directed = FALSE)
-  clusters <- components(g)$membership
-  transdf_blastn$cluster <- clusters[seq_along(transdf_blastn$Transdecoder_ID)]
-  
-  transdf_blastn <- transdf_blastn%>%
-    group_by(cluster) %>%
-    mutate(tpm_aggregates = sum(tpm)) %>%
-    relocate(tpm_aggregates, .after = CysPer)
-  
-  
-  transdf_blastn <- transdf_blastn %>% arrange (
-    desc(genome_qcovs),
-    desc(genome_pident),
-    desc(genome_bitscore)
-  ) %>%
-    distinct(cluster, .keep_all = TRUE) %>%
-    select(-cluster)
-  
-  
-  #only those with genome matches 
-  
-  #Filtering 
-  #completeORF + SignalP + no Transmembrane
-  Base <- transdf_blastn %>%
-    filter(
-      grepl("complete", ORF_type, ignore.case = TRUE),
-      grepl("SP", SP, ignore.case = TRUE),
-      TMHMM == FALSE
-    )
-  #changing criteria to numeric for filtering 
-  Base[["BitScore"]] <- as.numeric(Base[["BitScore"]])
-  Base[["percent"]] <- as.numeric(Base[["percent"]])
-  Base[["CysPer"]] <- as.numeric(Base[["CysPer"]])
-  ##VennDiagram & Filtering (Strict)
-  matching_rows <- Base[
-    !is.na(Base$InterPro_accession_Names) &
-      grepl(pattern2, Base$InterPro_accession_Names),
-  ]
-  set_A<-matching_rows
-  set_C <- Base[Base[["BitScore"]] >= 200 & !is.na(Base[["BitScore"]]), ]
-  set_D <-Base[Base[["percent"]] >= 1 & !is.na(Base[["percent"]]), ]
-  set_E <-Base[Base[["CysPer"]] >= 5 & !is.na(Base[["CysPer"]]), ]
-  venn_list <- list(
-    TD = set_A$Transdecoder_ID,
-    TP = set_C$Transdecoder_ID,
-    KE = set_D$Transdecoder_ID,
-    CP = set_E$Transdecoder_ID
-    
-  )
-  p <-ggvenn(venn_list,c("TD","TP","KE", "CP"), fill_color = c("#E41A1C", "#4DAF4A", "#EBAC4D","#782DC8" ))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID,set_E$Transdecoder_ID))
-  ggsave(paste0(Sample_name,"_Venn_strict.png"), plot = p, width = 6, height = 4, dpi = 300)
-  Base_union <- Base[Base$Transdecoder_ID %in% Union_ABC, ]  %>%
-    dplyr::mutate(Filter = "Strict")
-  transdf_final_filtered_strict <- Base_union %>%
-    select(-genome_length, -genome_gapopen, -genome_qstart,-genome_qend,-genome_sstart,-genome_send,-genome_sstrand,-genome_qframe)
-  
-  
-  write.csv(transdf_final_filtered_strict, paste0(Sample_name, "_transdf_distinct_final_filtered_strict.csv"), row.names = FALSE)
-  
-  ##VennDiagram & Filtering (Lax)
-  matching_rows <- Base[
-    !is.na(Base$InterPro_accession_Names) &
-      grepl(pattern, Base$InterPro_accession_Names),
-  ]
-  set_A<-matching_rows
-  set_C <- Base[Base[["BitScore"]] >= 50 & !is.na(Base[["BitScore"]]), ]
-  set_D <-Base[Base[["percent"]] >= 0 & !is.na(Base[["percent"]]), ]
-  set_E <-Base[Base[["CysPer"]] >= 1 & !is.na(Base[["CysPer"]]), ]
-  venn_list <- list(
-    TD = set_A$Transdecoder_ID,
-    TP = set_C$Transdecoder_ID,
-    KE = set_D$Transdecoder_ID,
-    CP = set_E$Transdecoder_ID
-    
-  )
-  p <- ggvenn(venn_list,c("TD","TP","KE", "CP"), fill_color = c("#E41A1C", "#4DAF4A", "#EBAC4D","#782DC8" ))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID,set_E$Transdecoder_ID))
-  ggsave(paste0(Sample_name,"_Venn_lax.png"), plot = p, width = 6, height = 4, dpi = 300)
-  Base_union <- Base[Base$Transdecoder_ID %in% Union_ABC, ]
-  
-  transdf_final_filtered_lax <- transdf_final_filtered_strict %>%
-    select(UniqueSequenceName, Filter) %>% 
-    right_join(Base_union, by = "UniqueSequenceName") %>%
-    mutate(Filter = case_when(
-      Filter == "Strict" ~ "Strict",
-      TRUE ~ "Lax"
-    ))  %>%
-    select(-genome_length, -genome_gapopen, -genome_qstart,-genome_qend,-genome_sstart,-genome_send,-genome_sstrand,-genome_qframe)
-  
-  write.csv(transdf_final_filtered_lax, paste0(Sample_name, "_transdf_distinct_final_filtered_lax.csv"), row.names = FALSE)
-}
-
-else if (
-  mass_spec != "NULL" &&
-  Blastn_result == "NULL"
-) {
-  #Transdf_distinct  filter
-  transdf_distinct <- transdf[order(-transdf$BitScore, transdf$E_value, -transdf$tpm ), ]
-  transdf_distinct <- distinct(transdf_distinct, PEP_Sequence, .keep_all = TRUE)
-  
-  #read in mass spec   #rename mass spec column 
-  mass_spec <- read.csv(mass_spec, header = TRUE) 
-  colnames(mass_spec)[which(names(mass_spec) == "Accession")] <- "Transdecoder_ID" 
-  #left_join full massspec 
-  transdf_massspec <- left_join(transdf,mass_spec, by = "Transdecoder_ID")
-  transdf_distinct_massspec <- left_join(transdf_distinct,mass_spec, by = "Transdecoder_ID")
-
-  #save unfiltered csv 
-  write.csv(transdf_massspec, paste0(Sample_name, "_transdf_distinct_final_unfiltered.csv"), row.names = FALSE)
-  
-
-
-  #Filtering 
-  #completeORF + SignalP + no Transmembrane
-  Base <- transdf_distinct_massspec %>%
-    filter(
-      grepl("complete", ORF_type, ignore.case = TRUE),
-      grepl("SP", SP, ignore.case = TRUE),
-      TMHMM == FALSE
-    )
-  #changing criteria to numeric for filtering 
-  Base[["Coverage"]] <- as.numeric(Base[["Coverage"]])
-  Base[["BitScore"]] <- as.numeric(Base[["BitScore"]])
-  Base[["percent"]] <- as.numeric(Base[["percent"]])
-  Base[["CysPer"]] <- as.numeric(Base[["CysPer"]])
-  ##VennDiagram & Filtering (Strict)
-  matching_rows <- Base[
-    !is.na(Base$InterPro_accession_Names) &
-      grepl(pattern2, Base$InterPro_accession_Names),
-  ]
-  set_A<-matching_rows
-  set_B <- Base[Base[["Coverage"]] >= 50 & !is.na(Base[["Coverage"]]) & Base[["Top"]] == TRUE, ]
-  set_C <- Base[Base[["BitScore"]] >= 250 & !is.na(Base[["BitScore"]]), ]
-  set_D <-Base[Base[["percent"]] >= 1 & !is.na(Base[["percent"]]), ]
-  set_E <-Base[Base[["CysPer"]] >= 5 & !is.na(Base[["CysPer"]]), ]
-  venn_list <- list(
-    TD = set_A$Transdecoder_ID,
-    MS = set_B$Transdecoder_ID,
-    TP = set_C$Transdecoder_ID,
-    KE = set_D$Transdecoder_ID,
-    CP = set_E$Transdecoder_ID
-    
-  )
-  p <-ggvenn(venn_list,c("TD", "MS","TP","KE", "CP"), fill_color = c("#E41A1C", "#377EB8", "#4DAF4A", "#EBAC4D","#782DC8" ))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_B$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID,set_E$Transdecoder_ID))
-  ggsave(paste0(Sample_name,"_Venn_strict.png"), plot = p, width = 6, height = 4, dpi = 300)
-  Base_union <- Base[Base$Transdecoder_ID %in% Union_ABC, ]  %>%
-    dplyr::mutate(Filter = "Strict")
-  transdf_final_filtered_strict <- Base_union %>%
-    select(-genome_length, -genome_gapopen, -genome_qstart,-genome_qend,-genome_sstart,-genome_send,-genome_sstrand,-genome_qframe)
-  
-  write.csv(transdf_final_filtered_strict, paste0(Sample_name, "_transdf_distinct_final_filtered_strict.csv"), row.names = FALSE)
-  
-  ##VennDiagram & Filtering (Lax)
-  matching_rows <- Base[
-    !is.na(Base$InterPro_accession_Names) &
-      grepl(pattern, Base$InterPro_accession_Names),
-  ]
-  set_A<-matching_rows
-  set_B <- Base[Base[["Coverage"]] >= 0 & !is.na(Base[["Coverage"]]) & Base[["Top"]] == TRUE, ]
-  set_C <- Base[Base[["BitScore"]] >= 50 & !is.na(Base[["BitScore"]]), ]
-  set_D <-Base[Base[["percent"]] >= 0 & !is.na(Base[["percent"]]), ]
-  set_E <-Base[Base[["CysPer"]] >= 1 & !is.na(Base[["CysPer"]]), ]
-  venn_list <- list(
-    TD = set_A$Transdecoder_ID,
-    MS = set_B$Transdecoder_ID,
-    TP = set_C$Transdecoder_ID,
-    KE = set_D$Transdecoder_ID,
-    CP = set_E$Transdecoder_ID
-    
-  )
-  p <- ggvenn(venn_list,c("TD", "MS","TP","KE", "CP"), fill_color = c("#E41A1C", "#377EB8", "#4DAF4A", "#EBAC4D","#782DC8" ))
-  Union_ABC <- Reduce(union, list(set_A$Transdecoder_ID, set_B$Transdecoder_ID, set_C$Transdecoder_ID, set_D$Transdecoder_ID,set_E$Transdecoder_ID))
-  ggsave(paste0(Sample_name,"_Venn_lax.png"), plot = p, width = 6, height = 4, dpi = 300)
-  Base_union <- Base[Base$Transdecoder_ID %in% Union_ABC, ]
-  transdf_final_filtered_lax <- transdf_final_filtered_strict %>%
-    select(UniqueSequenceName, Filter) %>% 
-    right_join(Base_union, by = "UniqueSequenceName") %>%
-    mutate(Filter = case_when(
-      Filter == "Strict" ~ "Strict",
-      TRUE ~ "Lax"
-    ))  %>%
-    select(-genome_length, -genome_gapopen, -genome_qstart,-genome_qend,-genome_sstart,-genome_send,-genome_sstrand,-genome_qframe)
-  
-  
-  write.csv(transdf_final_filtered_lax, paste0(Sample_name, "_transdf_distinct_final_filtered_lax.csv"), row.names = FALSE)
-}
-
-
-
-
+# lax filter
+Base_lax <- filter_and_venn(Base, patterns$pattern, patterns$pattern2, mass = !is.null(mass_spec), strict = FALSE, Sample_name = Sample_name)
+write.csv(Base_lax, paste0(Sample_name,"_transdf_distinct_final_filtered_lax.csv"), row.names = FALSE)
