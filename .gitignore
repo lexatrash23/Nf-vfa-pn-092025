@@ -1,0 +1,7 @@
+
+.nextflow*
+work/
+results/
+*.out
+*.DS_Store
+*bin/Rmarkdown_scripts/.RData
