@@ -159,20 +159,33 @@ transdf <- read_transdf(Transdf_distinct_file)
 patterns <- prepare_patterns(ToxnontoxIP)
 
 # handle mass spec and blast conditions
-mass_spec <- if(mass_spec_file != "NULL") read_mass_spec(mass_spec_file) else NULL
-blastn <- if(Blastn_result != "NULL") read_blast(Blastn_result) else NULL
+mass_spec <- if (!is.na(mass_spec_file) && mass_spec_file != "NULL") {
+  read_mass_spec(mass_spec_file)
+} else {
+  NULL
+}
 
+blastn <- if (!is.na(Blastn_result) && Blastn_result != "NULL") {
+  read_blast(Blastn_result)
+} else {
+  NULL
+}
 # Join mass spec and blast unfiltered
 transdf_unfiltered <- transdf
-if(!is.null(mass_spec)) transdf_unfiltered <- left_join(transdf_unfiltered, mass_spec, by="Transdecoder_ID")
-if(!is.null(blastn)) transdf_unfiltered <- left_join(transdf_unfiltered, blastn, by="Transdecoder_ID")
-
+if (!is.na(mass_spec_file) && mass_spec_file != "NULL") {
+  transdf_unfiltered <- left_join(transdf_unfiltered, mass_spec, by="Transdecoder_ID")
+}
+if (!is.na(Blastn_result) && Blastn_result != "NULL") {
+  transdf_unfiltered <- left_join(transdf_unfiltered, blastn, by="Transdecoder_ID")
+}
 write.csv(transdf_unfiltered, paste0(Sample_name,"_transdf_distinct_final_unfiltered.csv"), row.names = FALSE)
 
 #Join mass spec and blast filtered
 transdf_filtered <- transdf 
-if(!is.null(mass_spec))transdf_filtered <- left_join(transdf_filtered, mass_spec %>% select(Transdecoder_ID, Top, Coverage, Unique), by = "Transdecoder_ID")
-if(!is.null(blastn)) {
+if (!is.na(mass_spec_file) && mass_spec_file != "NULL") {transdf_filtered <- left_join(transdf_filtered, mass_spec %>% select(Transdecoder_ID, Top, Coverage, Unique), by = "Transdecoder_ID")
+}
+
+if (!is.na(Blastn_result) && Blastn_result != "NULL") {
   transdf_filtered <- left_join(transdf_filtered, blastn %>% select(Transdecoder_ID, genome_sseqid, genome_pident, genome_length,
                                                                                          genome_mismatch,genome_sstart,genome_send, genome_sstrand,genome_evalue, 
                                                                                          genome_bitscore, genome_qframe, genome_qcovs), by = "Transdecoder_ID") %>%
@@ -223,7 +236,7 @@ if(!is.null(blastn)) {
 
 }
 
-base <- transdf_filtered
+Base <- transdf_filtered
 # strict filter
 Base_strict <- filter_and_venn(Base, patterns$pattern, patterns$pattern2, mass = !is.null(mass_spec), strict = TRUE, Sample_name = Sample_name)
 write.csv(Base_strict, paste0(Sample_name,"_transdf_distinct_final_filtered_strict.csv"), row.names = FALSE)
