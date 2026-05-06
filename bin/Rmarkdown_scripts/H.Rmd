@@ -77,10 +77,7 @@ Name <- params$AuthorName
 ### BUSCO transcriptome 
 
 ```{r, results='asis'}
-busco  <- readPNG(busco_figure)
-#plot the busco graph 
-busco <- grid.raster(busco)
-cat("\n\n Figure 1. BUSCO score of Transcriptome against 2 different busco lineage databases. \n\n") 
+knitr::include_graphics(busco_figure)
 
 ```
 

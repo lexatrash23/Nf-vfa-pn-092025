@@ -1498,9 +1498,9 @@ workflow {
         //1
         def kallisto_trans = results_path ? file("${results_path}/kallisto/transdecoder/output/abundance.tsv") : ''
         //2
-        def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*.pep") : ''
+        def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*cd95.pep") : ''
         //3
-        def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*.cds") : ''
+        def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*cd95.cds") : ''
         //4
         def mature_fasta = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_mature.fasta") : ''
         //5
