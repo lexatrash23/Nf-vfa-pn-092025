@@ -496,7 +496,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
         MS_ARG="NULL"
     fi
 
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" ${sample} ${species} ${transdf} ${toxvsnontoxIP}  \$BLASTN_ARG \$MS_ARG
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" "${sample}" "${species}" ${transdf} ${toxvsnontoxIP}  \$BLASTN_ARG \$MS_ARG
     """
 }
 
