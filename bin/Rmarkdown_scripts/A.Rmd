@@ -33,15 +33,15 @@ Name<- args[4]
   </a>
   <a href="C.html" class="button">
     <img src="`r file.path(path, 'New_icons/600ppi/Trinity.png')`" alt="Trinity">
-    <span>Trinity</span>
+    <span>Transcriptome</span>
   </a>
   <a href="D.html" class="button">
     <img src="`r file.path(path, 'New_icons/600ppi/Transdecoder.png')`" alt="Transdecoder">
-    <span>Transdecoder</span>
+    <span>Complete ORFs</span>
   </a>
   <a href="E.html" class="button">
     <img src="`r file.path(path, 'New_icons/600ppi/SignalP.png')`" alt="Signalp">
-    <span>Signalp</span>
+    <span>Secreted Proteins</span>
   </a>
   <a href="`r search_url`" class="button">
     <img src="`r file.path(path, 'New_icons/600ppi/SearchAndDownload.png')`" alt="Search and Download">
@@ -49,7 +49,7 @@ Name<- args[4]
   </a>
   <a href="Z.html" class="button">
     <img src="`r file.path(path, 'New_icons/600ppi/Overview.png')`" alt="Overview">
-    <span>Overview</span>
+    <span>Putative Venom Transcripts</span>
   </a>
 </div>
 

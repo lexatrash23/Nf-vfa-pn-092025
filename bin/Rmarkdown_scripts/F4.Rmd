@@ -1,0 +1,47 @@
+---
+title: "Top Putative Venom Transcripts"
+output: 
+  html_document:
+    css: style5.css 
+
+
+---
+
+
+```{r, echo=FALSE, results='hide'}
+# Read command line arguments
+args <- commandArgs(trailingOnly = TRUE)
+path <- args[1]
+Sample_Name<- args[2]
+Name<- args[3]
+
+
+```
+
+<hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
+
+`r Sys.Date()` ---
+**`r Name`** ---
+**`r Sample_Name`**  
+<hr style="border: 1px solid white; width: 100%; margin-bottom:3px;  padding:0px;" />
+<hr style="border: 0px solid white; width: 100%; margin-bottom:3px;  padding:10px;" />
+<body>
+
+<div style="display: flex; gap: 25px; justify-content: center;">
+  <a href="B.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/OverviewTable.png')`" alt="Metadata">
+    <span>Dataframe</span>
+  </a>
+  <a href="C.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/OverviewFigure.png')`" alt="Trinity">
+    <span>Summary Figures</span>
+  </a>
+  <a href="D.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/OverviewGenome.png')`" alt="Transdecoder">
+    <span>Genome alignment</span>
+  </a>
+
+
+</div>
+
+</body>

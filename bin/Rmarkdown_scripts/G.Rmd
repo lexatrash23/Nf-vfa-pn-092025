@@ -1,5 +1,5 @@
 ---
-title: "Trinity Tables Menu"
+title: "Transcriptome Datatables"
 output: 
   html_document:
     css: style2.css 

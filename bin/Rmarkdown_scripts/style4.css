@@ -1,0 +1,104 @@
+/* styles.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Verdana';
+    color: white;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    padding-top: 40px;
+    background-color: #141414;
+    padding: 20px;
+}
+
+
+h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 10px;
+    font-weight: 600;
+    color: white;
+    margin-bottom: 10px;
+}
+
+
+
+.page {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.left, .right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.full {
+  grid-column: 1 / -1;
+}
+
+/* Section container */
+.section {
+  border: 2px solid #ccc;
+  position: relative;
+}
+
+/* Section headers */
+.section h2 {
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0px;
+  text-align: center;
+  font-weight: bold;
+  color: #fff;
+
+  
+}
+
+/* Individual section colors */
+.section1 h2 { background: orange; }
+.section2 h2 { background: #2f86a6; }
+.section3 h2 { background: #e74c3c; }
+.section4 h2 { background: #1e8449; }
+.section5 h2 { background: #4a69bd; }
+
+/* Content layout */
+.content {
+  margin-top: 20px;
+  display: grid;
+  gap: 15px;
+}
+
+.grid-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.grid-1 {
+  grid-template-columns: 1fr;
+}
+
+/* Placeholder boxes */
+.box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  padding:10px;
+}
+

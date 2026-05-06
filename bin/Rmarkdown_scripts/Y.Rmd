@@ -1,46 +1,38 @@
 ---
-title: "Overview "
+title: "ProtSpace Projections"
 output: 
   html_document:
-    css: style.css 
+    css: style3.css 
     theme: flatly
 params:
-  GenomeName: "Trial"
-  Fasta: "/Users/praveena/Desktop/2025/Genomeviz/nonexpanded/genomeregions.fa"
-  Bed: "/Users/praveena/Desktop/2025/Genomeviz/nonexpanded/minimaptrial.bed"
+  parquet_path: "/Users/praveena/Desktop/PhD_all/2025/github/oldergithubscripts/Retrial/projections/projections_data.parquet"
+  metadata_path: "/Users/praveena/protspace_annotation_trial.csv"
   AuthorName: "NULL"
   SampleName: "NULL"
-
 ---
-<style>
-.dt-button.buttons-columnVisibility {
-              background: black !important;
-              color: white !important;
-              opacity: 0.5;
-           }
-.dt-button.buttons-columnVisibility.active {
-              background: black !important;
-              color: white !important;
-              opacity: 1;
-           }"
-</style>
 
-```{r setup, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
-knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```{r setup, include=FALSE, echo=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
 
-```
-
-
-```{r, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
+library(plotly)
+library(ggplot2)
+library(dplyr)
+library(arrow)
+library(umap)
 library(htmltools)
+# -----------------------------
+# Load data
+# -----------------------------
+parquet_path <- params$parquet_path
+metadata_path <- params$metadata_path
+Name <-  params$AuthorName
+Sample_Name <-params$SampleName
+df <- open_dataset(parquet_path) %>% collect()
+metadata <- read.csv(metadata_path)
 
-Sample_Name <- params$SampleName
-Name <- params$AuthorName
-GenomeName <- params$GenomeName
-GenomeFasta <- params$Fasta
-Bed <- params$Bed
+df_annotated <- df %>%
+  left_join(metadata, by = "identifier")
 ```
-
 
 <hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
 
@@ -49,52 +41,90 @@ Bed <- params$Bed
 **`r Sample_Name`**  
 <hr style="border: 1px solid white; width: 100%; margin-bottom:3px;  padding:0px;" />
 
-```{r}
-igv_dep <- htmlDependency(
-  name = "igv",
-  version = "2.15.5", # Use the latest stable version
-  src = c(href = "https://jsdelivr.net"),
-  script = "igv.min.js"
+
+```{r,echo=FALSE, warning=FALSE}
+make_umap_plot <- function(df, color_col) {
+  
+values <- df[[color_col]]
+  
+
+# -----------------------------
+# CATEGORICAL CASE
+# -----------------------------
+df[[color_col]] <- as.factor(values)
+
+fig <- plot_ly(
+  data = df,
+  x = ~x,
+  y = ~y,
+  type = "scatter",
+  mode = "markers",
+  color = df[[color_col]],
+  colors = "Set2",
+  size = 3,
+  text = ~paste0(
+    "ID: ", identifier,
+    "<br>", color_col, ": ", .data[[color_col]]
+  ),
+  hoverinfo = "text"
 )
+
+
+fig %>% layout(
+title = color_col,
+plot_bgcolor = "#e5ecf6",
+xaxis = list(title = "UMAP 1"),
+yaxis = list(title = "UMAP 2")
+) %>%
+    layout(showlegend = FALSE) %>%
+    layout(
+      paper_bgcolor = "rgba(0,0,0,0)",  # transparent outer background
+      plot_bgcolor  = "rgba(0,0,0,0)",  # transparent plot area
+      
+      font = list(color = "white"),     # all text white
+      
+      xaxis = list(
+        color = "white",
+        gridcolor = "rgba(255,255,255,0.1)",
+        zerolinecolor = "rgba(255,255,255,0.2)"
+      ),
+      
+      yaxis = list(
+        color = "white",
+        gridcolor = "rgba(255,255,255,0.1)",
+        zerolinecolor = "rgba(255,255,255,0.2)"
+      ))
+}      
 ```
 
 
+```{r,echo=FALSE, warning=FALSE,results='asis'}
+color_columns <- c(
+  "projection_name",
+  "identifier",
+  "signal_peptide",
+  "xref_pdb"
+)
 
-```{r, results='asis',fig.align='center'}
-# Define your genomic tracks and configuration
-igv_config <- list(
-  genome = GenomeFasta,
-  tracks = list(
-    list(
-      name = "Putative Venom sequences",
-      format = "bed",
-      url = Bed,
-      indexed = FALSE
+fig_list <- lapply(color_columns, function(col) {
+  make_umap_plot(df_annotated, col)
+})
+
+fig1 <-  fig_list[[1]] #domain label 
+fig2 <-  fig_list[[2]] #Tox/NonTox/NA Uniprot 3
+fig3 <-  fig_list[[3]] #Category 4
+fig4 <-  fig_list[[4]] #strict/lax 2
+
+div(
+  style = "display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; padding-top:50px",
+  
+  lapply(fig_list, function(fig) {
+    div(
+      style = "height: 350; overflow-y: auto; border: 0 px;",
+      fig
     )
-  )
+  })
 )
 
-# Create the HTML structure
-igv_widget <- tagList(
-  div(id = "igv-div", style = "padding-top: 50px;"),
-  tags$script(HTML(sprintf("
-    var igvDiv = document.getElementById('igv-div');
-    var options = %s;
-    igv.createBrowser(igvDiv, options)
-      .then(function (browser) {
-        console.log('IGV Browser created');
-      });
-  ", jsonlite::toJSON(igv_config, auto_unbox = TRUE))))
-)
-
-browsable(attachDependencies(igv_widget, igv_dep))
-
 ```
-
-
-```{r , echo=FALSE}
-
-
-```
-
-
+Above plots show select annotations over ProtSpace generated UMAP projections. To explore complete ProtSpace results, upload .parquetbundle file generated by VenomflowAnalysis on the [ProtSpace explore page](https://protspace.app/explore) 

@@ -1,0 +1,55 @@
+---
+title: "Genome"
+output: 
+  html_document:
+    self_contained: false
+    css: style.css 
+params:
+  bam: "/Users/praveena/Desktop/2025/Genomeviz/expanded/minimaptrial.sorted.bam"
+  fasta: "/Users/praveena/Desktop/2025/Genomeviz/expanded/expandedgenomeregions.fa"
+  bami: "/Users/praveena/Desktop/2025/Genomeviz/expanded/minimaptrial.sorted.bam.bai"
+
+
+---
+```{r, echo = FALSE, warning=FALSE, results='hide'}
+library(JBrowseR)
+out_dir <- getwd()
+data_dir <- file.path(out_dir, "data")
+dir.create(data_dir, showWarnings = FALSE)
+
+# Copy all required files into local bundle
+file.copy(params$fasta, data_dir, overwrite = TRUE)
+file.copy(paste0(params$fasta, ".fai"), data_dir, overwrite = TRUE)
+
+file.copy(params$bam, data_dir, overwrite = TRUE)
+file.copy(paste0(params$bam, ".bai"), data_dir, overwrite = TRUE)
+
+
+```
+
+
+```{r, echo = FALSE, warning=FALSE}
+asm <- assembly("data/expandedgenomeregions.fa")
+bam_track <- track_alignments(
+  track_data = "data/minimaptrial.sorted.bam",
+  assembly = asm
+)
+
+dark_theme <- theme(
+  primary = "#000000",
+  secondary = "#0097a7",
+  tertiary = "#f57c00",
+  quaternary = "#d50000"
+)
+
+JBrowseR(
+  view = "View",
+  assembly = asm,
+  tracks = tracks(bam_track),
+  location = "CM042145.1:1..10000",
+  theme = dark_theme
+
+)
+```
+
+

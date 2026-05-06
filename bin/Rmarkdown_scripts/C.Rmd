@@ -1,5 +1,5 @@
 ---
-title: "Trinity Menu"
+title: "Transcriptome"
 output: 
   html_document:
     css: style.css 
