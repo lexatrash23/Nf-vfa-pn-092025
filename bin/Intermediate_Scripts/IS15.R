@@ -29,6 +29,7 @@ library(ggvenn)
 library(ggplot2)
 library(GenomicRanges)
 library(igraph)
+library(Biostrings)
 #load in command line arguments
 args <- commandArgs(trailingOnly = TRUE)
 Sample_name <- args[1] 
@@ -150,6 +151,11 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
   union_ids <- Reduce(union, sets)
   Base_union <- Base[Base$Transdecoder_ID %in% union_ids, ] %>% mutate(Filter = if(strict) "Strict" else "Lax")
   return(Base_union)
+  
+  Pepseq <- AAStringSet(Base_union$PEP_Sequence)
+  names(Pepseq) <- Base_union$Transdecoder_ID
+  writeAAStringSet(Pepseq, paste0(Sample_name,"_filtered_",file_suffix,".pep"))
+
 }
 
 ## Loading files

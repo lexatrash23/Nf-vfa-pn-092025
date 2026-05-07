@@ -462,7 +462,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph'
+    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/Overview/Dataframes", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
@@ -472,14 +472,15 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     tuple val(sample), val(species), path(massspec), path(blastn6), path(transdf), path(toxvsnontoxIP)
 
     output:
-    tuple val(sample), path("*_Venn_ strict.png"), emit: VennPngStrict
-    tuple val(sample), path("*_Venn_Diagram_union_strict.csv"), emit: VennCsvStrict
+    tuple val(sample), path("*_Venn_strict.png"), emit: VennPngStrict
+    tuple val(sample), path("*filtered_strict.csv"), emit: VennCsvStrict
     // BS > 250;2 KE > 1%;2 Coverage > 50%;2 CR>5%;2 TD OE ;2
     tuple val(sample), path("*_Venn_lax.png"), emit: VennPngLax
-    tuple val(sample), path("*_Venn_Diagram_union_lax.csv"), emit: VennCsvLax
+    tuple val(sample), path("*filtered_lax.csv"), emit: VennCsvLax
     // BS:50;1 KE > 0%;1 Coverage > 0 ;1 CR: 1%;1  TD Any;1
-    tuple val(sample), path("*union_strict.pep.fasta")
-    tuple val(sample), path("*union_lax.pep.fasta")
+    tuple val(sample), path("*.pep")
+    //unfiltered
+    tuple val(sample), path("*final_unfiltered.csv")
 
     script:
     """
