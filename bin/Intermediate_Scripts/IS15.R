@@ -38,14 +38,7 @@ Transdf_distinct_file <- args[3]
 ToxnontoxIP <- args[4]
 Blastn_result <- args[5]
 mass_spec_file <- args[6]
-setwd("/Users/praveena/Desktop/PhD_all/2025/github/oldergithubscripts/Retrial/is15/")
-Sample_name <- "DP3"
-species_name <- "DP"
-Transdf_distinct_file <- "DP3_PD_transdf_distinct.csv"
-ToxnontoxIP <- "ToxNonTox_IP.csv"
-Blastn_result <- "DP3_PD.blastn.db.6.txt"
-mass_spec_file <-  "NULL"
- 
+
 
 # Function to read in transdf and make transdf_distinct, filter for complete ORF with signal P //slightly different from other transdf distincct
 read_transdf <- function(file) {
