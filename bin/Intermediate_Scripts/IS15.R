@@ -116,7 +116,10 @@ prepare_base <- function(df) {
 filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE, Sample_name) {
   # patterns depending on strict vs lax
   pat <- if(strict) pattern2 else pattern
-  
+  if(strict){
+    Base <- Base %>%
+      filter(genome_qcovs >= 95)
+  }
   matching_rows <- Base[!is.na(Base$InterPro_accession_Names) & grepl(pat, Base$InterPro_accession_Names), ]
   
   # thresholds
