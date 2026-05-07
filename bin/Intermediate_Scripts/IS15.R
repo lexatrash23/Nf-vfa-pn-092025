@@ -145,8 +145,10 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
     CP = "#782DC8"
   )
   # remove NULL to remove MS if not available. only keep relevant colours
-  sets <- sets[!sapply(sets, is.null)]
+  sets <- sets[sapply(sets, length) > 0]
   fill_colors <- color_map[names(sets)]
+  
+  stopifnot(all(names(sets) == names(fill_colors)))
   
   p <- ggvenn(sets, names(sets), fill_color = fill_colors)
   ggsave(paste0(Sample_name,"_Venn_",file_suffix,".png"), plot = p, width = 6, height = 4, dpi = 300)
