@@ -6,7 +6,7 @@ process kallistoAnalysisTrinity {
     errorStrategy 'ignore'
     maxRetries 4
 
-    label 'process_single'
+    label 'process_bare'
 
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
@@ -37,7 +37,7 @@ process kallistoAnalysisTrans {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
 
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
@@ -67,7 +67,7 @@ process ExtractSignalSequences {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
 
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
@@ -94,7 +94,7 @@ process CreateTrinityDataframe {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
 
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
@@ -123,7 +123,7 @@ process CreateInterproscanDataframe {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -151,7 +151,7 @@ process CreateTransdecoderDataframe {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -186,7 +186,7 @@ process BUSCOtranscriptome {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -215,7 +215,7 @@ process BUSCOtranslatome {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -244,7 +244,7 @@ process FigureGenerationTrinity {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -281,7 +281,7 @@ process FigureGenerationTransdecoder {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -318,7 +318,7 @@ process FigureGenerationSignalp {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -353,7 +353,7 @@ process TableGenerationTrinity {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -385,7 +385,7 @@ process TableGenerationTransdecoder {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -422,13 +422,13 @@ process ToxinVsNonToxin {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr'
+    conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi'
 
     publishDir "CommonMetadata/Analysis/results/ToxinVsNonToxinMetaData/", mode: 'copy'
 
@@ -456,7 +456,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -507,7 +507,7 @@ process CreateInterproscanFigures {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -544,7 +544,7 @@ process RmarkdownB {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -584,7 +584,7 @@ process CreateSampleSheet {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -612,7 +612,7 @@ process RmarkdownA {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -644,7 +644,7 @@ process RmarkdownCDEGIK {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -681,7 +681,7 @@ process RmarkdownH {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -738,7 +738,7 @@ process RmarkdownJ {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -794,7 +794,7 @@ process RmarkdownL {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -845,7 +845,7 @@ process RmarkdownM {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -885,7 +885,7 @@ process RmarkdownN {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -927,7 +927,7 @@ process RmarkdownO {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -967,7 +967,7 @@ process RmarkdownQ {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1007,7 +1007,7 @@ process RmarkdownR {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1049,7 +1049,7 @@ process RmarkdownS {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1091,7 +1091,7 @@ process RmarkdownV {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1131,7 +1131,7 @@ process RmarkdownW {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1173,7 +1173,7 @@ process RmarkdownX {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1213,7 +1213,7 @@ process RmarkdownZ {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1254,7 +1254,7 @@ process RmarkdownY {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1296,7 +1296,7 @@ process Blast0Chunks {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1328,7 +1328,7 @@ process Blast0Chunksn {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1358,7 +1358,7 @@ process Annotate {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1397,7 +1397,7 @@ process ProtSpace {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1425,7 +1425,7 @@ process ProtSpace {
 process MissingHTML {
     errorStrategy 'ignore'
     maxRetries 4
-    label 'process_single'
+    label 'process_bare'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -1445,7 +1445,7 @@ process RmarkdownU {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }

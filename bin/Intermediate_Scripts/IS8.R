@@ -4,7 +4,7 @@ library(dplyr)
 library(GO.db)
 library(tidyr)
 library(stringr)
-
+library(AnnotationDbi)
 
 args <- commandArgs(trailingOnly = TRUE)
 ToxinDataTSV <- args[1] 
@@ -88,37 +88,12 @@ summary_IP <- nontoxin_data %>%
   dplyr::select(Gene.Ontology.IDs,ToxPercent,NonToxPercent,RelativeExpression) 
 
 
-#pull GO metadata
-#defining the columns of the dataframe 
-go_ids <- summary_IP$Gene.Ontology.IDs
-term_names <- character(length(go_ids))
-definitions <- character(length(go_ids))
-ontologies <- character(length(go_ids))
+#GO metadata pull
 
-# Loop through our unique df and to metadata
-for (i in seq_along(go_ids)) {
-  go_id <- go_ids[i]
-  go_obj <- GOTERM[[go_id]]
-  
-  if (!is.null(go_obj)) {
-    term_names[i] <- Term(go_obj)
-    definitions[i] <- Definition(go_obj)
-    ontologies[i] <- Ontology(go_obj)
-  } else {
-    term_names[i] <- NA
-    definitions[i] <- NA
-    ontologies[i] <- NA
-  }
-}
 
-# Combine into a new data frame
-go_metadata <- data.frame(
-  GO_ID = go_ids,
-  Name = term_names,
-  Definition = definitions,
-  Ontology = ontologies,
-  stringsAsFactors = FALSE
-)
+go_metadata <- AnnotationDbi::select(GO.db, keys = unique(summary_IP$Gene.Ontology.IDs),
+                                     columns = c("TERM","DEFINITION","ONTOLOGY"),
+                                     keytype = "GOID")
 
 #add Go_metadata remove rows that refer to cellular compartment 
 summary_IP <- summary_IP %>%
