@@ -203,16 +203,16 @@ if (!is.na(Diamondblast6) && Diamondblast6 != "NULL") {
   
 }
 
-}
 
 
-Annotationddf <- transdf_final_filtered_lax %>%
-  left_join(transdf_final_filtered_lax,df_to_compare, by ="Transdecoder_ID") %>%
+
+Annotationdf <- transdf_final_filtered_lax %>%
+  left_join(df_to_compare, by ="Transdecoder_ID") %>%
+ #left_join(MFlabel,by ="Transdecoder_ID") %>%
+ #left_join(BPlabel,by ="Transdecoder_ID") %>%
+  #left_join(DomainLabel,by ="Transdecoder_ID") %>%
   setdiff(UniqueSequenceName,Transdecoder_ID, Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,CysPer,Signal_Length,mature_length,PEP_Length,CDS_Length,tpm, est_counts, percent,cumulativepercent,Signal_Sequence,mature_sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,)
 
-
-# mass spec columns 
-#genome columns if there
 
 
 
@@ -237,50 +237,72 @@ Annotationddf <- transdf_final_filtered_lax %>%
 
 
 #Adding scoring 
-transdf <- transdf %>%
-  mutate(AnnotationScore = case_when(
-    Annotation_Source == "ToxProt". ~ 1,
-    TRUE ~ 0
-  )) %>%
-  mutate(ToxinDomainScore = case_when(
-    if InterPro_accession_Names contains pattern1 ~ 2,
-    if InterPro_accession_Names contains pattern2 ~ 1, 
-    TRUE ~ 0 
-  )) %>%
-  mutate(ProteomicCoverageScore = case_when(
-    Top == "TRUE" & Coverage... >= 50 ~ 2,
-    Top == "TRUE" & X.Unique >= 1 ~ 1,
-    Top = NA ~ NA,
-    TRUE ~ 0
-  )) %>%
-  mutate(KallistoExpressionScore = case_when(
-    percent >= 1 | percent_agg >=1 ~ 2,
-    percent > 0  ~ 1,
-    TRUE ~ 0
-  )) %>%
-  mutate(CysPerScore = case_when(
-    CysPer >= 5  ~ 2,
-    CysPer >= 1  ~ 1,
-    TRUE ~ 0
-  )) %>%
-  mutate(Blastscore = case_when(
-    ToxProt_bitscore >= 200  ~ 2,
-    ToxProt_bitscore >= 50  ~ 1,
-    TRUE ~ 0
-  ))%>%
-  mutate(GenomeSupportScore = case_when(
-    Genome_qcovs >= 80 & Genome_pident >= 80  ~ 2,
-    Genome_qcovs >= 50 & Genome_pident >= 50  ~ 1,
-    Genome_qcovs = NA ~ NA, 
-    TRUE ~ 0
-  ))
+library(dplyr)
+library(stringr)
+
+Annotationdf <- Annotationdf %>%
+  mutate(
+    AnnotationScore = case_when(
+      Annotation_Source == "ToxProt" ~ 1,
+      TRUE ~ 0
+    )
+  ) %>%
+  mutate(
+    ToxinDomainScore = case_when(
+      str_detect(InterPro_accession_Names, "pattern1") ~ 2,
+      str_detect(InterPro_accession_Names, "pattern2") ~ 1,
+      TRUE ~ 0
+    )
+  ) %>%
+  mutate(
+    ProteomicCoverageScore = case_when(
+      Top == "TRUE" & Coverage... >= 50 ~ 2,
+      Top == "TRUE" & X.Unique >= 1 ~ 1,
+      is.na(Top) ~ NA_real_,
+      TRUE ~ 0
+    )
+  ) %>%
+  mutate(
+    KallistoExpressionScore = case_when(
+      percent >= 1 | percent_agg >= 1 ~ 2,
+      percent > 0 ~ 1,
+      TRUE ~ 0
+    )
+  ) %>%
+  mutate(
+    CysPerScore = case_when(
+      CysPer >= 5 ~ 2,
+      CysPer >= 1 ~ 1,
+      TRUE ~ 0
+    )
+  ) %>%
+  mutate(
+    Blastscore = case_when(
+      ToxProt_bitscore >= 250 ~ 2,
+      ToxProt_bitscore >= 50 ~ 1,
+      TRUE ~ 0
+    )
+  ) %>%
+  mutate(
+    GenomeSupportScore = case_when(
+      Genome_qcovs >= 95 & Genome_pident >= 95 ~ 2,
+      Genome_qcovs >= 70 & Genome_pident >= 70 ~ 1,
+      is.na(Genome_qcovs) ~ NA_real_,
+      TRUE ~ 0
+    )
+  )
 
 # add category label 
 
 transdf <- transdf %>%
   mutate(Category = case_when(
-    AnnotationScore = 1 | Blastscore = 2 ~ "Category 1",
-    ToxinDomainScore = 2 ~ "Category 2",
-    Annotation_Source = NA | Annotation_Source = "NCBInr" & 
+    AnnotationScore == 1 | Blastscore == 2 ~ "Category 1",
+    ToxinDomainScore == 2 ~ "Category 2",
+    (is.na(Annotation_Source) | Annotation_Source == "NCBInr") &
+      GenomeSupportScore == 2 &
+      (CysPerScore == 2 |
+         KallistoExpressionScore == 2 |
+         ProteomicCoverageScore == 2) ~ "Category 3",
+    TRUE ~ "Category 4"
   ))
 

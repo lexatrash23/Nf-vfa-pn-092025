@@ -135,7 +135,6 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
     )
     file_suffix <- "lax"
   }
-  
   #set colours
   if(!is.na(mass_spec_file) && mass_spec_file != "NULL") {
     color_map <- c(
