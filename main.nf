@@ -1501,7 +1501,7 @@ workflow {
         //2
         def combined_pep = results_path ? file("${results_path}/ORFprediction/Combined/All/*cd95.pep") : ''
         //3
-        def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*cd95.cds") : ''
+        def combined_cds = results_path ? file("${results_path}/ORFprediction/Combined/All/*cd95pep.cds") : ''
         //4
         def mature_fasta = results_path ? file("${results_path}/Secreted/Mature/Signalp/*_mature.fasta") : ''
         //5
@@ -1576,6 +1576,7 @@ workflow {
         def AuthorName = row.AnalysisdataAuth ?: ''
         //40
         return [samplename, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir, genomeid, species, MS, Gavailability, MSavailability, ToxinDomains, busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3, Transcriptome1, Transcriptome2, TranscriptomeC, complete_pep, complete_cds, combined_mature, SampleURL, TD_pep, TD2_pep, TD_cds, TD2_cds, Diamondblast6, BlastpNonToxin, AuthorName]
+                //0             //1                 //2.        3.               4           5               6           7                   8                9             10.    11.            12          13        14         15                       16                      17       18.  19.      20           21                22             23                      24                         25                      26                       27             28             29              30           31              32                33       34     35       36      37       38             39              40             
     }
 
     // Metadafiles 
@@ -1656,13 +1657,13 @@ workflow {
     CreateTransdecoderDataframeinput = venomflowfiles
         .map { item ->
             def maturefasta = item[32] && item[32] != '' ? item[32] : item[5]
-            def combinedpep = item[3] && item[3] != ''
+            def combinedpep2 = item[3] && item[3] != ''
                 ? item[3]
                 : (item[34] && item[34] != '' ? item[34] : item[35])
-            def combinedcds = item[4] && item[4] != ''
+            def combinedcds2 = item[4] && item[4] != ''
                 ? item[4]
                 : (item[36] && item[36] != '' ? item[36] : item[37])
-            [item[0], combinedpep, combinedcds, item[7], maturefasta]
+            [item[0], combinedpep2, combinedcds2, item[7], maturefasta]
         }
         .join(ExtractSignalSequences.out.signalsequences)
         .join(CreateInterproscanDataframe.out.Interproscan_dataframe)

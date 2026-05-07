@@ -27,8 +27,8 @@ sample_name <- args[8]          #sample name
 transdecoder_pep <- readAAStringSet(transdecoder_pep_file)
 transdecoder_pep_df <- data.frame(
   Transdecoder_ID = names(transdecoder_pep),  # save sequence_id
-  Sequence = as.character(transdecoder_pep),  # save sequence to as character
-  Length = width(transdecoder_pep),            # save sequence length
+PEP_Sequence = as.character(transdecoder_pep),  # save sequence to as character
+PEP_Length = width(transdecoder_pep),            # save sequence length
   stringsAsFactors = FALSE,
   row.names = NULL  # ensures no row names
 )
@@ -38,27 +38,22 @@ transdecoder_pep_df$ORF_type <- sub(".*ORF type:([^,]+).*", "\\1", transdecoder_
 #rename the TransdecoderID  removing everything after the first space
 transdecoder_pep_df$Transdecoder_ID <- sub(" .*", "", transdecoder_pep_df$Transdecoder_ID)
 #rename sequence and length columns to be pep specific
-colnames(transdecoder_pep_df)[colnames(transdecoder_pep_df) == "Sequence"] <- "PEP_Sequence"
-colnames(transdecoder_pep_df)[colnames(transdecoder_pep_df) == "Length"] <- "PEP_Length"
 
 #read in transdecoder cds file
 transdecoder_cds <- readDNAStringSet(transdecoder_cds_file)
 transdecoder_cds_df <- data.frame (
   Transdecoder_ID = names(transdecoder_cds),
-  Sequence = as.character(transdecoder_cds),
-  Length = width(transdecoder_cds),
+CDS_Sequence = as.character(transdecoder_cds),
+CDS_Length = width(transdecoder_cds),
   stringsAsFactors = FALSE,
   row.names = NULL 
 )
 
 #rename TransdecoderID to remove everything after the first space
 transdecoder_cds_df$Transdecoder_ID <- sub(" .*", "", transdecoder_cds_df$Transdecoder_ID)
-#rename sequence and length columns to be cds specific
-colnames(transdecoder_cds_df)[colnames(transdecoder_cds_df) == "Sequence"] <- "CDS_Sequence"
-colnames(transdecoder_cds_df)[colnames(transdecoder_cds_df) == "Length"] <- "CDS_Length"
 
 #merge transdecoder files full join by ID column
-Transdecoder_pep_cds_merge <- full_join(transdecoder_pep_df, transdecoder_cds_df, by = "Transdecoder_ID")
+Transdecoder_pep_cds_merge <- left_join(transdecoder_pep_df, transdecoder_cds_df, by = "Transdecoder_ID")
 
 # readin blasatpunitox6 file 
 blastpunitox6 <- read.table(blastpunitox6_file, header = FALSE, sep = "\t", stringsAsFactors = FALSE)
