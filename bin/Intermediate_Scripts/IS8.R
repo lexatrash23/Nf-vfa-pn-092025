@@ -89,13 +89,18 @@ summary_IP <- nontoxin_data %>%
 
 
 #GO metadata pull
-
+Name = term_names,
+ Definition = definitions,
+ Ontology = ontologies,
+ stringsAsFactors = FALSE
 
 go_metadata <- AnnotationDbi::select(GO.db, keys = unique(summary_IP$Gene.Ontology.IDs),
                                      columns = c("TERM","DEFINITION","ONTOLOGY"),
                                      keytype = "GOID")
 
-#add Go_metadata remove rows that refer to cellular compartment 
+go_metadata %>%
+dplyr::rename(GO_ID = GOID,Definition =DEFINITION,Ontology=ONTOLOGY)
+#add Go_metadata remove rows that refer to cellular compartment
 summary_IP <- summary_IP %>%
   dplyr::rename(GO_ID = Gene.Ontology.IDs) %>%
   left_join(go_metadata, by = "GO_ID") %>%
