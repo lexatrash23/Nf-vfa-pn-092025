@@ -117,24 +117,44 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
   
   # thresholds
   if(strict) {
+    if(!is.na(mass_spec_file) && mass_spec_file != "NULL") {
+    sets <- list(
+        TD = matching_rows$Transdecoder_ID,
+        MS = Base[Base$Coverage >= 50 & Base$Top == TRUE,]$Transdecoder_ID,
+        TP = Base[Base$BitScore >= 250,]$Transdecoder_ID,
+        KE = Base[Base$percent >= 1,]$Transdecoder_ID,
+        CP = Base[Base$CysPer >= 5,]$Transdecoder_ID
+      )
+    } else {
     sets <- list(
       TD = matching_rows$Transdecoder_ID,
-      MS = if(mass) Base[Base$Coverage >= 50 & Base$Top == TRUE,]$Transdecoder_ID else NULL,
       TP = Base[Base$BitScore >= 250,]$Transdecoder_ID,
       KE = Base[Base$percent >= 1,]$Transdecoder_ID,
       CP = Base[Base$CysPer >= 5,]$Transdecoder_ID
     )
+    }
+    
     file_suffix <- "strict"
   } else {
+    if(!is.na(mass_spec_file) && mass_spec_file != "NULL") {
     sets <- list(
       TD = matching_rows$Transdecoder_ID,
-      MS = if(mass) Base[Base$Coverage >= 0 & Base$Top == TRUE,]$Transdecoder_ID else NULL,
+      MS = Base[Base$Coverage >= 0 & Base$Top == TRUE,]$Transdecoder_ID,
       TP = Base[Base$BitScore >= 50,]$Transdecoder_ID,
       KE = Base[Base$percent >= 0,]$Transdecoder_ID,
       CP = Base[Base$CysPer >= 1,]$Transdecoder_ID
     )
+    } else {
+      sets <- list(
+        TD = matching_rows$Transdecoder_ID,
+        TP = Base[Base$BitScore >= 50,]$Transdecoder_ID,
+        KE = Base[Base$percent >= 0,]$Transdecoder_ID,
+        CP = Base[Base$CysPer >= 1,]$Transdecoder_ID
+      )
+      }
     file_suffix <- "lax"
   }
+  
   #set colours
   if(!is.na(mass_spec_file) && mass_spec_file != "NULL") {
     color_map <- c(
@@ -154,8 +174,6 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
   }
   
   fill_colors <- color_map[names(sets)]
-  
-  stopifnot(all(names(sets) == names(fill_colors)))
   
   p <- ggvenn(sets, names(sets), fill_color = fill_colors)
   ggsave(paste0(Sample_name,"_Venn_",file_suffix,".png"), plot = p, width = 6, height = 4, dpi = 300)
