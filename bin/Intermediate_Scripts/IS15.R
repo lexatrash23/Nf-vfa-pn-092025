@@ -137,15 +137,23 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
   }
   
   #set colours
-  color_map <- c(
-    TD = "#E41A1C",
-    MS = "#377EB8",
-    TP = "#4DAF4A",
-    KE = "#EBAC4D",
-    CP = "#782DC8"
-  )
-  # remove NULL to remove MS if not available. only keep relevant colours
-  sets <- sets[sapply(sets, length) > 0]
+  if(!is.na(mass_spec_file) && mass_spec_file != "NULL") {
+    color_map <- c(
+      TD = "#E41A1C",
+      MS = "#377EB8",
+      TP = "#4DAF4A",
+      KE = "#EBAC4D",
+      CP = "#782DC8"
+    )
+  } else {
+    color_map <- c(
+      TD = "#E41A1C",
+      TP = "#4DAF4A",
+      KE = "#EBAC4D",
+      CP = "#782DC8"
+    )
+  }
+  
   fill_colors <- color_map[names(sets)]
   
   stopifnot(all(names(sets) == names(fill_colors)))
