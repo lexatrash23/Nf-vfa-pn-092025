@@ -252,6 +252,9 @@ if (!is.na(Blastn_result) && Blastn_result != "NULL") {
   ) %>%
     distinct(cluster, .keep_all = TRUE) %>%
     dplyr::select(-cluster)
+  
+  transdf_filtered <- transdf_filtered %>% 
+    filter(genome_qcovs >= 50)
 
 }
 
