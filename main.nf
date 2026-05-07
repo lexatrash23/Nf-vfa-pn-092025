@@ -478,9 +478,9 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     tuple val(sample), path("*_Venn_lax.png"), emit: VennPngLax
     tuple val(sample), path("*filtered_lax.csv"), emit: VennCsvLax
     // BS:50;1 KE > 0%;1 Coverage > 0 ;1 CR: 1%;1  TD Any;1
-    tuple val(sample), path("*.pep")
+    path("*.pep")
     //unfiltered
-    tuple val(sample), path("*final_unfiltered.csv")
+    path("*final_unfiltered.csv")
 
     script:
     """
