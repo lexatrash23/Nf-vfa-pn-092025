@@ -1,127 +1,286 @@
-#!/usr/bin/env Rscript
+# Annotation Command line 
+library(rentrez)
+library(xml2)
 
-#a rough overview of interproscan domains html graph + filtered sequence list of those that have at least one domain common with a known toxin
-#installing and loading packages
-library(Biostrings)
-library(dplyr)
-library(tidyr)
-library(htmlwidgets)
-library(plotly)
-
-
-#command line arguments
 args <- commandArgs(trailingOnly = TRUE)
-Trans <- args[1] #transdf 
-Toxin_domains_file <- args[2] #toxin domains file
-fasta_file_pep <- args[3] # the previous secreted protein files that were made
-fasta_file_cds <- args[4] # the previous secreted protein files that were made
-sample <- args[4] #sample name
+transdf_final_filtered_lax <- args[1] 
+toxprotblast6 <- args[2] 
+toxprotblastmetadata <- args[3] 
+nontoxprotblast6 <- args[4] 
+nontoxprotmetadata <- args[5]
+toxvsnontoxIP <- args[6]
+toxvsnontoxMF <- args[7]
+toxvsnontoxBP <- args[8]
+sample <- args[9]
+Diamondblast6 <- args[10]
 
-Trans <- "/Users/praveena/Desktop/PhD_all/2025/github/oldergithubscripts/_transdf.csv" #transdf_distinct
-toxin_domains_file <- "/Users/praveena/Downloads/Toxin_domains_April26.tsv"
-sample <- "DP3"
 
-#Generating Interproscan plotly
-#read in transdf_distinct
-Trans <- read.csv(file = Trans, header = TRUE)  %>%
-  dplyr::rename(SP =SP_Prediction) %>%
-  mutate(CysPer = ((str_count(PEP_Sequence, fixed("C"))) / str_length(PEP_Sequence)) * 100 )
+#toxprotblast6, nontoxprotblast6, diamondblast6, transdf_final_filtered_strict , transdf_final_filtered_lax 
+#toxprot metadata #nontoxprotmetadata
+#GO entry metadata 
+
+#read in transdf_filtered file 
+transdf_final_filtered_lax <-read.csv(transdf_final_filtered_lax, header = TRUE)
+
+#Enyme class labels 
+ec_class_map <- c(
+  "1" = "Oxidoreductase",
+  "2" = "Transferase",
+  "3" = "Hydrolase",
+  "4" = "Lyase",
+  "5" = "Isomerase",
+  "6" = "Ligase",
+  "7" = "Translocase"
+)
+
+#Function to Parse UniProt blast database 
+ParseBlast6UniProt <- function(blast6file, Metadata, prefix) {
+  blast6 <- read.delim(blast6file, header = FALSE, sep = "\t")
+  colnames(blast6) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qframe", "qcovs")
+  blast6[[2]] <- str_replace(blast6[[2]], "^[^|]*\\|[^|]*\\|", "")
+  blast6 <- blast6 %>%
+    arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
+    distinct(Transdecoder_ID, .keep_all = TRUE) %>%
+    dplyr::select(Transdecoder_ID, AccessionNo,pident,evalue,bitscore,qcovs) 
+  metadata <-read.csv(Metadata, sep = "\t") %>%
+    dplyr::rename(AccessionNo = Entry.Name) %>%
+    mutate(Protein.names = sub("\\s*\\(.*", "", Protein.names)) %>%
+    dplyr::rename(Name = Protein.names) %>%
+    separate(Organism, into = c("Species", "CommonName"), sep = " \\(", remove = FALSE, extra = "merge", fill = "right") %>%
+    mutate(Source = prefix) %>%
+    mutate(
+      EC_class_number = str_extract(EC.number, "^[0-9]"),
+      EC_class_name = ec_class_map[EC_class_number]
+    ) %>%
+    select(-EC_class_number) %>%
+    mutate(Gene_Name = Gene.Names) %>%
+    mutate(Gene_Name = word(Gene_Name,1)) %>%
+    select(AccessionNo, Name, Gene_Name, Species, Source, EC_class_name, EC.number)
+  blast6_metadata <- left_join(blast6,metadata, by = "AccessionNo")
+  return(blast6_metadata)
   
-
-# Reordering columns and keeping only those of interest
-keeps <- c("Transdecoder_ID", "ORF_type", "PEP_Length", "CDS_Length", "SP","Signal_Length", "mature_length", "CysPer", "percent", "cumulativepercent", "Code", "Hit", "Percentage_Identity", "E_value", "BitScore", "Hit_species","InterPro_accession_Names","GO_name","TMHMM","Signal_Sequence","mature_sequence", "PEP_Sequence","CDS_Sequence")
-Trans <- Trans[keeps]
-
-
-# sort by bitscore
-Trans_sorted <- Trans[order(Trans$BitScore, decreasing = TRUE),]
-#sort only for those complete with false tmhmm
-FINAL_CSV_distinct_filtered <- Trans_sorted %>%
-  filter(
-    grepl("complete", ORF_type, ignore.case = TRUE),
-    grepl("SP", SP, ignore.case = TRUE),
-    TMHMM == FALSE
-  )
-#keep only columns of interest
-keeps <- c("Transdecoder_ID", "InterPro_accession_Names","GO_name")
-df_figures <-FINAL_CSV_distinct_filtered[keeps]
-
-
-
-#separate the interproscan IPs by PIPs
-annotation_list <- strsplit(df_figures$InterPro_accession_Names, split = "\\|")
-#creates one long list of IPs and summarizes the counts for each
-all_annotations <- unlist(annotation_list)
-annotation_counts <- table(all_annotations)
-annotation_counts_df <- as.data.frame(annotation_counts)
-#sort by frequencing of IP
-annotation_counts_df <- annotation_counts_df[order(-annotation_counts_df$Freq), ]
-
-colnames(annotation_counts_df) <- c("Transdf_annotations", "Freq")
-
-write.csv(annotation_counts_df, paste0(sample,"_annotation_counts_trandsf.csv"), row.names = FALSE)
-
-
-#read in toxin domains tsv
-Toxin_domains <- read.delim(file = Toxin_domains_file, header = TRUE, sep = "\t")
-#same as above but different separator for this tsv
-interpro_list <- strsplit(Toxin_domains$InterPro, split = ";")
-all_interpro_ids <- unlist(interpro_list)
-all_interpro_ids <- trimws(all_interpro_ids) #remove ws
-unique_interpro_ids <- unique(all_interpro_ids) #only get unique IDs
-unique_interpro_df <- data.frame(InterPro = unique_interpro_ids)
-annotation_counts_toxin <- table(all_interpro_ids)
-annotation_counts_toxin_df <- as.data.frame(annotation_counts_toxin)
-annotation_counts_toxin_df <- annotation_counts_toxin[order(-annotation_counts_toxin$Freq), ]
-colnames(annotation_counts_toxin_df) <- c("toxin_annotations", "Freq")
-
-write.csv(annotation_counts_toxin_df, paste0(sample,"_annotation_counts_toxins.csv"), row.names = FALSE)
-
-#iterate through the unique_interpro_df$InterPro, search df_figres_interpro_names df with this value as query, save the rows that have a match at least somewhere in  the row
-matched_rows <- data.frame()
-for (interpro_id in unique_interpro_df$InterPro) {
-  # searches
-  matches <- df_figures[apply(df_figures, 1, function(row) any(grepl(interpro_id, row, fixed = TRUE))), ]
-  
-  # add the whole df_Figures row row to a new dataframe
-  if (nrow(matches) > 0) {
-    matched_rows <- rbind(matched_rows, matches)
-  }
 }
-#unique Transdecoder IDs only
-matched_rows <- distinct(matched_rows, Transdecoder_ID, .keep_all = TRUE)
 
-#remove any na rows
-matched_rows <- matched_rows[!is.na(matched_rows$InterPro_accession_Names), ]
-
-#Frequency list of toxin-related domains
-annotation_list_matched <- strsplit(matched_rows$InterPro_accession_Names, split = "\\|")
-all_annotations_matched  <- unlist(annotation_list_matched)
-annotation_counts_matched <- table(all_annotations_matched)
-annotation_counts_df_matched <- as.data.frame(annotation_counts_matched)
-annotation_counts_df_matched <- annotation_counts_df_matched[order(-annotation_counts_df_matched$Freq), ]
-
-colnames(annotation_counts_df_matched) <- c("matched_toxin_annotations", "Freq")
-
-write.csv(annotation_counts_df_matched, paste0(sample,"_annotation_counts_trandf_matched_to_toxins.csv"), row.names = FALSE)
-
-
-
-
-fasta <- readAAStringSet(file = fasta_file_pep)
-seq_ids <- sapply(strsplit(names(fasta), " "), `[`, 1)
-keep <- seq_ids %in% matched_rows$Transdecoder_ID
-filtered_fasta <- fasta[keep]
-writeXStringSet(filtered_fasta, file.path("filtered_sequences.fasta"))
+#dataframe to combine with nontoxprot to select most significant match 
+Toxprotblast <- ParseBlast6UniProt(toxprotblast6, toxprotmetadata, "ToxProt")
+#dataframe to add to final annotation excel 
+Toxprotblast_maindf <- Toxprotblast
+prefix= "ToxProt"
+colnames(Toxprotblast_maindf)
+Toxprotblast_maindf <- Toxprotblast_maindf %>%
+  relocate(Name, .after = AccessionNo) %>%
+  relocate(Species, .after = Name) %>%
+  select(-Gene_Name,-Source,-EC_class_name,-EC.number) 
+names(Toxprotblast_maindf)[names(Toxprotblast_maindf) == "AccessionNo"] <- paste0(prefix, "_AccessionNo")
+names(Toxprotblast_maindf)[names(Toxprotblast_maindf) == "pident"] <- paste0(prefix, "_pident")
+names(Toxprotblast_maindf)[names(Toxprotblast_maindf) == "evalue"] <- paste0(prefix, "_evalue")
+names(Toxprotblast_maindf)[names(Toxprotblast_maindf) == "bitscore"] <- paste0(prefix, "_bitscore")
+names(Toxprotblast_maindf)[names(Toxprotblast_maindf) == "qcovs"] <- paste0(prefix, "_qcovs")
+names(Toxprotblast_maindf)[names(Toxprotblast_maindf) == "Name"] <- paste0(prefix, "_Name")
+names(Toxprotblast_maindf)[names(Toxprotblast_maindf) == "Species"] <- paste0(prefix, "_Species")
 
 
-group_totals <- annotation_counts_df_matched %>%
-  group_by(Group) %>%
-  summarise(TotalFreq = sum(Freq)) %>%
-  mutate(GroupLabel = paste0(Group, " (", TotalFreq, ")"))
-annotation_counts_df_matched <- annotation_counts_df_matched %>%
-  left_join(group_totals, by = "Group")
+#dataframe to combine with toxprot to select most significant match 
+NonToxprotblast <- ParseBlast6UniProt(nontoxprotblast6, nontoxprotmetadata, "NonToxUniProt")
+#dataframe to add to the final annotation excel file 
+NonToxprotblast_maindf <- NonToxprotblast
+prefix= "NonToxUniProt"
+NonToxprotblast_maindf <- NonToxprotblast_maindf %>%
+  relocate(Name, .after = AccessionNo) %>%
+  relocate(Species, .after = Name) %>%
+  select(-Gene_Name,-Source,-EC_class_name,-EC.number) 
+names(NonToxprotblast_maindf)[names(NonToxprotblast_maindf) == "AccessionNo"] <- paste0(prefix, "_AccessionNo")
+names(NonToxprotblast_maindf)[names(NonToxprotblast_maindf) == "pident"] <- paste0(prefix, "_pident")
+names(NonToxprotblast_maindf)[names(NonToxprotblast_maindf) == "evalue"] <- paste0(prefix, "_evalue")
+names(NonToxprotblast_maindf)[names(Toxprotblast_maindf) == "bitscore"] <- paste0(prefix, "_bitscore")
+names(NonToxprotblast_maindf)[names(NonToxprotblast_maindf) == "qcovs"] <- paste0(prefix, "_qcovs")
+names(NonToxprotblast_maindf)[names(NonToxprotblast_maindf) == "Name"] <- paste0(prefix, "_Name")
+names(NonToxprotblast_maindf)[names(NonToxprotblast_maindf) == "Species"] <- paste0(prefix, "_Species")
+
+#combine dataframes to add to final annotation excel 
+blastresults2 <- full_join(Toxprotblast_maindf,NonToxprotblast_maindf, by ="Transdecoder_ID")
+
+#df to find best reviewed hit per transript 
+df_to_compare <- rbind(Toxprotblast,NonToxprotblast) %>%
+  arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
+  distinct(Transdecoder_ID, .keep_all = TRUE) %>%
+  dplyr::select(Transdecoder_ID, Name,Gene_Name,Source,EC_class_name) %>%
+  dplyr::rename(Protein_Name = Name, Enzyme_Class = EC_class_name, Annotation_Source= Source)
+
+
+#Optional argument if available 
+#add optional if diamond ends with addign all three blast results to the end of file, if no diamond end with two blast results added per file 
+
+fetch_protein_metadata <- function(accessions, batch_size = 50, sleep_time = 0.4) {
+  results <- list()
+  n <- length(accessions)
+  batches <- split(accessions, ceiling(seq_along(accessions)/batch_size))
+  message("Starting retrieval of ", n, " accession numbers...")
+  for (i in seq_along(batches)) {
+    batch <- batches[[i]]
+    message(sprintf("Processing batch %d/%d (%d records)...", 
+                    i, length(batches), length(batch)))
+    # Fetch XML from NCBI protein database
+    xml_data <- tryCatch({
+      entrez_fetch(db = "protein",
+                   id = batch,
+                   rettype = "gb",
+                   retmode = "xml")
+    }, error = function(e) {
+      message("Error in batch ", i, ": ", e$message)
+      return(NULL)
+    })
+    if (is.null(xml_data)) next
+    # Parse XML
+    xml_parsed <- read_xml(xml_data)
+    records <- xml_find_all(xml_parsed, ".//GBSeq")
+    batch_df <- map_dfr(records, parse_protein_xml)
+    results[[i]] <- batch_df
+    message(sprintf("Finished batch %d. Sleeping %.2f sec...", i, sleep_time))
+    Sys.sleep(sleep_time)
+  }
+  message("Retrieval complete.")
+  bind_rows(results)
+}
+
+parse_protein_xml <- function(xml_doc) {
+  get_text <- function(node, xpath) {
+    res <- xml_find_first(node, xpath)
+    if (inherits(res, "xml_missing")) return(NA_character_)
+    xml_text(res)
+  }
+  protein_name <- get_text(xml_doc, ".//GBSeq_definition")
+  organism <- get_text(xml_doc, ".//GBSeq_organism")
+  gene_name <- get_text(xml_doc, ".//GBQualifier[GBQualifier_name='gene']/GBQualifier_value")
+  ec_number <- get_text(xml_doc, ".//GBQualifier[GBQualifier_name='EC_number']/GBQualifier_value")
+  
+  # Return as dataframe row
+  data.frame(
+    Name = protein_name,
+    Species = organism,
+    EC_Number = ec_number,
+    Gene_Name = gene_name,
+    stringsAsFactors = FALSE
+  )
+}
+
+if (!is.na(Diamondblast6) && Diamondblast6 != "NULL") {
+  Diamond <- read.delim(diamondblast6, sep = "\t", header = FALSE)
+  colnames(Diamond) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qframe")
+  Diamond <- Diamond %>%
+    arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
+    distinct(Transdecoder_ID, .keep_all = TRUE) %>%
+    dplyr::select(Transdecoder_ID, AccessionNo,pident,evalue,bitscore,qcovs) %>%
+    mutate(Soure = "NCBInr") 
+  
+  Diamond_AccessionNo_distinct <- Diamond %>%
+    distinct(AccessionNo)
+  
+  AccessionNo_metadata <- fetch_protein_metadata(Diamond_AccessionNo_distinct$AccessionNo)
+  Diamond_with_metadata <- left_join(Diamond,AccessionNo_metadata, by = "Transdecoder_ID" )
+  Diamond_with_metadata <- Diamond_with_metadata%>%
+    mutate(
+      EC_class_number = str_extract(EC.number, "^[0-9]"),
+      EC_class_name = ec_class_map[EC_class_number]
+    ) %>%
+    select(-EC_class_number) 
+  
+  Diamond_maindf <- Diamond_with_metadata
+  prefix= "NCBInr"
+  colnames(Diamond_maindf)
+  Diamond_maindf <- Diamond_maindf %>%
+    relocate(Name, .after = AccessionNo) %>%
+    relocate(Species, .after = Name) %>%
+    select(-Gene_Name,-Source,-EC_class_name,-EC.number) 
+  names(Diamond_maindf)[names(Diamond_maindf) == "AccessionNo"] <- paste0(prefix, "_AccessionNo")
+  names(Diamond_maindf)[names(Diamond_maindf) == "pident"] <- paste0(prefix, "_pident")
+  names(Diamond_maindf)[names(Diamond_maindf) == "evalue"] <- paste0(prefix, "_evalue")
+  names(Diamond_maindf)[names(Diamond_maindf) == "bitscore"] <- paste0(prefix, "_bitscore")
+  names(Diamond_maindf)[names(Diamond_maindf) == "qcovs"] <- paste0(prefix, "_qcovs")
+  names(Diamond_maindf)[names(Diamond_maindf) == "Name"] <- paste0(prefix, "_Name")
+  names(Diamond_maindf)[names(Diamond_maindf) == "Species"] <- paste0(prefix, "_Species")
+  blastresults2 <- full_join(blastresults2,Diamond_maindf, by ="Transdecoder_ID")
+  
+}
+
+}
+
+
+Annotationddf <- transdf_final_filtered_lax %>%
+  left_join(transdf_final_filtered_lax,df_to_compare, by ="Transdecoder_ID") %>%
+  setdiff(UniqueSequenceName,Transdecoder_ID, Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,CysPer,Signal_Length,mature_length,PEP_Length,CDS_Length,tpm, est_counts, percent,cumulativepercent,Signal_Sequence,mature_sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,)
+
+
+# mass spec columns 
+#genome columns if there
 
 
 
+#Final columns: Index(), UniqueSequenceName, Sample_name, Species,
+#Protein_Name, Gene_Name, Molecular_Function, Biological_Function, Enzyme_Class, Annotation_Source
+#PEP_Length CDS_Length, Signal_Length, mature_length, TPM, percent, cumulativepercent, CysPer, 
+#Signal_Sequence, mature_sequence, PEP_Sequence, CDS_Sequence
+#InterPro_accession_Names, #GO_name, #Panther_ID_Names, 
+#MassSpecColumns, GenomeBlastColumns, NonToxUniProtColumns, #DiamondBlastColumns
+#Categorical scores
+#AnnotationScore (1,0) #ToxinDomainScore(2,1,0), #ProteomicCoverageScore(2,1,0), #KallistoExpressionScore(2,1,0), #CysPerScore(2,1,0), #Blastscore(2,1,0)
+#if genomeblastcolumns are present -> GenomeSupportScore(2,1,0) else GenomeSupportScore(NA)
+# 0 <- nothing, #2 <-pident ≥ 85 AND qcovs ≥ 85,  1 <- qcovs ≥ 50 AND pident ≥ 50
+
+#CategoryColumn. 
+
+#if genome is present, all have at least some match to the genome already 
+#Category1[Toxin similarity]: AnnoationScore =1 and/or Blastscore = 2
+#Category2[Domain similarity]: AnnoationScore =0 and Blastscore <2 and ToxinDomainScore =2 
+#Category3[Novel]: No reviewed uniprot match, ToxinDomainScore <2, KallistoExpressionScore >0 and/or ProteomicCoverageScore>0 and/or CysPerScore >0
+#NA: remaining 
+
+
+#Adding scoring 
+transdf <- transdf %>%
+  mutate(AnnotationScore = case_when(
+    Annotation_Source == "ToxProt". ~ 1,
+    TRUE ~ 0
+  )) %>%
+  mutate(ToxinDomainScore = case_when(
+    if InterPro_accession_Names contains pattern1 ~ 2,
+    if InterPro_accession_Names contains pattern2 ~ 1, 
+    TRUE ~ 0 
+  )) %>%
+  mutate(ProteomicCoverageScore = case_when(
+    Top == "TRUE" & Coverage... >= 50 ~ 2,
+    Top == "TRUE" & X.Unique >= 1 ~ 1,
+    Top = NA ~ NA,
+    TRUE ~ 0
+  )) %>%
+  mutate(KallistoExpressionScore = case_when(
+    percent >= 1 | percent_agg >=1 ~ 2,
+    percent > 0  ~ 1,
+    TRUE ~ 0
+  )) %>%
+  mutate(CysPerScore = case_when(
+    CysPer >= 5  ~ 2,
+    CysPer >= 1  ~ 1,
+    TRUE ~ 0
+  )) %>%
+  mutate(Blastscore = case_when(
+    ToxProt_bitscore >= 200  ~ 2,
+    ToxProt_bitscore >= 50  ~ 1,
+    TRUE ~ 0
+  ))%>%
+  mutate(GenomeSupportScore = case_when(
+    Genome_qcovs >= 80 & Genome_pident >= 80  ~ 2,
+    Genome_qcovs >= 50 & Genome_pident >= 50  ~ 1,
+    Genome_qcovs = NA ~ NA, 
+    TRUE ~ 0
+  ))
+
+# add category label 
+
+transdf <- transdf %>%
+  mutate(Category = case_when(
+    AnnotationScore = 1 | Blastscore = 2 ~ "Category 1",
+    ToxinDomainScore = 2 ~ "Category 2",
+    Annotation_Source = NA | Annotation_Source = "NCBInr" & 
+  ))
 

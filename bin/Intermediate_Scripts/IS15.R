@@ -38,7 +38,14 @@ Transdf_distinct_file <- args[3]
 ToxnontoxIP <- args[4]
 Blastn_result <- args[5]
 mass_spec_file <- args[6]
-
+setwd("/Users/praveena/Desktop/PhD_all/2025/github/oldergithubscripts/Retrial/is15/")
+Sample_name <- "DP3"
+species_name <- "DP"
+Transdf_distinct_file <- "DP3_PD_transdf_distinct.csv"
+ToxnontoxIP <- "ToxNonTox_IP.csv"
+Blastn_result <- "DP3_PD.blastn.db.6.txt"
+mass_spec_file <-  "NULL"
+ 
 
 # Function to read in transdf and make transdf_distinct, filter for complete ORF with signal P //slightly different from other transdf distincct
 read_transdf <- function(file) {
@@ -188,13 +195,17 @@ write.csv(transdf_unfiltered, paste0(Sample_name,"_transdf_distinct_final_unfilt
 
 #Join mass spec and blast filtered
 transdf_filtered <- transdf 
-if (!is.na(mass_spec_file) && mass_spec_file != "NULL") {transdf_filtered <- left_join(transdf_filtered, mass_spec %>% select(Transdecoder_ID, Top, Coverage, Unique), by = "Transdecoder_ID")
+if (!is.na(mass_spec_file) && mass_spec_file != "NULL")
+  {transdf_filtered <- left_join(transdf_filtered, mass_spec %>% select(Transdecoder_ID, Top, Coverage, Unique), by = "Transdecoder_ID")
 }
 
 if (!is.na(Blastn_result) && Blastn_result != "NULL") {
-  transdf_filtered <- left_join(transdf_filtered, blastn %>% select(Transdecoder_ID, genome_sseqid, genome_pident, genome_length,
-                                                                                         genome_mismatch,genome_sstart,genome_send, genome_sstrand,genome_evalue, 
-                                                                                         genome_bitscore, genome_qframe, genome_qcovs), by = "Transdecoder_ID") %>%
+  blastn_file <- blastn %>%
+    dplyr::select(Transdecoder_ID, genome_sseqid, genome_pident, genome_length,
+                                   genome_mismatch,genome_sstart,genome_send, genome_sstrand,genome_evalue, 
+                                   genome_bitscore, genome_qframe, genome_qcovs)
+  
+  transdf_filtered <- left_join(transdf_filtered, blastn_file , by = "Transdecoder_ID") %>%
     filter(!is.na(genome_sseqid)) %>%
     filter(genome_sseqid != "")
   
@@ -230,15 +241,17 @@ if (!is.na(Blastn_result) && Blastn_result != "NULL") {
   transdf_filtered <- transdf_filtered%>%
     group_by(cluster) %>%
     mutate(tpm_aggregates = sum(tpm)) %>%
-    relocate(tpm_aggregates, .after = CysPer)
+    relocate(tpm_aggregates, .after = CysPer)  %>%
+    ungroup()
   
   transdf_filtered <- transdf_filtered %>% arrange (
     desc(genome_qcovs),
     desc(genome_pident),
-    desc(genome_bitscore)
+    desc(genome_bitscore),
+    desc(PEP_Length)
   ) %>%
     distinct(cluster, .keep_all = TRUE) %>%
-    select(-cluster)
+    dplyr::select(-cluster)
 
 }
 
