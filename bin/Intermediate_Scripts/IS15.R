@@ -157,17 +157,16 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
   
 
   if(!is.na(mass_spec_file) && mass_spec_file != "NULL") {
-    p <- ggvenn(sets, names(sets), fill_color = "#E41A1C","#377EB8","#4DAF4A", "#EBAC4D","#782DC8")
+    p <- ggvenn(sets, names(sets), fill_color = c("#E41A1C","#377EB8","#4DAF4A", "#EBAC4D","#782DC8"))
   } else {
-    p <- ggvenn(sets, names(sets), fill_color = "#E41A1C","#4DAF4A", "#EBAC4D","#782DC8")
+    p <- ggvenn(sets, names(sets), fill_color = c("#E41A1C","#4DAF4A", "#EBAC4D","#782DC8"))
   }
   
   ggsave(paste0(Sample_name,"_Venn_",file_suffix,".png"), plot = p, width = 6, height = 4, dpi = 300)
   
   union_ids <- Reduce(union, sets)
   Base_union <- Base[Base$Transdecoder_ID %in% union_ids, ] %>% mutate(Filter = if(strict) "Strict" else "Lax")
-  
-  
+
   Pepseq <- AAStringSet(Base_union$PEP_Sequence)
   names(Pepseq) <- Base_union$Transdecoder_ID
   writeXStringSet(Pepseq, paste0(Sample_name,"_filtered_",file_suffix,".pep"))

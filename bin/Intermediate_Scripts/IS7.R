@@ -5,6 +5,7 @@ library(grid)
 library(ggplot2)
 library(ggrepel)
 library(cowplot)
+library(stringr)
 
 #Save plot and legend separate
 args <- commandArgs(trailingOnly = TRUE)
