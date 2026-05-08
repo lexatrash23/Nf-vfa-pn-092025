@@ -37,6 +37,7 @@ sum(transdf_distinct_IP$percent)
 #Read in IP comparisons only keep those that are more represented in toxins than non-toxin proteins 
 summary_IP <- read.csv(summary_IP_file)
 
+#As long as it there in toxins
 IPOverRepresentedInToxins <- summary_IP %>%
   filter(RelativeExpression > 0 ) %>%
   arrange(desc(Rank)) #the script below takes the last match's rank value 
@@ -79,6 +80,12 @@ transdf_distinct_IP <- transdf_distinct_IP %>%
          pos = RelativeProportion/2 + lead(csum, 1),
          pos = if_else(is.na(pos), RelativeProportion/2, pos))
 
+
+SelectIP <- transdf_distinct_IP %>%
+  dplyr::select(Name_short,percent) %>%
+  mutate(across(everything(), ~str_remove_all(., ",")))
+
+write.csv(SelectIP, paste0(sample, "_RelativeOEDomains.csv"))
 
 
 #plot 
@@ -167,6 +174,11 @@ transdf_distinct_MF <- transdf_distinct_MF %>%
          pos = if_else(is.na(pos), RelativeProportion/2, pos))
 
 
+SelectMF <- transdf_distinct_MF %>%
+  dplyr::select(Name,percent) %>%
+  mutate(across(everything(), ~str_remove_all(., ",")))
+
+write.csv(SelectMF, paste0(sample, "_RelativeOEMFs.csv"))
 
 MF_plot <- ggplot(transdf_distinct_MF, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
   geom_bar(stat = "identity", color = "black", width = 1) +
@@ -247,6 +259,11 @@ transdf_distinct_BP <- transdf_distinct_BP %>%
          pos = if_else(is.na(pos), RelativeProportion/2, pos))
 
 
+SelectBP <- transdf_distinct_BP %>%
+  dplyr::select(Name,percent) %>%
+  mutate(across(everything(), ~str_remove_all(., ",")))
+
+write.csv(SelectBP, paste0(sample, "_RelativeOEBPs.csv"))
 
 BP_plot <- ggplot(transdf_distinct_BP, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
   geom_bar(stat = "identity", color = "black", width = 1) +
@@ -300,7 +317,7 @@ transdf_distinct_IP <- transdf_distinct %>%
   dplyr::select(Transdecoder_ID, percent, InterPro_accession_Names) %>%
   filter(!is.na(InterPro_accession_Names) & str_trim(InterPro_accession_Names) != "")
 
-
+#Only those that are overexpressed
 #Read in IP comparisons only keep those that are more represented in toxins than non-toxin proteins 
 summary_IP <- read.csv(summary_IP_file)
 IPOverRepresentedInToxins <- summary_IP %>%
@@ -541,7 +558,7 @@ ggsave("Plot_2_BP.png", plot_nolegend)
 ggsave("Legend_2_BP.png", legend_plot)
 
 # NOW ALL domains and MF and BP 
-
+#All 
 transdf_distinct <- read.csv(Transdf_distinct_file)
 
 
@@ -876,5 +893,5 @@ transdf_distinct <- transdf_distinct %>%
   dplyr::rename(Biological_Process = Name )
 
 
-write.csv(transdf_distinct, "Transdf_cORFSP_Domain_Annotation.csv")
+write.csv(transdf_distinct, "Transdf_cORFSP_unfiltered_Domain_Annotation.csv")
 

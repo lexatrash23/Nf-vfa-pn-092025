@@ -530,7 +530,7 @@ process CreateInterproscanFigures {
     tuple val(sample), path("Plot_1_BP.png"), emit: BP_1
     tuple val(sample), path("Plot_2_BP.png"), emit: BP_2
     tuple val(sample), path("Plot_3_BP.png"), emit: BP_3
-    tuple val(sample), path("Transdf_cORFSP_Domain_Annotation.csv"), emit: Domain_Annotation
+    tuple val(sample), path("Transdf_cORFSP_Domain_Annotation.csv")
 
     script:
     """
@@ -1352,6 +1352,8 @@ process Blast0Chunksn {
     """
 }
 
+
+
 process Annotate {
 
     errorStrategy 'ignore'
@@ -1705,7 +1707,6 @@ workflow {
     FigureGenerationTransdecoderinput | FigureGenerationSignalp
 
 
-
     //Process 11: Define 4 possible sample types for table generation transdecoder sample+transdf + genomeid + species 
     SampleGenomeSpecies = venomflowfiles.map {
         return [it[0], it[17], it[18]]
@@ -1724,6 +1725,14 @@ workflow {
     //Run ToxinvsNonToxin
     UniProtMetadata | ToxinVsNonToxin
 
+    //Define Input CreateInterproscanFigures
+    def CreateInterproscanFiguresInput = CreateTransdecoderDataframe.out.transdf_distinct
+                                                .combine(ToxinVsNonToxin.out.toxvsnontoxIP)
+                                                 .combine(ToxinVsNonToxin.out.toxvsnontoxMF)
+                                                 .combine(ToxinVsNonToxin.out.toxvsnontoxBP)
+
+    // Run CreateInterproscanFigures
+    CreateInterproscanFiguresInput | CreateInterproscanFigures
 
     // Overview 
 

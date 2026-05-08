@@ -33,6 +33,10 @@ Sample_Name<- args[3]
     <img src="`r file.path(path, 'New_icons/600ppi/Figures.png')`" alt="Figures">
     <span>Figures</span>
   </a>
+    <a href="F.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/Interprocan.png')`" alt="Figures">
+    <span>Figures</span>
+  </a>
 
 
 </div>

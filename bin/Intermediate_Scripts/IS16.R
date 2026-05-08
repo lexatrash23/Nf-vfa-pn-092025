@@ -272,8 +272,8 @@ Annotationdf <- transdf_final_filtered_lax %>%
 #if genome is present, all have at least some match to the genome already 
 #Category1[Toxin similarity]: AnnoationScore =1 and/or Blastscore = 2
 #Category2[Domain similarity]: AnnoationScore =0 and Blastscore <2 and ToxinDomainScore =2 
-#Category3[Novel]: No reviewed uniprot match, ToxinDomainScore <2, KallistoExpressionScore >0 and/or ProteomicCoverageScore>0 and/or CysPerScore >0
-#NA: remaining 
+#Category3[Novel]: No reviewed uniprot match, ToxinDomainScore <2, KallistoExpressionScore >2 and/or ProteomicCoverageScore>2 and/or CysPerScore >2
+#4: remaining 
 
 
 #Adding scoring 
@@ -345,6 +345,9 @@ Annotationdf <- Annotationdf %>%
          ProteomicCoverageScore == 2) ~ "Category 3",
     TRUE ~ "Category 4"
   ))
+
+Annotationdf <- Annotationdf %>%
+  mutate(across(everything(), ~str_remove_all(., ",")))
 
 write.csv(Annotationdf, paste0(sample, "_Annotated_df.csv"))
 ProtSpaceAnnoation <- Annotationdf %>%
