@@ -1,9 +1,10 @@
 # Annotation Command line 
 library(rentrez)
 library(xml2)
+library(Biostrings)
 
 args <- commandArgs(trailingOnly = TRUE)
-transdf_final_filtered_lax <- args[1] 
+transdf_final_filtered_lax_file <- args[1] 
 toxprotblast6 <- args[2] 
 toxprotblastmetadata <- args[3] 
 nontoxprotblast6 <- args[4] 
@@ -20,7 +21,7 @@ Diamondblast6 <- args[10]
 #GO entry metadata 
 
 #read in transdf_filtered file 
-transdf_final_filtered_lax <-read.csv(transdf_final_filtered_lax, header = TRUE)
+transdf_final_filtered_lax <-read.csv(transdf_final_filtered_lax_file, header = TRUE)
 
 #Enyme class labels 
 ec_class_map <- c(
@@ -203,15 +204,54 @@ if (!is.na(Diamondblast6) && Diamondblast6 != "NULL") {
   
 }
 
+#Domain Labels 
+
+transdf <- read.csv(transdf_final_filtered_lax_file)
+toxvsnontoxIP_df <- read.csv(toxvsnontoxIP) %>%
+  dplyr::select(Rank, InterPro, Name_short)
+toxvsnontoxMF_df <- read.csv(toxvsnontoxMF) %>%
+  dplyr::select(Rank, GO_ID, Name)
+toxvsnontoxBP_df <- read.csv(toxvsnontoxBP) %>%
+  dplyr::select(Rank, GO_ID, Name)
+
+transdf$Domain_Label <- NA
+transdf$Domain_Rank <- NA
+for (i in seq_len(nrow(toxvsnontoxIP_df))) {
+  current_id   <- toxvsnontoxIP_df$InterPro[i]
+  current_rank1 <- toxvsnontoxIP_df$Name_short[i]
+  current_rank2 <- toxvsnontoxIP_df$Rank[i]
+  matches1 <- grepl(current_id, transdf$InterPro_accession_Names, fixed = TRUE) & is.na(transdf$Domain_Label)
+  matches2 <- grepl(current_id, transdf$InterPro_accession_Names, fixed = TRUE) & is.na(transdf$Domain_Rank)
+  transdf$Domain_Label[matches1] <- current_rank1
+  transdf$Domain_Rank[matches2] <- current_rank2
+}
 
 
+transdf$Molecular_Function <- NA
+for (i in seq_len(nrow(toxvsnontoxMF_df))) {
+  current_id   <- toxvsnontoxMF_df$GO_ID[i]
+  current_rank1 <- toxvsnontoxMF_df$Name[i]
+  matches1 <- grepl(current_id, transdf$GO_name, fixed = TRUE) & is.na(transdf$Molecular_Function)
+  transdf$Molecular_Function[matches1] <- current_rank1
+  
+}
+
+transdf$Biological_Process <- NA
+for (i in seq_len(nrow(toxvsnontoxBP_df))) {
+  current_id   <- toxvsnontoxBP_df$GO_ID[i]
+  current_rank1 <- toxvsnontoxBP_df$Name[i]
+  matches1 <- grepl(current_id, transdf$GO_name, fixed = TRUE) & is.na(transdf$Biological_Process)
+  transdf$Biological_Process[matches1] <- current_rank1
+}
+
+transdf <- transdf %>%
+  dplyr::select(Transdecoder_ID, Domain_Label, Domain_Rank, Molecular_Function, Biological_Process)             
 
 Annotationdf <- transdf_final_filtered_lax %>%
   left_join(df_to_compare, by ="Transdecoder_ID") %>%
- #left_join(MFlabel,by ="Transdecoder_ID") %>%
- #left_join(BPlabel,by ="Transdecoder_ID") %>%
-  #left_join(DomainLabel,by ="Transdecoder_ID") %>%
-  setdiff(UniqueSequenceName,Transdecoder_ID, Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,CysPer,Signal_Length,mature_length,PEP_Length,CDS_Length,tpm, est_counts, percent,cumulativepercent,Signal_Sequence,mature_sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,)
+  left_join(transdf,by ="Transdecoder_ID") %>%
+  left_join(blastresults2, by = "Transdecoder_ID") %>%
+  setdiff(UniqueSequenceName,Transdecoder_ID, Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,mature_length,PEP_Length,CDS_Length,tpm, est_counts, percent,cumulativepercent,Signal_Sequence,mature_sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Domain_Rank)
 
 
 
@@ -294,7 +334,7 @@ Annotationdf <- Annotationdf %>%
 
 # add category label 
 
-transdf <- transdf %>%
+Annotationdf <- Annotationdf %>%
   mutate(Category = case_when(
     AnnotationScore == 1 | Blastscore == 2 ~ "Category 1",
     ToxinDomainScore == 2 ~ "Category 2",
@@ -305,4 +345,15 @@ transdf <- transdf %>%
          ProteomicCoverageScore == 2) ~ "Category 3",
     TRUE ~ "Category 4"
   ))
+
+write.csv(Annotationdf, paste0(sample, "_Annotated_df.csv"))
+ProtSpaceAnnoation <- Annotationdf %>%
+  dplyr::select(Transdecoder_ID,UniqueSequenceName,PEP_Length,Signal_Length,Mature_Length,CysPer,tpm,Hit,Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,AnnotationScore,ToxinDomainScore,ProteomicCoverageScore,KallistoExpressionScore,CysPerScore,Blastscore,GenomeSupportScore,Category,Filter)
+
+write.csv(ProtSpaceAnnoation, paste0(sample, "_ProtSpaceAnnotation.csv"))
+
+Pepseq <- AAStringSet(Annotationdf$PEP_Sequence)
+names(Pepseq) <- Annotationdf$Transdecoder_ID
+writeXStringSet(Pepseq, paste0(Sample_name,"_ProtSpace.fasta"))
+
 

@@ -1364,15 +1364,17 @@ process Annotate {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr bioconductor-biostrings'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/AnnotatedData/", pattern: "*.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/AnnotatedData/", pattern: "*Annotated_df.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpaceData/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpaceData/", pattern: "*.fasta", mode: 'copy'
 
     input:
     tuple val(sample), path(final_filtered_lax), path(toxprotblast6), path(nontoxprotblast6), path(Diamondblast6), path(toxprotblastmetadata), path(nontoxprotmetadata), path(toxvsnontoxIP), path(toxvsnontoxMF), path(toxvsnontoxBP)
 
     output:
-    tuple val(sample), path("*.csv")
+    tuple val(sample), path("*Annotated_df.csv")
     tuple val(sample), path("*ProtSpaceAnnotation.csv"), emit: ProtSpaceAnnotatedCSV
     tuple val(sample), path("*.fasta"), emit: FilteredLaxPep
 
@@ -1421,24 +1423,7 @@ process ProtSpace {
     """
 }
 
-// Missing html file just move it to the right folder 
-process MissingHTML {
-    errorStrategy 'ignore'
-    maxRetries 4
-    label 'process_bare'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
-
-    input:
-    tuple val(sample), path(MissingHTML)
-
-    output:
-    path "*.html"
-
-    script:
-    """
-    """
-}
 // Process 35 ProtSpace Page // Optional:
 process RmarkdownU {
     errorStrategy 'ignore'

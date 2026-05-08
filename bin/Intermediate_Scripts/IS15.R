@@ -286,8 +286,25 @@ if (!is.na(Blastn_result) && Blastn_result != "NULL") {
 Base <- transdf_filtered
 # strict filter
 Base_strict <- filter_and_venn(Base, patterns$pattern, patterns$pattern2, mass = !is.null(mass_spec), strict = TRUE, Sample_name = Sample_name)
+
 write.csv(Base_strict, paste0(Sample_name,"_transdf_distinct_final_filtered_strict.csv"), row.names = FALSE)
 
 # lax filter
 Base_lax <- filter_and_venn(Base, patterns$pattern, patterns$pattern2, mass = !is.null(mass_spec), strict = FALSE, Sample_name = Sample_name)
+Base_strict_filter <- Base_strict %>%
+  select(Transdecoder_ID, Filter) %>%
+  dplyr::rename(Strict_Filter = Filter)
+Base_lax_filter <- Base_lax %>%
+  select(Transdecoder_ID, Filter)%>%
+  dplyr::rename(Lax_Filter = Filter)
+Filterdf <- left_join(Base_lax_filter,Base_strict_filter, by = "Transdecoder_ID") %>%
+  mutate(Filter = case_when(
+    Base_strict_filter == "Strict" ~ "Strict"
+    Base_strict_filter != "Strict" ~ "Lax"
+  )) %>%
+  dplyr::select(Transdecoder_ID,Filter)
+Base_lax <- Base_lax %>%
+  dplyr::select(-Filter) %>%
+  left_join(Filterdf, by = "Transdecoder_ID")
+
 write.csv(Base_lax, paste0(Sample_name,"_transdf_distinct_final_filtered_lax.csv"), row.names = FALSE)
