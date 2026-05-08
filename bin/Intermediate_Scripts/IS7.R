@@ -15,7 +15,7 @@ Summary_MF_file <- args[4]
 Summary_BP_file <- args[5]
 colourRDS <- args[6]
 
-color_palette <- readRDS(colours)
+color_palette <- readRDS(colourRDS)
 transdf_distinct <- read.csv(Transdf_distinct_file)
 
 #filter only for complete ORFs with signal sequence 

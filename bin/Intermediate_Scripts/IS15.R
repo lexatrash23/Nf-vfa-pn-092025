@@ -160,7 +160,7 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
     p <- ggvenn(sets, names(sets), fill_color = "#E41A1C","#377EB8","#4DAF4A", "#EBAC4D","#782DC8")
   } else {
     p <- ggvenn(sets, names(sets), fill_color = "#E41A1C","#4DAF4A", "#EBAC4D","#782DC8")
-
+  }
   
   ggsave(paste0(Sample_name,"_Venn_",file_suffix,".png"), plot = p, width = 6, height = 4, dpi = 300)
   
