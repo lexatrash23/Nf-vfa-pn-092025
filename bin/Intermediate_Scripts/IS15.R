@@ -155,27 +155,13 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
     file_suffix <- "lax"
   }
   
-  #set colours
+
   if(!is.na(mass_spec_file) && mass_spec_file != "NULL") {
-    color_map <- c(
-      TD = "#E41A1C",
-      MS = "#377EB8",
-      TP = "#4DAF4A",
-      KE = "#EBAC4D",
-      CP = "#782DC8"
-    )
+    p <- ggvenn(sets, names(sets), fill_color = "#E41A1C","#377EB8","#4DAF4A", "#EBAC4D","#782DC8")
   } else {
-    color_map <- c(
-      TD = "#E41A1C",
-      TP = "#4DAF4A",
-      KE = "#EBAC4D",
-      CP = "#782DC8"
-    )
-  }
+    p <- ggvenn(sets, names(sets), fill_color = "#E41A1C","#4DAF4A", "#EBAC4D","#782DC8")
+
   
-  fill_colors <- color_map[names(sets)]
-  
-  p <- ggvenn(sets, names(sets), fill_color = fill_colors)
   ggsave(paste0(Sample_name,"_Venn_",file_suffix,".png"), plot = p, width = 6, height = 4, dpi = 300)
   
   union_ids <- Reduce(union, sets)
