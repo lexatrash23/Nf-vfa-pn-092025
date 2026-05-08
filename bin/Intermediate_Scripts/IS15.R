@@ -281,12 +281,12 @@ Base_strict_filter <- Base_strict %>%
   select(Transdecoder_ID, Filter) %>%
   dplyr::rename(Strict_Filter = Filter)
 Base_lax_filter <- Base_lax %>%
-  select(Transdecoder_ID, Filter)%>%
+  select(Transdecoder_ID, Filter) %>%
   dplyr::rename(Lax_Filter = Filter)
 Filterdf <- left_join(Base_lax_filter,Base_strict_filter, by = "Transdecoder_ID") %>%
   mutate(Filter = case_when(
     Base_strict_filter == "Strict" ~ "Strict",
-    Base_strict_filter != "Strict" ~ "Lax"
+    TRUE ~ "Lax"
   )) %>%
   dplyr::select(Transdecoder_ID,Filter)
 Base_lax <- Base_lax %>%

@@ -513,9 +513,10 @@ process CreateInterproscanFigures {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel'
+    conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Images/SignalP/", pattern: "*.png", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Images/Interproscan", pattern: "*.png", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/Interproscan", pattern: "*.csv", mode: 'copy'
 
     input:
     tuple val(sample), path(transdf_distinct_csv), path(toxvsnontoxIP), path(toxvsnontoxMF), path(toxvsnontoxBP)
@@ -530,7 +531,7 @@ process CreateInterproscanFigures {
     tuple val(sample), path("Plot_1_BP.png"), emit: BP_1
     tuple val(sample), path("Plot_2_BP.png"), emit: BP_2
     tuple val(sample), path("Plot_3_BP.png"), emit: BP_3
-    tuple val(sample), path("Transdf_cORFSP_Domain_Annotation.csv")
+    tuple val(sample), path("*.csv")
 
     script:
     """
@@ -1889,6 +1890,7 @@ workflow {
     RmarkdownYInput | RmarkdownY
     // RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
     // RmarkdownUInput | RmarkdownU
+
     /*
     Rmarkdown
 
