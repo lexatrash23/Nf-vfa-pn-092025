@@ -279,12 +279,13 @@ Base_lax <- filter_and_venn(Base, patterns$pattern, patterns$pattern2, mass = !i
 Base_strict_filter <- Base_strict %>%
   select(Transdecoder_ID, Filter) %>%
   dplyr::rename(Strict_Filter = Filter)
+
 Base_lax_filter <- Base_lax %>%
   select(Transdecoder_ID, Filter) %>%
   dplyr::rename(Lax_Filter = Filter)
 Filterdf <- left_join(Base_lax_filter,Base_strict_filter, by = "Transdecoder_ID") %>%
   mutate(Filter = case_when(
-    Base_strict_filter == "Strict" ~ "Strict",
+    Strict_Filter == "Strict" ~ "Strict",
     TRUE ~ "Lax"
   )) %>%
   dplyr::select(Transdecoder_ID,Filter)

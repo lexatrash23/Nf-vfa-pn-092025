@@ -65,6 +65,12 @@ transdf_distinct_IP <- transdf_distinct_IP %>%
   distinct(Name_short, .keep_all = TRUE) %>%
   arrange(percent)
 
+SelectIP <- transdf_distinct_IP %>%
+  dplyr::select(Name_short,percent) %>%
+  mutate(across(everything(), ~str_remove_all(., ",")))
+
+write.csv(SelectIP, paste0(sample, "_RelativeOEDomains.csv"))
+
 #Total percentage represented by this df 
 PercentSumIPs <- sum(transdf_distinct_IP$percent)
 label_text2 <- paste0("Total Expression Represented: ", round(PercentSumIPs, 2), "%")
@@ -82,11 +88,7 @@ transdf_distinct_IP <- transdf_distinct_IP %>%
          pos = if_else(is.na(pos), RelativeProportion/2, pos))
 
 
-SelectIP <- transdf_distinct_IP %>%
-  dplyr::select(Name_short,percent) %>%
-  mutate(across(everything(), ~str_remove_all(., ",")))
 
-write.csv(SelectIP, paste0(sample, "_RelativeOEDomains.csv"))
 
 
 #plot 
@@ -158,6 +160,12 @@ transdf_distinct_MF <- transdf_distinct_MF %>%
   distinct(Name, .keep_all = TRUE) %>%
   arrange(percent)
 
+SelectMF <- transdf_distinct_MF %>%
+  dplyr::select(Name,percent) %>%
+  mutate(across(everything(), ~str_remove_all(., ",")))
+
+write.csv(SelectMF, paste0(sample, "_RelativeOEMFs.csv"))
+
 #Total percentage represented by this df 
 PercentSumMFs <- sum(transdf_distinct_MF$percent)
 label_text2 <- paste0("Total Expression Represented: ", round(PercentSumMFs, 2), "%")
@@ -175,11 +183,6 @@ transdf_distinct_MF <- transdf_distinct_MF %>%
          pos = if_else(is.na(pos), RelativeProportion/2, pos))
 
 
-SelectMF <- transdf_distinct_MF %>%
-  dplyr::select(Name,percent) %>%
-  mutate(across(everything(), ~str_remove_all(., ",")))
-
-write.csv(SelectMF, paste0(sample, "_RelativeOEMFs.csv"))
 
 MF_plot <- ggplot(transdf_distinct_MF, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
   geom_bar(stat = "identity", color = "black", width = 1) +
@@ -243,6 +246,13 @@ transdf_distinct_BP <- transdf_distinct_BP %>%
   distinct(Name, .keep_all = TRUE) %>%
   arrange(percent)
 
+SelectBP <- transdf_distinct_BP %>%
+  dplyr::select(Name,percent) %>%
+  mutate(across(everything(), ~str_remove_all(., ",")))
+
+write.csv(SelectBP, paste0(sample, "_RelativeOEBPs.csv"))
+
+
 #Total percentage represented by this df 
 PercentSumBPs <- sum(transdf_distinct_BP$percent)
 label_text2 <- paste0("Total Expression Represented: ", round(PercentSumBPs, 2), "%")
@@ -260,11 +270,6 @@ transdf_distinct_BP <- transdf_distinct_BP %>%
          pos = if_else(is.na(pos), RelativeProportion/2, pos))
 
 
-SelectBP <- transdf_distinct_BP %>%
-  dplyr::select(Name,percent) %>%
-  mutate(across(everything(), ~str_remove_all(., ",")))
-
-write.csv(SelectBP, paste0(sample, "_RelativeOEBPs.csv"))
 
 BP_plot <- ggplot(transdf_distinct_BP, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Name))) +
   geom_bar(stat = "identity", color = "black", width = 1) +
