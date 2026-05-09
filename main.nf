@@ -513,7 +513,7 @@ process CreateInterproscanFigures {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot'
+    conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Images/Interproscan", pattern: "*.png", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/Interproscan", pattern: "*.csv", mode: 'copy'
