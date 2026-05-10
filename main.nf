@@ -1367,7 +1367,7 @@ process Annotate {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr bioconductor-biostrings r-rentrez'
+    conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/AnnotatedData/", pattern: "*Annotated_df.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpaceData/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
