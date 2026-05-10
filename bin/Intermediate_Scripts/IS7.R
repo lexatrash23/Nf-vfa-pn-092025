@@ -6,6 +6,7 @@ library(ggplot2)
 library(ggrepel)
 library(cowplot)
 library(stringr)
+library(forcats)
 
 #Save plot and legend separate
 args <- commandArgs(trailingOnly = TRUE)

@@ -513,7 +513,7 @@ process CreateInterproscanFigures {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr'
+    conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Images/Interproscan", pattern: "*.png", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/Interproscan", pattern: "*.csv", mode: 'copy'
@@ -645,7 +645,7 @@ process RmarkdownCDEGIK {
     maxRetries 4
 
 
-    label 'process_bare'
+    label 'process_single'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1367,7 +1367,7 @@ process Annotate {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr bioconductor-biostrings'
+    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr bioconductor-biostrings r-rentrez'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/AnnotatedData/", pattern: "*Annotated_df.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpaceData/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
