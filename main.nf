@@ -1225,7 +1225,7 @@ process RmarkdownZ {
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
     input:
-    tuple val(sample), val(author), path(Venn), path(table)
+    tuple val(sample), val(author), path(Vennlax), path(VennStrict), path(table), path(Genome), val(protspace)
 
     output:
     tuple val(sample), path("*.html")
@@ -1233,12 +1233,27 @@ process RmarkdownZ {
     script:
     """
 
-    Venn_abs=\$(readlink -f "${Venn}")
+    Venn_abs1=\$(readlink -f "${Vennlax}")
+    Venn_abs2=\$(readlink -f "${VennStrict}")
     table_abs=\$(readlink -f "${table}")
 
+    if ${Genome} == "" & ${protspace} != "TRUE" {
+        Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V2/Z.Rmd"
+    } 
+    elif ${Genome} != "" & ${protspace} == "TRUE" {
+        Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V1_PG/Z.Rmd"
 
+    }
+    elif ${Genome} == "" & ${protspace} == "TRUE" {
+        Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V4_P/Z.Rmd"
+
+    } 
+    elif ${Genome} != "" & ${protspace} != "TRUE" {
+        Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V3_G/Z.Rmd"
+
+    }
     Rscript -e "rmarkdown::render(
-      '${workflow.projectDir}/bin/Rmarkdown_scripts/Z.Rmd',
+      '\$Rmarkdown',
       output_dir='.',
       params=list(
         VENN='\$Venn_abs',
@@ -1249,47 +1264,7 @@ process RmarkdownZ {
     )"
     """
 }
-//LAX
-process RmarkdownY {
-    errorStrategy 'ignore'
-    maxRetries 4
 
-
-    label 'process_bare'
-    label 'process_long'
-
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
-
-    conda 'r-base=4.3 r-rmarkdown'
-
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
-
-    input:
-    tuple val(sample), val(author), path(Venn), path(table)
-
-    output:
-    tuple val(sample), path("*.html")
-
-    script:
-    """
-
-    Venn_abs=\$(readlink -f "${Venn}")
-    table_abs=\$(readlink -f "${table}")
-
-
-    Rscript -e "rmarkdown::render(
-      '${workflow.projectDir}/bin/Rmarkdown_scripts/Z.Rmd',
-      output_dir='.',
-      params=list(
-        VENN='\$Venn_abs',
-        TABLE='\$table_abs',
-        AuthorName = '${author}',
-        SampleName = '${sample}'
-      )
-    )"
-    """
-}
 
 // Process 36:
 process Blast0Chunks {
@@ -1377,7 +1352,8 @@ process Annotate {
     tuple val(sample), path(final_filtered_lax), path(toxprotblast6), path(nontoxprotblast6), path(Diamondblast6), path(toxprotblastmetadata), path(nontoxprotmetadata), path(toxvsnontoxIP), path(toxvsnontoxMF), path(toxvsnontoxBP)
 
     output:
-    tuple val(sample), path("*Annotated_df.csv")
+    tuple val(sample), path("*all_Annotated_df.csv"), emit: Annotated_df
+    tuple val(sample), path("*Select_Annotated_df.csv")
     tuple val(sample), path("*ProtSpaceAnnotation.csv"), emit: ProtSpaceAnnotatedCSV
     tuple val(sample), path("*.fasta"), emit: FilteredLaxPep
 
@@ -1563,7 +1539,8 @@ workflow {
         //39
         def AuthorName = row.AnalysisdataAuth ?: ''
         //40
-        return [samplename, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir, genomeid, species, MS, Gavailability, MSavailability, ToxinDomains, busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3, Transcriptome1, Transcriptome2, TranscriptomeC, complete_pep, complete_cds, combined_mature, SampleURL, TD_pep, TD2_pep, TD_cds, TD2_cds, Diamondblast6, BlastpNonToxin, AuthorName]
+        def genome = row.Genome_fasta_path ? file(row.Genome_fasta_path) : '' 
+        return [samplename, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir, genomeid, species, MS, Gavailability, MSavailability, ToxinDomains, busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3, Transcriptome1, Transcriptome2, TranscriptomeC, complete_pep, complete_cds, combined_mature, SampleURL, TD_pep, TD2_pep, TD_cds, TD2_cds, Diamondblast6, BlastpNonToxin, AuthorName, genome]
                 //0             //1                 //2.        3.               4           5               6           7                   8                9             10.    11.            12          13        14         15                       16                      17       18.  19.      20           21                22             23                      24                         25                      26                       27             28             29              30           31              32                33       34     35       36      37       38             39              40             
     }
 
@@ -1884,10 +1861,8 @@ workflow {
     // RmarkdownX
     RmarkdownXInput = RmarkdownCDEGIKInput.join(TableGenerationTransdecoder.out.Table12)
     RmarkdownXInput | RmarkdownX
-    RmarkdownZInput = RmarkdownCDEGIKInput.join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict).join(AddMSGenomeIfAvailableAndCreateOverview.out.VennCsvStrict)
-    RmarkdownZInput | RmarkdownZ
-    RmarkdownYInput = RmarkdownCDEGIKInput.join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax).join(AddMSGenomeIfAvailableAndCreateOverview.out.VennCsvLax)
-    RmarkdownYInput | RmarkdownY
+
+
     // RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
     // RmarkdownUInput | RmarkdownU
     
@@ -1897,7 +1872,18 @@ workflow {
     //RmarkdownZ(TableGenerationTransdecoder.out.Table12)
 
 */
+    // Input RmarkdownZ 
+    Genome = venomflowfiles.map { [it[0], it[41] ? it[41] : []] }
 
+    def RmarkdownZ_input = RmarkdownCDEGIKInput
+                            .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
+                            .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
+                            .join(Annotate.out.Annotated_df)
+                            .join(Genome)
+                            .combine(params.protspace)
+    
+    // Rmarkdown Z
+    RmarkdownZ_input | RmarkdownZ
     BlastChunksInput = venomflowfiles.map { [it[0], it[12], it[13], it[11] ? it[11] : []] }
 
     BlastChunksInput | Blast0Chunksn
