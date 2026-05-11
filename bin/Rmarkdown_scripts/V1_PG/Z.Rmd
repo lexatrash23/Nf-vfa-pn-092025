@@ -57,7 +57,6 @@ Name <- params$AuthorName
 
 
 ```{r, results='asis',fig.align='center'}
-Venndiagram  <- readPNG(params$VENN)
 
 # Read images
 venn1 <- rasterGrob(readPNG(params$VENN1), interpolate = TRUE)

@@ -478,9 +478,9 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     tuple val(sample), path("*_Venn_lax.png"), emit: VennPngLax
     tuple val(sample), path("*filtered_lax.csv"), emit: VennCsvLax
     // BS:50;1 KE > 0%;1 Coverage > 0 ;1 CR: 1%;1  TD Any;1
-    path("*.pep")
+    path "*.pep"
     //unfiltered
-    path("*final_unfiltered.csv")
+    path "*final_unfiltered.csv"
 
     script:
     """
@@ -501,7 +501,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     """
 }
 
-// Process 7: Create Interproscantoxinplotly
+// Process 7: Create CreateInterproscanFigures
 process CreateInterproscanFigures {
     errorStrategy 'ignore'
     maxRetries 4
@@ -523,14 +523,24 @@ process CreateInterproscanFigures {
 
     output:
     tuple val(sample), path("Plot_1_IP.png"), emit: IP_1
+    tuple val(sample), path("Legend_1_IP.png.png"), emit: IP_1_Legend
     tuple val(sample), path("Plot_2_IP.png"), emit: IP_2
+    tuple val(sample), path("Legend_2_IP.png.png"), emit: IP_2_Legend
     tuple val(sample), path("Plot_3_IP.png"), emit: IP_3
+    tuple val(sample), path("Legend_3_IP.png.png"), emit: IP_3_Legend
     tuple val(sample), path("Plot_1_MF.png"), emit: MF_1
+    tuple val(sample), path("Legend_1_MF.png.png"), emit: MF_1_Legend
     tuple val(sample), path("Plot_2_MF.png"), emit: MF_2
+    tuple val(sample), path("Legend_2_MF.png.png"), emit: MF_2_Legend
     tuple val(sample), path("Plot_3_MF.png"), emit: MF_3
+    tuple val(sample), path("Legend_3_MF.png.png"), emit: MF_3_Legend
     tuple val(sample), path("Plot_1_BP.png"), emit: BP_1
+    tuple val(sample), path("Legend_1_BP.png.png"), emit: BP_1_Legend
     tuple val(sample), path("Plot_2_BP.png"), emit: BP_2
+    tuple val(sample), path("Legend_2_BP.png.png"), emit: BP_2_Legend
     tuple val(sample), path("Plot_3_BP.png"), emit: BP_3
+    tuple val(sample), path("Legend_3_BP.png.png"), emit: BP_3_Legend
+
     tuple val(sample), path("*.csv")
 
     script:
@@ -1259,7 +1269,76 @@ process RmarkdownZ {
     """
 }
 
+process RmarkdownF {
+    errorStrategy 'ignore'
+    maxRetries 4
 
+
+    label 'process_single'
+    label 'process_long'
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
+
+    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-png r-gridbase r-rmarkdown'
+
+    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+
+    input:
+    tuple val(sample), val(author), path(IP_1), path(IP_2), path(IP_3), path(IP_1_Legend), path(IP_2_Legend), path(IP_3_Legend), path(MF_1), path(MF_2), path(MF_3), path(MF_1_Legend), path(MF_2_Legend), path(MF_3_Legend), path(BP_1), path(BP_2), path(BP_3), path(BP_1_Legend), path(BP_2_Legend), path(BP_3_Legend)
+
+    output:
+    tuple val(sample), path("*.html")
+
+    script:
+    """
+    IP_1_abs=\$(readlink -f "${IP_1}")
+    IP_2_ab=\$(readlink -f "${IP_2}")
+    IP_3_ab=\$(readlink -f "${IP_3}")
+    IP_1_Legend_ab=\$(readlink -f "${IP_1_Legend}")
+    IP_2_Legend_ab=\$(readlink -f "${IP_2_Legend}")
+    IP_3_Legend_ab=\$(readlink -f "${IP_3_Legend}")
+    MF_1_abs=\$(readlink -f "${MF_1}")
+    MF_2_abs=\$(readlink -f "${MF_2}")
+    MF_3_abs=\$(readlink -f "${MF_3}")
+    MF_1_Legend_ab=\$(readlink -f "${MF_1_Legend}")
+    MF_2_Legend_ab=\$(readlink -f "${MF_2_Legend}")
+    MF_3_Legend_ab=\$(readlink -f "${MF_3_Legend}")
+    BP_1_abs=\$(readlink -f "${BP_1}")
+    BP_2_abs=\$(readlink -f "${BP_2}")
+    BP_3_abs=\$(readlink -f "${BP_3}")
+    BP_1_Legend_ab=\$(readlink -f "${BP_1_Legend}")
+    BP_2_Legend_ab=\$(readlink -f "${BP_2_Legend}")
+    BP_3_Legend_ab=\$(readlink -f "${BP_3_Legend}")
+
+    Rscript -e "rmarkdown::render(
+      '${workflow.projectDir}/bin/Rmarkdown_scripts/J.Rmd',
+      output_dir='.',
+      params=list(
+        IP_1='\$IP_1_abs',
+        IP_2='\$IP_2_abs',
+        IP_3='\$IP_3_abs',
+        IP_1_Legend='\$IP_1_Legend_abs',
+        IP_2_Legend='\$IP_2_Legend_abs',
+        IP_3_Legend='\$IP_3_Legend_abs',
+        MF_1='\$MF_1_abs',
+        MF_2='\$MF_2_abs',
+        MF_3='\$MF_3_abs',
+        MF_1_Legend='\$MF_1_Legend_abs',
+        MF_2_Legend='\$MF_2_Legend_abs',
+        MF_3_Legend='\$MF_3_Legend_abs',
+        BP_1='\$BP_1_abs',
+        BP_2='\$BP_2_abs',
+        BP_3='\$BP_3_abs',
+        BP_1_Legend='\$BP_1_Legend_abs',
+        BP_2_Legend='\$BP_2_Legend_abs',
+        BP_3_Legend='\$BP_3_Legend_abs',
+        AuthorName = '${author}',
+        SampleName = '${sample}'
+      )
+    )"
+    """
+}
 // Process 36:
 process Blast0Chunks {
     errorStrategy 'ignore'
@@ -1533,9 +1612,8 @@ workflow {
         //39
         def AuthorName = row.AnalysisdataAuth ?: ''
         //40
-        def genome = row.Genome_fasta_path ? file(row.Genome_fasta_path) : '' 
+        def genome = row.Genome_fasta_path ? file(row.Genome_fasta_path) : ''
         return [samplename, kallisto_trinity, kallisto_trans, combined_pep, combined_cds, mature_fasta, blastx_files, blastp_files, Interproscan_file, signalp_summary, Blastn6, blastn0txt, blastx0txt, blastp0txt, basename, busco_transcriptome_dir, busco_translatome_dir, genomeid, species, MS, Gavailability, MSavailability, ToxinDomains, busco_transcriptome_dir2, busco_transcriptome_dir3, busco_translatome_dir2, busco_translatome_dir3, Transcriptome1, Transcriptome2, TranscriptomeC, complete_pep, complete_cds, combined_mature, SampleURL, TD_pep, TD2_pep, TD_cds, TD2_cds, Diamondblast6, BlastpNonToxin, AuthorName, genome]
-                //0             //1                 //2.        3.               4           5               6           7                   8                9             10.    11.            12          13        14         15                       16                      17       18.  19.      20           21                22             23                      24                         25                      26                       27             28             29              30           31              32                33       34     35       36      37       38             39              40             
     }
 
     // Metadafiles 
@@ -1699,9 +1777,9 @@ workflow {
 
     //Define Input CreateInterproscanFigures
     def CreateInterproscanFiguresInput = CreateTransdecoderDataframe.out.transdf_distinct
-                                                .combine(ToxinVsNonToxin.out.toxvsnontoxIP)
-                                                 .combine(ToxinVsNonToxin.out.toxvsnontoxMF)
-                                                 .combine(ToxinVsNonToxin.out.toxvsnontoxBP)
+        .combine(ToxinVsNonToxin.out.toxvsnontoxIP)
+        .combine(ToxinVsNonToxin.out.toxvsnontoxMF)
+        .combine(ToxinVsNonToxin.out.toxvsnontoxBP)
 
     // Run CreateInterproscanFigures
     CreateInterproscanFiguresInput | CreateInterproscanFigures
@@ -1859,12 +1937,35 @@ workflow {
 
     // RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
     // RmarkdownUInput | RmarkdownU
-    
+
     /*
     Rmarkdown
 
 
 */
+    // Input RmarkdownF
+    def RmarkdownF_input = RmarkdownCDEGIKInput
+        .join(CreateInterproscanFigures.out.IP_1)
+        .join(CreateInterproscanFigures.out.IP_2)
+        .join(CreateInterproscanFigures.out.IP_3)
+        .join(CreateInterproscanFigures.out.IP_1_Legend)
+        .join(CreateInterproscanFigures.out.IP_2_Legend)
+        .join(CreateInterproscanFigures.out.IP_3_Legend)
+        .join(CreateInterproscanFigures.out.MF_1)
+        .join(CreateInterproscanFigures.out.MF_2)
+        .join(CreateInterproscanFigures.out.MF_3)
+        .join(CreateInterproscanFigures.out.MF_1_Legend)
+        .join(CreateInterproscanFigures.out.MF_2_Legend)
+        .join(CreateInterproscanFigures.out.MF_3_Legend)
+        .join(CreateInterproscanFigures.out.BP_1)
+        .join(CreateInterproscanFigures.out.BP_2)
+        .join(CreateInterproscanFigures.out.BP_3)
+        .join(CreateInterproscanFigures.out.BP_1_Legend)
+        .join(CreateInterproscanFigures.out.BP_2_Legend)
+        .join(CreateInterproscanFigures.out.BP_3_Legend)
+
+    // Rmarkdown F
+    RmarkdownF_input | RmarkdownF
     // Input RmarkdownZ 
     def Genome = venomflowfiles.map { row ->
         [row[0], row[41] ? row[41] : ""]
@@ -1877,7 +1978,7 @@ workflow {
         .join(Annotate.out.Annotated_df)
         .join(Genome)
         .combine(Protspace)
-    
+
     // Rmarkdown Z
     RmarkdownZ_input | RmarkdownZ
     BlastChunksInput = venomflowfiles.map { [it[0], it[12], it[13], it[11] ? it[11] : []] }
