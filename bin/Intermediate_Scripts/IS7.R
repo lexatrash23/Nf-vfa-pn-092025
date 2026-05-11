@@ -755,7 +755,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 ggsave("Plot_3_MF.png", plot_nolegend)
-ggsave("Legend_3_MF.png", legend_plot,width = w + 0.2,height = h + 0.2, width = 20, height = 16)
+ggsave("Legend_3_MF.png", legend_plot,width = w + 0.2,height = h + 0.2)
 
 #Biological Processess
 Summary_BP <- read.csv(Summary_BP_file)
@@ -834,7 +834,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 ggsave("Plot_3_BP.png", plot_nolegend)
-ggsave("Legend_3_BP.png", legend_plot,width = w + 0.2,height = h + 0.2, width = 20, height = 16)
+ggsave("Legend_3_BP.png", legend_plot,width = w + 0.2,height = h + 0.2)
 ##ANNOTATION 
 #Labelling the csv with this information - Will be used in annotate script 
 
