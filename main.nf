@@ -523,24 +523,23 @@ process CreateInterproscanFigures {
 
     output:
     tuple val(sample), path("Plot_1_IP.png"), emit: IP_1
-    tuple val(sample), path("Legend_1_IP.png.png"), emit: IP_1_Legend
+    tuple val(sample), path("Legend_1_IP.png"), emit: IP_1_Legend
     tuple val(sample), path("Plot_2_IP.png"), emit: IP_2
-    tuple val(sample), path("Legend_2_IP.png.png"), emit: IP_2_Legend
+    tuple val(sample), path("Legend_2_IP.png"), emit: IP_2_Legend
     tuple val(sample), path("Plot_3_IP.png"), emit: IP_3
-    tuple val(sample), path("Legend_3_IP.png.png"), emit: IP_3_Legend
+    tuple val(sample), path("Legend_3_IP.png"), emit: IP_3_Legend
     tuple val(sample), path("Plot_1_MF.png"), emit: MF_1
-    tuple val(sample), path("Legend_1_MF.png.png"), emit: MF_1_Legend
+    tuple val(sample), path("Legend_1_MF.png"), emit: MF_1_Legend
     tuple val(sample), path("Plot_2_MF.png"), emit: MF_2
-    tuple val(sample), path("Legend_2_MF.png.png"), emit: MF_2_Legend
+    tuple val(sample), path("Legend_2_MF.png"), emit: MF_2_Legend
     tuple val(sample), path("Plot_3_MF.png"), emit: MF_3
-    tuple val(sample), path("Legend_3_MF.png.png"), emit: MF_3_Legend
+    tuple val(sample), path("Legend_3_MF.png"), emit: MF_3_Legend
     tuple val(sample), path("Plot_1_BP.png"), emit: BP_1
-    tuple val(sample), path("Legend_1_BP.png.png"), emit: BP_1_Legend
+    tuple val(sample), path("Legend_1_BP.png"), emit: BP_1_Legend
     tuple val(sample), path("Plot_2_BP.png"), emit: BP_2
-    tuple val(sample), path("Legend_2_BP.png.png"), emit: BP_2_Legend
+    tuple val(sample), path("Legend_2_BP.png"), emit: BP_2_Legend
     tuple val(sample), path("Plot_3_BP.png"), emit: BP_3
-    tuple val(sample), path("Legend_3_BP.png.png"), emit: BP_3_Legend
-
+    tuple val(sample), path("Legend_3_BP.png"), emit: BP_3_Legend
     tuple val(sample), path("*.csv")
 
     script:
