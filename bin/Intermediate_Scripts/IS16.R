@@ -4,6 +4,9 @@ library(xml2)
 library(Biostrings)
 library(stringr)
 library(dplyr)
+library(tidyr)
+
+
 
 args <- commandArgs(trailingOnly = TRUE)
 transdf_final_filtered_lax_file <- args[1] 
@@ -49,7 +52,7 @@ ParseBlast6UniProt <- function(blast6file, Metadata, prefix) {
     dplyr::rename(AccessionNo = Entry.Name) %>%
     mutate(Protein.names = sub("\\s*\\(.*", "", Protein.names)) %>%
     dplyr::rename(Name = Protein.names) %>%
-    separate(Organism, into = c("Species", "CommonName"), sep = " \\(", remove = FALSE, extra = "merge", fill = "right") %>%
+    tidyr::separate(Organism, into = c("Species", "CommonName"), sep = " \\(", remove = FALSE, extra = "merge", fill = "right") %>%
     mutate(Source = prefix) %>%
     mutate(
       EC_class_number = str_extract(EC.number, "^[0-9]"),
