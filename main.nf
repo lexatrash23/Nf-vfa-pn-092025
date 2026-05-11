@@ -1213,14 +1213,13 @@ process RmarkdownZ {
     errorStrategy 'ignore'
     maxRetries 4
 
-
     label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 r-rmarkdown'
+    conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
@@ -1232,34 +1231,29 @@ process RmarkdownZ {
 
     script:
     """
-
     Venn_abs1=\$(readlink -f "${Vennlax}")
     Venn_abs2=\$(readlink -f "${VennStrict}")
     table_abs=\$(readlink -f "${table}")
 
-    if ${Genome} == "" & ${protspace} != "TRUE" {
+    if [[ "${Genome}" == "" && "${protspace}" != "TRUE" ]]; then
         Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V2/Z.Rmd"
-    } 
-    elif ${Genome} != "" & ${protspace} == "TRUE" {
+    elif [[ "${Genome}" != "" && "${protspace}" == "TRUE" ]]; then
         Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V1_PG/Z.Rmd"
-
-    }
-    elif ${Genome} == "" & ${protspace} == "TRUE" {
+    elif [[ "${Genome}" == "" && "${protspace}" == "TRUE" ]]; then
         Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V4_P/Z.Rmd"
-
-    } 
-    elif ${Genome} != "" & ${protspace} != "TRUE" {
+    elif [[ "${Genome}" != "" && "${protspace}" != "TRUE" ]]; then
         Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V3_G/Z.Rmd"
+    fi
 
-    }
     Rscript -e "rmarkdown::render(
       '\$Rmarkdown',
       output_dir='.',
       params=list(
-        VENN='\$Venn_abs',
+        VENN_LAX='\$Venn_abs1',
+        VENN_STRICT='\$Venn_abs2',
         TABLE='\$table_abs',
-        AuthorName = '${author}',
-        SampleName = '${sample}'
+        AuthorName='${author}',
+        SampleName='${sample}'
       )
     )"
     """
@@ -1873,14 +1867,20 @@ workflow {
 
 */
     // Input RmarkdownZ 
-    Genome = venomflowfiles.map { [it[0], it[41] ? it[41] : []] }
-    Protspace = params.protspace
+    def Genome = venomflowfiles.map { row ->
+        [row[0], row[41] ? row[41] : ""]
+    }
+    def Protspace = channel.value(params.protspace ?: "FALSE")
+
     def RmarkdownZ_input = RmarkdownCDEGIKInput
-                            .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
-                            .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
-                            .join(Annotate.out.Annotated_df)
-                            .join(Genome)
-                            .combine(Protspace)
+        .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
+        .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
+        .join(Annotate.out.Annotated_df)
+        .join(Genome)
+        .combine(Protspace)
+
+    // Run RmarkdownZ
+    RmarkdownZ(RmarkdownZ_input)
     
     // Rmarkdown Z
     RmarkdownZ_input | RmarkdownZ
