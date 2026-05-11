@@ -68,7 +68,7 @@ ParseBlast6UniProt <- function(blast6file, Metadata, prefix) {
 }
 
 #dataframe to combine with nontoxprot to select most significant match 
-Toxprotblast <- ParseBlast6UniProt(toxprotblast6, toxprotmetadata, "ToxProt")
+Toxprotblast <- ParseBlast6UniProt(toxprotblast6, toxprotblastmetadata, "ToxProt")
 #dataframe to add to final annotation excel 
 Toxprotblast_maindf <- Toxprotblast
 prefix= "ToxProt"
