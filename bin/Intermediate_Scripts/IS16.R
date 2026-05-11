@@ -342,16 +342,22 @@ Annotationdf <- Annotationdf %>%
     ToxinDomainScore == 2 ~ "Category 2",
     (is.na(Annotation_Source) | Annotation_Source == "NCBInr") &
       GenomeSupportScore == 2 &
-      (CysPerScore == 2 |
-         KallistoExpressionScore == 2 |
-         ProteomicCoverageScore == 2) ~ "Category 3",
-    TRUE ~ "Category 4"
+      (CysPerScore > 0 |
+         KallistoExpressionScore > 0 |
+         ProteomicCoverageScore > 0) ~ "Category 3",
+    TRUE ~ "NA"
   ))
 
 Annotationdf <- Annotationdf %>%
   mutate(across(everything(), ~str_remove_all(., ",")))
 
-write.csv(Annotationdf, paste0(sample, "_Annotated_df.csv"))
+write.csv(Annotationdf, paste0(sample, "_all_Annotated_df.csv"))
+
+Annotationdf <- Annotationdf %>%
+  filter(Category != "NA")
+  
+write.csv(Annotationdf, paste0(sample, "_Select_Annotated_df.csv"))
+
 ProtSpaceAnnoation <- Annotationdf %>%
   dplyr::select(Transdecoder_ID,UniqueSequenceName,PEP_Length,Signal_Length,Mature_Length,CysPer,tpm,Hit,Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,AnnotationScore,ToxinDomainScore,ProteomicCoverageScore,KallistoExpressionScore,CysPerScore,Blastscore,GenomeSupportScore,Category,Filter)
 

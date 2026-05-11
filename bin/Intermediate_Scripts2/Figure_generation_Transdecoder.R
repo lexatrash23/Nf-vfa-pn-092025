@@ -62,7 +62,7 @@ ggsave(filename = file.path("pie5.png"), plot = pie5, width = 8, height = 6, dpi
 Distinct_Transcripts_hits <- Distinct_Transcripts[!is.na(Distinct_Transcripts$Hit),]
 #bitscore 50 cutoff 
 Distinct_Transcripts_50 <- Distinct_Transcripts_hits[(Distinct_Transcripts_hits$BitScore > 50),]
-#bitscore 300 cutoff 
+#bitscore 250 cutoff
 Distinct_Transcripts_250 <- Distinct_Transcripts_hits[(Distinct_Transcripts_hits$BitScore > 250),]
 
 alluvial3 <-  ggplot(data = Distinct_Transcripts_50,

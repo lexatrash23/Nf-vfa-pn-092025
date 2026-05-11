@@ -70,7 +70,7 @@ SelectIP <- transdf_distinct_IP %>%
   dplyr::select(Name_short,percent) %>%
   mutate(across(everything(), ~str_remove_all(., ",")))
 
-write.csv(SelectIP, paste0(sample, "_RelativeOEDomains.csv"))
+write.csv(SelectIP, paste0(sample, "_RelativeDomains.csv"))
 
 #Total percentage represented by this df 
 PercentSumIPs <- sum(transdf_distinct_IP$percent)
@@ -167,7 +167,7 @@ SelectMF <- transdf_distinct_MF %>%
   dplyr::select(Name,percent) %>%
   mutate(across(everything(), ~str_remove_all(., ",")))
 
-write.csv(SelectMF, paste0(sample, "_RelativeOEMFs.csv"))
+write.csv(SelectMF, paste0(sample, "_RelativeMFs.csv"))
 
 #Total percentage represented by this df 
 PercentSumMFs <- sum(transdf_distinct_MF$percent)
@@ -255,7 +255,7 @@ SelectBP <- transdf_distinct_BP %>%
   dplyr::select(Name,percent) %>%
   mutate(across(everything(), ~str_remove_all(., ",")))
 
-write.csv(SelectBP, paste0(sample, "_RelativeOEBPs.csv"))
+write.csv(SelectBP, paste0(sample, "_RelativeBPs.csv"))
 
 
 #Total percentage represented by this df 
@@ -673,7 +673,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 ggsave("Plot_3_IP.png", plot_nolegend)
-ggsave("Legend_3_IP.png", legend_plot,width = w + 0.2,height = h + 0.2, width = 20, height = 16)
+ggsave("Legend_3_IP.png", legend_plot,width = w + 0.2, height = h + 0.2)
 #Filter only for those with GO
 transdf_distinct_GO <- transdf_distinct %>%
   dplyr::select(Transdecoder_ID, percent, GO_name) %>%

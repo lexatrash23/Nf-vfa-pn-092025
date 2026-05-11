@@ -1890,7 +1890,7 @@ workflow {
     RmarkdownYInput | RmarkdownY
     // RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
     // RmarkdownUInput | RmarkdownU
-
+    
     /*
     Rmarkdown
 
