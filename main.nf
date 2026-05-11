@@ -1874,13 +1874,13 @@ workflow {
 */
     // Input RmarkdownZ 
     Genome = venomflowfiles.map { [it[0], it[41] ? it[41] : []] }
-
+    Protspace = params.protspace
     def RmarkdownZ_input = RmarkdownCDEGIKInput
                             .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
                             .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
                             .join(Annotate.out.Annotated_df)
                             .join(Genome)
-                            .combine(params.protspace)
+                            .combine(Protspace)
     
     // Rmarkdown Z
     RmarkdownZ_input | RmarkdownZ
