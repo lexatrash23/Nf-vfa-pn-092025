@@ -50,11 +50,8 @@ library(readr)
 library(tidyr)
 library(knitr)
 library(gridExtra)
-library(kableExtra)
 library(png)
 library(grid)
-library(DT)
-library(downloadthis)
 
 ```
 

@@ -48,7 +48,38 @@ ParseBlast6UniProt <- function(blast6file, Metadata, prefix) {
     arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
     distinct(Transdecoder_ID, .keep_all = TRUE) %>%
     dplyr::select(Transdecoder_ID, AccessionNo,pident,evalue,bitscore,qcovs) 
-  metadata <-read.csv(Metadata, sep = "\t") %>%
+  metadata <-read.csv(Metadata, sep = "\t") 
+    names(metadata) <- gsub(" ", ".", names(metadata))
+    metadata <- metadata %>%
+    dplyr::rename(AccessionNo = Entry.Name) %>%
+    mutate(Protein.names = sub("\\s*\\(.*", "", Protein.names)) %>%
+    dplyr::rename(Name = Protein.names) %>%
+    tidyr::separate(Organism, into = c("Species", "CommonName"), sep = " \\(", remove = FALSE, extra = "merge", fill = "right") %>%
+    mutate(Source = prefix) %>%
+    mutate(
+      EC_class_number = str_extract(EC.number, "^[0-9]"),
+      EC_class_name = ec_class_map[EC_class_number]
+    ) %>%
+    select(-EC_class_number) %>%
+    mutate(Gene_Name = Gene.Names) %>%
+    mutate(Gene_Name = word(Gene_Name,1)) %>%
+    select(AccessionNo, Name, Gene_Name, Species, Source, EC_class_name, EC.number)
+  blast6_metadata <- left_join(blast6,metadata, by = "AccessionNo")
+  return(blast6_metadata)
+  
+}
+
+ParseBlast6UniProt7z <- function(blast6file, Metadata, prefix) {
+  blast6 <- read.delim(blast6file, header = FALSE, sep = "\t")
+  colnames(blast6) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qframe", "qcovs")
+  blast6[[2]] <- stringr::str_replace(blast6[[2]], "^[^|]*\\|[^|]*\\|", "")
+  blast6 <- blast6 %>%
+    arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
+    distinct(Transdecoder_ID, .keep_all = TRUE) %>%
+    dplyr::select(Transdecoder_ID, AccessionNo,pident,evalue,bitscore,qcovs) 
+  metadata <-read_tsv(archive_read(Metadata), col_names = TRUE) 
+  names(metadata) <- gsub(" ", ".", names(metadata))
+  metadata <- metadata %>%
     dplyr::rename(AccessionNo = Entry.Name) %>%
     mutate(Protein.names = sub("\\s*\\(.*", "", Protein.names)) %>%
     dplyr::rename(Name = Protein.names) %>%
@@ -87,7 +118,7 @@ names(Toxprotblast_maindf)[names(Toxprotblast_maindf) == "Species"] <- paste0(pr
 
 
 #dataframe to combine with toxprot to select most significant match 
-NonToxprotblast <- ParseBlast6UniProt(nontoxprotblast6, nontoxprotmetadata, "NonToxUniProt")
+NonToxprotblast <- ParseBlast6UniProt7z(nontoxprotblast6, nontoxprotmetadata, "NonToxUniProt")
 #dataframe to add to the final annotation excel file 
 NonToxprotblast_maindf <- NonToxprotblast
 prefix= "NonToxUniProt"

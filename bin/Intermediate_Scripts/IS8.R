@@ -5,12 +5,13 @@ library(GO.db)
 library(tidyr)
 library(stringr)
 library(AnnotationDbi)
+library(archive)
+library(readr)
 
 args <- commandArgs(trailingOnly = TRUE)
 ToxinDataTSV <- args[1] 
 NonToxinDataTSV  <- args[2] 
 IPmetadata <- args[3] 
-
 #Read in IPmetadatafile 
 Interproscan_metadata_csv <- read.delim(file = IPmetadata, header = TRUE, sep = "\t") %>%
  dplyr::select(ENTRY_AC, ENTRY_TYPE,ENTRY_NAME ) %>%
@@ -28,7 +29,7 @@ toxin_data <- toxin_data %>%
   dplyr::select(-n)
 
 #Read in NonToxinDataTSV, only keep those with InterPro Values
-nontoxin_data <- read.delim(NonToxinDataTSV, header = TRUE)  %>%
+nontoxin_data <- read_tsv(archive_read(NonToxinDataTSV), col_names = TRUE) %>%
   separate_rows(InterPro, sep = ";") %>%    
   mutate(InterPro = str_trim(InterPro)) %>%  
   filter(!is.na(InterPro) & str_trim(InterPro) != "")
