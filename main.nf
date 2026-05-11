@@ -428,7 +428,7 @@ process ToxinVsNonToxin {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r::r-readr'
+    conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
 
     publishDir "CommonMetadata/Analysis/results/ToxinVsNonToxinMetaData/", mode: 'copy'
 
