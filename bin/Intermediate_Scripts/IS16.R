@@ -2,6 +2,8 @@
 library(rentrez)
 library(xml2)
 library(Biostrings)
+library(stringr)
+library(dplyr)
 
 args <- commandArgs(trailingOnly = TRUE)
 transdf_final_filtered_lax_file <- args[1] 
@@ -38,7 +40,7 @@ ec_class_map <- c(
 ParseBlast6UniProt <- function(blast6file, Metadata, prefix) {
   blast6 <- read.delim(blast6file, header = FALSE, sep = "\t")
   colnames(blast6) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qframe", "qcovs")
-  blast6[[2]] <- str_replace(blast6[[2]], "^[^|]*\\|[^|]*\\|", "")
+  blast6[[2]] <- stringr::str_replace(blast6[[2]], "^[^|]*\\|[^|]*\\|", "")
   blast6 <- blast6 %>%
     arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
     distinct(Transdecoder_ID, .keep_all = TRUE) %>%

@@ -496,7 +496,7 @@ h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
 
 ggsave("Plot_2_MF.png", plot_nolegend)
-ggsave("Legend_2_MF.png", legend_plot,width = w + 0.2,height = h + 0.2,width = w + 0.2,height = h + 0.2)
+ggsave("Legend_2_MF.png", legend_plot,width = w + 0.2,height = h + 0.2)
 #Biological Processess
 Summary_BP <- read.csv(Summary_BP_file)
 BPOverRepresentedInToxins <- Summary_BP %>%
