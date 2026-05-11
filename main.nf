@@ -1863,7 +1863,6 @@ workflow {
     /*
     Rmarkdown
 
-    //RmarkdownZ(TableGenerationTransdecoder.out.Table12)
 
 */
     // Input RmarkdownZ 
@@ -1878,9 +1877,6 @@ workflow {
         .join(Annotate.out.Annotated_df)
         .join(Genome)
         .combine(Protspace)
-
-    // Run RmarkdownZ
-    RmarkdownZ(RmarkdownZ_input)
     
     // Rmarkdown Z
     RmarkdownZ_input | RmarkdownZ
