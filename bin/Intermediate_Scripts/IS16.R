@@ -203,7 +203,7 @@ parse_protein_xml <- function(xml_doc) {
   )
 }
 
-if (!is.na(Diamondblast6) && Diamondblast6 != "NULL") {
+if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
   Diamond <- read.delim(diamondblast6, sep = "\t", header = FALSE)
   colnames(Diamond) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qframe")
   Diamond <- Diamond %>%
@@ -365,7 +365,7 @@ Annotationdf <- Annotationdf %>%
     GenomeSupportScore = case_when(
       Genome_qcovs = 90 & Genome_pident >= 90 ~ 2,
       Genome_qcovs >= 70 & Genome_pident >= 70 ~ 1,
-      is.na(Genome_qcovs) ~ NA_real_,
+      is.na(Genome_qcovs) ~ NA_real,
       TRUE ~ 0
     )
   )
@@ -377,7 +377,7 @@ Annotationdf <- Annotationdf %>%
     AnnotationScore == 1 | Blastscore == 2 ~ "Category 1",
     ToxinDomainScore == 2 ~ "Category 2",
     (is.na(Annotation_Source) | Annotation_Source == "NCBInr") &
-      GenomeSupportScore == 2 &
+      (GenomeSupportScore == 2 |GenomeSupportScore =="NA_real") &
       (CysPerScore > 0 |
          KallistoExpressionScore > 0 |
          ProteomicCoverageScore > 0) ~ "Category 3",
