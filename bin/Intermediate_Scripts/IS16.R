@@ -309,7 +309,16 @@ Annotationdf <- transdf_final_filtered_lax %>%
 #Category2[Domain similarity]: AnnoationScore =0 and Blastscore <2 and ToxinDomainScore =2 
 #Category3[Novel]: No reviewed uniprot match, ToxinDomainScore <2, KallistoExpressionScore >2 and/or ProteomicCoverageScore>2 and/or CysPerScore >2
 #4: remaining 
+# ADD NA genome and proteome columns if not there 
 
+# Add column with NA values if it doesn't exist
+if (!(Top %in% colnames(Annotationdf))) {
+  Annotationdf[[Top]] <- NA
+}
+
+if (!(Genome_qcovs %in% colnames(Annotationdf))) {
+  Annotationdf[[Genome_qcovs]] <- NA
+}
 
 #Adding scoring 
 library(dplyr)
@@ -331,8 +340,8 @@ Annotationdf <- Annotationdf %>%
   ) %>%
   mutate(
     ProteomicCoverageScore = case_when(
-      Top == "TRUE" & Coverage... >= 50 ~ 2,
-      Top == "TRUE" & X.Unique >= 1 ~ 1,
+      Top == "TRUE" & Coverage >= 50 ~ 2,
+      Top == "TRUE" & Unique >= 1 ~ 1,
       is.na(Top) ~ NA_real_,
       TRUE ~ 0
     )
