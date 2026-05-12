@@ -1427,7 +1427,8 @@ process Annotate {
     tuple val(sample), path("*all_Annotated_df.csv"), emit: Annotated_df
     tuple val(sample), path("*Select_Annotated_df.csv")
     tuple val(sample), path("*ProtSpaceAnnotation.csv"), emit: ProtSpaceAnnotatedCSV
-    tuple val(sample), path("*.fasta"), emit: FilteredLaxPep
+    tuple val(sample), path("*_ProtSpacePEP.fasta"), emit: FilteredLaxPep
+    tuple val(sample), path("*_ProtSpaceCDS.fasta"), emit: FilteredLaxcds
 
     script:
 
@@ -1461,15 +1462,18 @@ process ProtSpace {
     publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpace/", mode: 'copy'
 
     input:
-    tuple val(sample), path(filteredlaxfasta)
+    tuple val(sample), path(filteredlaxfasta), path(ProtSpaceAnnotatedCSV)
 
     output:
     tuple val(sample), path("*.parquet"), emit: ProtSpaceParquet
+    tuple val(sample), path("*.parquetbundle")
 
     script:
     // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
     """
     protspace prepare -i ${filteredlaxfasta} -e esm2_650m -m umap2 -o . 
+    protspace bundle -p projections/ -a ${ProtSpaceAnnotatedCSV} -o ${sample}.parquetbundle
+
 
     """
 }
@@ -1517,6 +1521,48 @@ process RmarkdownU {
     """
 }
 
+//Minimap 
+process Minimap {
+
+    errorStrategy 'ignore'
+    maxRetries 4
+
+
+    label 'process_single'
+    label 'process_long'
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
+
+    conda 'bioconda::minimap bioconda::samtools bioconda::stringtie bioconda::bedtools'
+
+    publishDir "${params.outdir}/${sample}/Analysis/results/Minimap/", mode: 'copy'
+
+    input:
+    tuple val(sample), path(genome), path(FilteredLaxcds)
+
+    output:
+    tuple val(sample), path("*.bed"), emit: bedfile
+    tuple val(sample), path("*.gtf"), emit: gtffile
+    tuple val(sample), path("${sample}.expandedgenomeregions.fa"), emit: selectfasta
+    tuple val(sample), path("${sample}.expandedgenomeregions.fa.fai"), emit: selectfastafai
+
+    script:
+    """
+    minimap2 -ax splice:hq -uf ${genome} ${FilteredLaxcds} > minimaptrial.sam
+    samtools view -bS minimaptrial.sam > minimaptrial.bam
+    samtools sort minimaptrial.bam -o minimaptrial.sorted.bam
+    stringtie -o minimaptrial.gtf minimaptrial.sorted.bam
+    rm -r minimaptrial.sam
+    rm -r minimaptrial.bam
+    rm -r minimaptrial.sorted.bam
+    samtools faidx ${genome}
+    cut -f 1,2 ${genome}.fai > chrom.sizes
+    bedtools slop -i minimaptrial.bed -g chrom.sizes -b 500 > minimaptrial.slop.bed
+    bedtools getfasta -fi ${genome} -bed minimaptrial.slop.bed -s -name -split -fo ${sample}.expandedgenomeregions.fa
+    samtools faidx ${sample}.expandedgenomeregions.fa
+    """
+}
 // Define input file patterns via parameters
 
 
@@ -1817,7 +1863,7 @@ workflow {
 
     //Define Input for ProtSpace
     if (params.protspace) {
-        ProtSpace_input = Annotate.out.FilteredLaxPep
+        ProtSpace_input = Annotate.out.FilteredLaxPep.join(Annotate.out.ProtSpaceAnnotatedCSV)
         //Run Process for ProtSpace
         ProtSpace_input | ProtSpace
     }
@@ -1838,7 +1884,13 @@ workflow {
     // Then pass to RmarkdownB
     samplesheets | RmarkdownB
 
-
+    //Minimap define 
+    Minimap_input = venomflowfiles
+        .filter { it[41] }
+        .map { [it[0], it[41]] }
+        .join(Annotate.out.FilteredLaxcds)
+    //Minimap run 
+    Minimap_input | Minimap
     //RmarkdownA 
     RmarkdownAInput = venomflowfiles.map {
         return [it[0], it[40], it[33]]
