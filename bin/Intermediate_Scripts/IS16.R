@@ -49,7 +49,9 @@ ParseBlast6UniProt <- function(blast6file, Metadata, prefix) {
     distinct(Transdecoder_ID, .keep_all = TRUE) %>%
     dplyr::select(Transdecoder_ID, AccessionNo,pident,evalue,bitscore,qcovs) 
   metadata <-read.csv(Metadata, sep = "\t") 
+  head(metadata)
     names(metadata) <- gsub(" ", ".", names(metadata))
+    head(metadata)
     metadata <- metadata %>%
     dplyr::rename(AccessionNo = Entry.Name) %>%
     mutate(Protein.names = sub("\\s*\\(.*", "", Protein.names)) %>%
@@ -78,7 +80,9 @@ ParseBlast6UniProt7z <- function(blast6file, Metadata, prefix) {
     distinct(Transdecoder_ID, .keep_all = TRUE) %>%
     dplyr::select(Transdecoder_ID, AccessionNo,pident,evalue,bitscore,qcovs) 
   metadata <-read_tsv(archive_read(Metadata), col_names = TRUE) 
+  head(metadata)
   names(metadata) <- gsub(" ", ".", names(metadata))
+  head(metadata)
   metadata <- metadata %>%
     dplyr::rename(AccessionNo = Entry.Name) %>%
     mutate(Protein.names = sub("\\s*\\(.*", "", Protein.names)) %>%
