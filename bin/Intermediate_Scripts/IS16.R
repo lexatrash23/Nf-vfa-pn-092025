@@ -289,7 +289,7 @@ Annotationdf <- transdf_final_filtered_lax %>%
   left_join(df_to_compare, by ="Transdecoder_ID") %>%
   left_join(transdf,by ="Transdecoder_ID") %>%
   left_join(blastresults2, by = "Transdecoder_ID") %>%
-  setdiff(UniqueSequenceName,Transdecoder_ID, Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,mature_length,PEP_Length,CDS_Length,tpm, est_counts, percent,cumulativepercent,Signal_Sequence,mature_sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Domain_Rank)
+  dplyr::select(Transdecoder_ID,UniqueSequenceName, Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,mature_length,PEP_Length,CDS_Length,tpm, est_counts, percent,cumulativepercent,Signal_Sequence,mature_sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Domain_Rank,everything())
 
 
 
