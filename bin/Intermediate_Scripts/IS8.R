@@ -11,7 +11,6 @@ library(readr)
 args <- commandArgs(trailingOnly = TRUE)
 ToxinDataTSV <- args[1] 
 NonToxinDataTSV  <- args[2] 
-NonToxinDataTSV <- "/Users/praveena/Desktop/PhD_all/2025/github/Nf-vfa-pn-092025/MetadataFiles/NonToxin_Domains.7z"
 IPmetadata <- args[3] 
 #Read in IPmetadatafile 
 Interproscan_metadata_csv <- read.delim(file = IPmetadata, header = TRUE, sep = "\t") %>%
