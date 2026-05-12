@@ -12,9 +12,7 @@ args <- commandArgs(trailingOnly = TRUE)
 ToxinDataTSV <- args[1] 
 NonToxinDataTSV  <- args[2] 
 IPmetadata <- args[3] 
-ToxinDataTSV <- "/Users/praveena/Desktop/PhD_all/2025/github/Nf-vfa-pn-092025/MetadataFiles/Toxin_Domains.tsv.gz"
-NonToxinDataTSV  <-"/Users/praveena/Desktop/PhD_all/2025/github/Nf-vfa-pn-092025/MetadataFiles/NonToxin_Domains.7z" 
-IPmetadata <- "/Users/praveena/Desktop/PhD_all/2025/github/Nf-vfa-pn-092025/MetadataFiles/entry.list"
+
 #Read in IPmetadatafile 
 Interproscan_metadata_csv <- read.delim(file = IPmetadata, header = TRUE, sep = "\t") %>%
  dplyr::select(ENTRY_AC, ENTRY_TYPE,ENTRY_NAME ) %>%
