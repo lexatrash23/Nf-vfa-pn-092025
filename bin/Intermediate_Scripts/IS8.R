@@ -12,6 +12,9 @@ args <- commandArgs(trailingOnly = TRUE)
 ToxinDataTSV <- args[1] 
 NonToxinDataTSV  <- args[2] 
 IPmetadata <- args[3] 
+ToxinDataTSV <- "/Users/praveena/Desktop/PhD_all/2025/github/Nf-vfa-pn-092025/MetadataFiles/Toxin_Domains.tsv.gz"
+NonToxinDataTSV  <-"/Users/praveena/Desktop/PhD_all/2025/github/Nf-vfa-pn-092025/MetadataFiles/NonToxin_Domains.7z" 
+IPmetadata <- "/Users/praveena/Desktop/PhD_all/2025/github/Nf-vfa-pn-092025/MetadataFiles/entry.list"
 #Read in IPmetadatafile 
 Interproscan_metadata_csv <- read.delim(file = IPmetadata, header = TRUE, sep = "\t") %>%
  dplyr::select(ENTRY_AC, ENTRY_TYPE,ENTRY_NAME ) %>%
@@ -33,7 +36,7 @@ nontoxin_data <- read_tsv(archive_read(NonToxinDataTSV), col_names = TRUE,show_c
   separate_rows(InterPro, sep = ";") %>%    
   mutate(InterPro = str_trim(InterPro)) %>%  
   filter(!is.na(InterPro) & str_trim(InterPro) != "")
-
+head(nontoxin_data)
 
 names(nontoxin_data) <- gsub(" ", ".", names(nontoxin_data))
 names(toxin_data) <- gsub(" ", ".", names(toxin_data))
@@ -73,7 +76,7 @@ toxin_data <- toxin_data %>%
   dplyr::select(-n)
 
 #Read in NonToxinDataTSV, only keep those with GO Values
-nontoxin_data <- read.delim(NonToxinDataTSV, header = TRUE)  %>%
+nontoxin_data <- read_tsv(archive_read(NonToxinDataTSV), col_names = TRUE,show_col_types = FALSE)   %>%
   rename_with(~ make.names(.), everything()) %>%
   separate_rows(Gene.Ontology.IDs, sep = ";") %>%
   mutate(Gene.Ontology.IDs = str_trim(Gene.Ontology.IDs)) %>%  
