@@ -21,6 +21,7 @@ sample <- args[9]
 Diamondblast6 <- args[10]
 
 
+
 #toxprotblast6, nontoxprotblast6, diamondblast6, transdf_final_filtered_strict , transdf_final_filtered_lax 
 #toxprot metadata #nontoxprotmetadata
 #GO entry metadata 
@@ -38,7 +39,6 @@ ec_class_map <- c(
   "6" = "Ligase",
   "7" = "Translocase"
 )
-
 #Function to Parse UniProt blast database 
 ParseBlast6UniProt <- function(blast6file, Metadata, prefix) {
   blast6 <- read.delim(blast6file, header = FALSE, sep = "\t")
@@ -49,9 +49,7 @@ ParseBlast6UniProt <- function(blast6file, Metadata, prefix) {
     distinct(Transdecoder_ID, .keep_all = TRUE) %>%
     dplyr::select(Transdecoder_ID, AccessionNo,pident,evalue,bitscore,qcovs) 
   metadata <-read.csv(Metadata, sep = "\t") 
-  head(metadata)
     names(metadata) <- gsub(" ", ".", names(metadata))
-    head(metadata)
     metadata <- metadata %>%
     dplyr::rename(AccessionNo = Entry.Name) %>%
     mutate(Protein.names = sub("\\s*\\(.*", "", Protein.names)) %>%
@@ -80,9 +78,7 @@ ParseBlast6UniProt7z <- function(blast6file, Metadata, prefix) {
     distinct(Transdecoder_ID, .keep_all = TRUE) %>%
     dplyr::select(Transdecoder_ID, AccessionNo,pident,evalue,bitscore,qcovs) 
   metadata <-read_tsv(archive_read(Metadata), col_names = TRUE) 
-  head(metadata)
   names(metadata) <- gsub(" ", ".", names(metadata))
-  head(metadata)
   metadata <- metadata %>%
     dplyr::rename(AccessionNo = Entry.Name) %>%
     mutate(Protein.names = sub("\\s*\\(.*", "", Protein.names)) %>%
