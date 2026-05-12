@@ -22,7 +22,7 @@ toxvsnontoxBP <- args[8]
 sample <- args[9]
 Diamondblast6 <- args[10]
 
-
+print(toxvsnontoxIP)
 
 #toxprotblast6, nontoxprotblast6, diamondblast6, transdf_final_filtered_strict , transdf_final_filtered_lax 
 #toxprot metadata #nontoxprotmetadata

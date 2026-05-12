@@ -1441,7 +1441,7 @@ process Annotate {
     fi
 
 
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS16.R" ${final_filtered_lax} ${toxprotblast6} ${toxprotblastmetadata} ${nontoxprotblast6} ${nontoxprotmetadata} ${toxvsnontoxMF} ${toxvsnontoxBP} ${sample} ${Diamondblast6}
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS16.R" ${final_filtered_lax} ${toxprotblast6} ${toxprotblastmetadata} ${nontoxprotblast6} ${nontoxprotmetadata} ${toxvsnontoxIP} ${toxvsnontoxMF} ${toxvsnontoxBP} ${sample} ${Diamondblast6}
     """
 }
 
