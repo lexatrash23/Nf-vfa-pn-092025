@@ -79,7 +79,7 @@ ParseBlast6UniProt7z <- function(blast6file, Metadata, prefix) {
     arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
     distinct(Transdecoder_ID, .keep_all = TRUE) %>%
     dplyr::select(Transdecoder_ID, AccessionNo,pident,evalue,bitscore,qcovs) 
-  metadata <-read_tsv(archive_read(Metadata), col_names = TRUE) 
+  metadata <-read_tsv(archive_read(Metadata), col_names = TRUE,show_col_types = FALSE) 
   names(metadata) <- gsub(" ", ".", names(metadata))
   metadata <- metadata %>%
     dplyr::rename(AccessionNo = Entry.Name) %>%
