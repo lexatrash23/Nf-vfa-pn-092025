@@ -22,7 +22,6 @@ toxvsnontoxBP <- args[8]
 sample <- args[9]
 Diamondblast6 <- args[10]
 
-print(toxvsnontoxIP)
 
 #toxprotblast6, nontoxprotblast6, diamondblast6, transdf_final_filtered_strict , transdf_final_filtered_lax 
 #toxprot metadata #nontoxprotmetadata
@@ -105,7 +104,6 @@ Toxprotblast <- ParseBlast6UniProt(toxprotblast6, toxprotblastmetadata, "ToxProt
 #dataframe to add to final annotation excel 
 Toxprotblast_maindf <- Toxprotblast
 prefix= "ToxProt"
-colnames(Toxprotblast_maindf)
 Toxprotblast_maindf <- Toxprotblast_maindf %>%
   relocate(Name, .after = AccessionNo) %>%
   relocate(Species, .after = Name) %>%
@@ -226,7 +224,6 @@ if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
   
   Diamond_maindf <- Diamond_with_metadata
   prefix= "NCBInr"
-  colnames(Diamond_maindf)
   Diamond_maindf <- Diamond_maindf %>%
     relocate(Name, .after = AccessionNo) %>%
     relocate(Species, .after = Name) %>%
@@ -289,7 +286,7 @@ Annotationdf <- transdf_final_filtered_lax %>%
   left_join(df_to_compare, by ="Transdecoder_ID") %>%
   left_join(transdf,by ="Transdecoder_ID") %>%
   left_join(blastresults2, by = "Transdecoder_ID") %>%
-  dplyr::select(Transdecoder_ID,UniqueSequenceName, Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,mature_length,PEP_Length,CDS_Length,tpm, est_counts, percent,cumulativepercent,Signal_Sequence,mature_sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Domain_Rank,everything())
+  dplyr::select(Transdecoder_ID,UniqueSequenceName, Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,Mature_Length,PEP_Length,CDS_Length,tpm, est_counts, percent,cumulativepercent,Signal_Sequence,Mature_Sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Domain_Rank,everything())
 
 
 
