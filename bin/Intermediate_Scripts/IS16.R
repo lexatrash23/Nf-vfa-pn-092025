@@ -312,12 +312,12 @@ Annotationdf <- transdf_final_filtered_lax %>%
 # ADD NA genome and proteome columns if not there 
 
 # Add column with NA values if it doesn't exist
-if (!(Top %in% colnames(Annotationdf))) {
-  Annotationdf[[Top]] <- NA
+if (!("Top" %in% colnames(Annotationdf))) {
+  Annotationdf[["Top"]] <- NA
 }
 
-if (!(Genome_qcovs %in% colnames(Annotationdf))) {
-  Annotationdf[[Genome_qcovs]] <- NA
+if (!("Genome_qcovs" %in% colnames(Annotationdf))) {
+  Annotationdf[["Genome_qcovs"]] <- NA
 }
 
 #Adding scoring 
@@ -393,17 +393,17 @@ Annotationdf <- Annotationdf %>%
 Annotationdf <- Annotationdf %>%
   mutate(across(everything(), ~str_remove_all(., ",")))
 
-write.csv(Annotationdf, paste0(sample, "_all_Annotated_df.csv"))
+write.csv(Annotationdf, paste0(sample, "_all_Annotated_df.csv"), row.names = FALSE)
 
 Annotationdf <- Annotationdf %>%
   filter(Category != "NA")
   
-write.csv(Annotationdf, paste0(sample, "_Select_Annotated_df.csv"))
+write.csv(Annotationdf, paste0(sample, "_Select_Annotated_df.csv"), row.names = FALSE)
 
 ProtSpaceAnnoation <- Annotationdf %>%
   dplyr::select(Transdecoder_ID,UniqueSequenceName,PEP_Length,Signal_Length,Mature_Length,CysPer,tpm,Hit,Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,AnnotationScore,ToxinDomainScore,ProteomicCoverageScore,KallistoExpressionScore,CysPerScore,Blastscore,GenomeSupportScore,Category,Filter)
 
-write.csv(ProtSpaceAnnoation, paste0(sample, "_ProtSpaceAnnotation.csv"))
+write.csv(ProtSpaceAnnoation, paste0(sample, "_ProtSpaceAnnotation.csv"), row.names = FALSE)
 
 Pepseq <- AAStringSet(Annotationdf$PEP_Sequence)
 names(Pepseq) <- Annotationdf$Transdecoder_ID
