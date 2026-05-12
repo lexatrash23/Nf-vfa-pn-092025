@@ -314,6 +314,10 @@ Annotationdf <- transdf_final_filtered_lax %>%
 # Add column with NA values if it doesn't exist
 if (!("Top" %in% colnames(Annotationdf))) {
   Annotationdf[["Top"]] <- NA
+  Annotationdf[["Coverage"]] <- NA
+  Annotationdf[["Unique"]] <- NA
+  
+  
 }
 
 if (!("Genome_qcovs" %in% colnames(Annotationdf))) {

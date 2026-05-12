@@ -258,7 +258,8 @@ if (!is.na(Blastn_result) && Blastn_result != "NULL") {
     desc(genome_qcovs),
     desc(genome_pident),
     desc(genome_bitscore),
-    desc(PEP_Length)
+    desc(PEP_Length),
+    desc(percent),
   ) %>%
     distinct(cluster, .keep_all = TRUE) %>%
     dplyr::select(-cluster)
