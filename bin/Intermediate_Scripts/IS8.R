@@ -11,6 +11,7 @@ library(readr)
 args <- commandArgs(trailingOnly = TRUE)
 ToxinDataTSV <- args[1] 
 NonToxinDataTSV  <- args[2] 
+NonToxinDataTSV <- "/Users/praveena/Desktop/PhD_all/2025/github/Nf-vfa-pn-092025/MetadataFiles/NonToxin_Domains.7z"
 IPmetadata <- args[3] 
 #Read in IPmetadatafile 
 Interproscan_metadata_csv <- read.delim(file = IPmetadata, header = TRUE, sep = "\t") %>%
@@ -29,10 +30,14 @@ toxin_data <- toxin_data %>%
   dplyr::select(-n)
 
 #Read in NonToxinDataTSV, only keep those with InterPro Values
-nontoxin_data <- read_tsv(archive_read(NonToxinDataTSV), col_names = TRUE) %>%
+nontoxin_data <- read_tsv(archive_read(NonToxinDataTSV), col_names = TRUE,show_col_types = FALSE) %>%
   separate_rows(InterPro, sep = ";") %>%    
   mutate(InterPro = str_trim(InterPro)) %>%  
   filter(!is.na(InterPro) & str_trim(InterPro) != "")
+
+
+names(nontoxin_data) <- gsub(" ", ".", names(nontoxin_data))
+names(toxin_data) <- gsub(" ", ".", names(toxin_data))
 
 # Calculate percentage of nontoxin proteins that have each domain , full join with toxindata values, replace NA values with 0
 #Calculate Relative expression, arrange by high to low, assign a rank number, add metadata info anddplyr::select columns of interest
