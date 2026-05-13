@@ -409,7 +409,7 @@ Annotationdf <- Annotationdf %>%
     AnnotationScore == 1 | Blastscore == 2 ~ "Category 1",
     ToxinDomainScore == 2 ~ "Category 2",
     (is.na(Annotation_Source) | Annotation_Source == "NCBInr") &
-      (GenomeSupportScore == 2 |GenomeSupportScore =="NA_real") &
+      (GenomeSupportScore == 2 |is.na(GenomeSupportScore)) &
       (CysPerScore > 0 |
          KallistoExpressionScore > 0 |
          ProteomicCoverageScore > 0) ~ "Category 3",
