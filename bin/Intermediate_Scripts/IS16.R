@@ -350,7 +350,7 @@ Annotationdf <- Annotationdf %>%
     ProteomicCoverageScore = case_when(
       Top == "TRUE" & Coverage >= 50 ~ 2,
       Top == "TRUE" & Unique >= 1 ~ 1,
-      is.na(Top) ~ NA_real_,
+      is.na(Top) ~ "NA_real",
       TRUE ~ 0
     )
   ) %>%
