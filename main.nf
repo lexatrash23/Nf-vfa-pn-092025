@@ -1465,13 +1465,14 @@ process ProtSpace {
     tuple val(sample), path(filteredlaxfasta), path(ProtSpaceAnnotatedCSV)
 
     output:
-    tuple val(sample), path("*.parquet"), emit: ProtSpaceParquet
+    tuple val(sample), path("tmp/*.parquet"), emit: ProtSpaceParquet
     tuple val(sample), path("*.parquetbundle")
 
     script:
     // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
     """
     protspace prepare -i ${filteredlaxfasta} -e esm2_650m -m umap2 -o . 
+    protspace bundle -a ${ProtSpaceAnnotatedCSV} -o ${sample}.parquetbundle
 
 
     """
@@ -1527,7 +1528,7 @@ process Minimap {
     maxRetries 4
 
 
-    label 'process_double'
+    label 'process_low'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
