@@ -1472,7 +1472,6 @@ process ProtSpace {
     // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
     """
     protspace prepare -i ${filteredlaxfasta} -e esm2_650m -m umap2 -o . 
-    protspace bundle -a ${ProtSpaceAnnotatedCSV} -o ${sample}.parquetbundle -a none
 
 
     """
@@ -1528,7 +1527,7 @@ process Minimap {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_double'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
