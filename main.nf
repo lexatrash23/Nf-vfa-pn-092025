@@ -1534,7 +1534,7 @@ process Minimap {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'bioconda::minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
+    conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/Minimap/", mode: 'copy'
 
