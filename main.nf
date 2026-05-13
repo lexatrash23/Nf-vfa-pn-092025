@@ -1311,7 +1311,7 @@ process RmarkdownF {
     BP_3_Legend_abs=\$(readlink -f "${BP_3_Legend}")
 
     Rscript -e "rmarkdown::render(
-      '${workflow.projectDir}/bin/Rmarkdown_scripts/J.Rmd',
+      '${workflow.projectDir}/bin/Rmarkdown_scripts/F.Rmd',
       output_dir='.',
       params=list(
         IP_1='\$IP_1_abs',
