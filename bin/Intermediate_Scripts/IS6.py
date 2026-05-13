@@ -64,7 +64,7 @@ RCODE = (
     "\n"
     "# !!! CONFIGURE YOUR PLOT HERE !!! \n"
     "# Output\n"
-    'my_output <- paste("busco_figure.png",sep="/") \n'
+    f'my_output <- "{_output_name}" \n'
     "my_width <- 20\n"
     "my_height <- 15\n"
     'my_unit <- "cm"\n'
@@ -288,6 +288,14 @@ def _set_args():
     optional.add_argument(
         "-h", "--help", action="help", help="Show this help message and exit"
     )
+    optional.add_argument(
+    "-o",
+    "--output",
+    required=False,
+    dest="output",
+    default="busco_figure.png",
+    help="Output figure filename",
+)
     args = vars(parser.parse_args())
     if args["quiet"]:
         _logger.setLevel(logging.ERROR)
@@ -302,7 +310,8 @@ def _set_args():
     _run_type = "[generic|specific]*"
     if args["run_type"]:
         _run_type = args["run_type"]
-
+    global _output_name
+    _output_name = args["output"]
 
 def _load_data():
     """

@@ -99,7 +99,7 @@ image2 <- rasterGrob(readPNG(IP_1_Legend), interpolate = TRUE)
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
 
-Venndiagram <- grid.raster(Venndiagram)
+
 cat(" \n\n Figure 1. Relative expression of transcripts based on interproscan domains found in known toxins.\n\n ") 
 
 ```
@@ -113,7 +113,7 @@ image2 <- rasterGrob(readPNG(MF_1_Legend), interpolate = TRUE)
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
 
-Venndiagram <- grid.raster(Venndiagram)
+
 cat(" \n\n Figure 1. Relative expression of transcripts based on Molecular Functions found in known toxins.  \n\n ") 
 
 ```
@@ -127,7 +127,7 @@ image2 <- rasterGrob(readPNG(BP_1_Legend), interpolate = TRUE)
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
 
-Venndiagram <- grid.raster(Venndiagram)
+
 cat(" \n\n Figure 1. Relative expression of transcripts based on Biological Processess found in known toxins.  \n\n ") 
 
 ```
@@ -143,7 +143,6 @@ image2 <- rasterGrob(readPNG(IP_2_Legend), interpolate = TRUE)
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
 
-Venndiagram <- grid.raster(Venndiagram)
 cat(" \n\n Figure 1. Relative expression of transcripts based on interproscan domains overrepresented in known toxin.  \n\n ") 
 
 ```
@@ -157,7 +156,7 @@ image2 <- rasterGrob(readPNG(MF_2_Legend), interpolate = TRUE)
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
 
-Venndiagram <- grid.raster(Venndiagram)
+
 cat(" \n\n Figure 1. Relative expression of transcripts based on Molecular Functions overrepresented in known toxin.\n\n ") 
 
 ```
@@ -171,7 +170,7 @@ image2 <- rasterGrob(readPNG(BP_2_Legend), interpolate = TRUE)
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
 
-Venndiagram <- grid.raster(Venndiagram)
+
 cat(" \n\n Figure 1. Relative expression of transcripts based on Biological Processess overrepresented in known toxin.\n\n ") 
 
 ```
@@ -186,7 +185,7 @@ image2 <- rasterGrob(readPNG(IP_3_Legend), interpolate = TRUE)
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
 
-Venndiagram <- grid.raster(Venndiagram)
+
 cat(" \n\n Figure 1. Relative expression of transcripts based on interproscan domains.  \n\n ") 
 
 ```
@@ -200,7 +199,7 @@ image2 <- rasterGrob(readPNG(MF_3_Legend), interpolate = TRUE)
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
 
-Venndiagram <- grid.raster(Venndiagram)
+
 cat(" \n\n Figure 1. Relative expression of transcripts based on Molecular Functions.\n\n ") 
 
 ```
@@ -214,7 +213,7 @@ image2 <- rasterGrob(readPNG(BP_3_Legend), interpolate = TRUE)
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
 
-Venndiagram <- grid.raster(Venndiagram)
+
 cat(" \n\n Figure 1. Relative expression of transcripts based on Biological Processess.\n\n ") 
 
 ```

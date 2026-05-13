@@ -205,7 +205,7 @@ process BUSCOtranscriptome {
 
     script:
     """
-    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${buscodirtr}"
+    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${buscodirtr}" -o ${count}.buscofiguretranscriptome.png
     """
 }
 
@@ -234,7 +234,7 @@ process BUSCOtranslatome {
 
     script:
     """
-    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${buscodirtl}"
+    python3 "${workflow.projectDir}/bin/Intermediate_Scripts/IS6.py" -wd "${buscodirtl}" -o ${count}.buscofigure.translatome.png
     """
 }
 

@@ -282,8 +282,8 @@ for (i in seq_len(nrow(toxvsnontoxBP_df))) {
 transdf <- transdf %>%
   dplyr::select(Transdecoder_ID, Domain_Label, Domain_Rank, Molecular_Function, Biological_Process)             
 
-if (!("percent_aggregates" %in% colnames(Annotationdf))) {
-  Annotationdf[["percent_aggregates"]] <- NA
+if (!("percent_aggregates" %in% colnames(transdf))) {
+  transdf[["percent_aggregates"]] <- NA
 }
 
 Annotationdf <- transdf_final_filtered_lax %>%
