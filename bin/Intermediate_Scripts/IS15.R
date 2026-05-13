@@ -250,8 +250,8 @@ if (!is.na(Blastn_result) && Blastn_result != "NULL") {
   
   transdf_filtered <- transdf_filtered%>%
     group_by(cluster) %>%
-    mutate(tpm_aggregates = sum(tpm)) %>%
-    relocate(tpm_aggregates, .after = CysPer)  %>%
+    mutate(percent_aggregates = sum(percent)) %>%
+    relocate(percent_aggregates, .after = CysPer)  %>%
     ungroup()
   
   transdf_filtered <- transdf_filtered %>% arrange (

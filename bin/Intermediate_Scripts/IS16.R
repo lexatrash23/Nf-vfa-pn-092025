@@ -282,11 +282,15 @@ for (i in seq_len(nrow(toxvsnontoxBP_df))) {
 transdf <- transdf %>%
   dplyr::select(Transdecoder_ID, Domain_Label, Domain_Rank, Molecular_Function, Biological_Process)             
 
+if (!("percent_aggregates" %in% colnames(Annotationdf))) {
+  Annotationdf[["percent_aggregates"]] <- NA
+}
+
 Annotationdf <- transdf_final_filtered_lax %>%
   left_join(df_to_compare, by ="Transdecoder_ID") %>%
   left_join(transdf,by ="Transdecoder_ID") %>%
   left_join(blastresults2, by = "Transdecoder_ID") %>%
-  dplyr::select(Transdecoder_ID,UniqueSequenceName, Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,Mature_Length,PEP_Length,CDS_Length,tpm, est_counts, percent,cumulativepercent,Signal_Sequence,Mature_Sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Domain_Rank,everything())
+  dplyr::select(Transdecoder_ID,UniqueSequenceName, ORF_type,	SP,Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,Mature_Length,PEP_Length,CDS_Length,tpm, est_counts,percent,percent_aggregates,cumulativepercent,Signal_Sequence,Mature_Sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Phobius_Name,TMHMM,Domain_Rank,everything())
 
 
 
@@ -311,6 +315,23 @@ Annotationdf <- transdf_final_filtered_lax %>%
 #4: remaining 
 # ADD NA genome and proteome columns if not there 
 
+#Pattern 1 and 2
+prepare_patterns <- function(file) {
+  summary_IP <- read.csv(file)
+  IPInToxins <- summary_IP %>% filter(RelativeExpression > 0)
+  Toxin_IPs <- unique(IPInToxins$InterPro)
+  pattern1 <- if(length(Toxin_IPs) == 0) "$^" else paste0("\\b(", paste(Toxin_IPs, collapse="|"), ")\\b")
+  
+  IPOver <- summary_IP %>% filter(RelativeExpression > 1)
+  Over_IPs <- unique(IPOver$InterPro)
+  pattern2 <- if(length(Over_IPs) == 0) "$^" else paste0("\\b(", paste(Over_IPs, collapse="|"), ")\\b")
+  
+  return(list(pattern1 = pattern1, pattern2 = pattern2))
+}
+
+patterns <- prepare_patterns(ToxnontoxIP)
+
+
 # Add column with NA values if it doesn't exist
 if (!("Top" %in% colnames(Annotationdf))) {
   Annotationdf[["Top"]] <- NA
@@ -319,13 +340,10 @@ if (!("Top" %in% colnames(Annotationdf))) {
 }
 
 if (!("Genome_qcovs" %in% colnames(Annotationdf))) {
-  Annotationdf[["Genome_qcovs"]] <- NA
-  Annotationdf[["Genome_pident"]] <- NA
+  Annotationdf[["genome_qcovs"]] <- NA
+  Annotationdf[["genome_pident"]] <- NA
 }
 
-if (!("tpm_aggregates" %in% colnames(Annotationdf))) {
-  Annotationdf[["tpm_aggregates"]] <- NA
-}
 
 
 #Adding scoring 
@@ -341,8 +359,8 @@ Annotationdf <- Annotationdf %>%
   ) %>%
   mutate(
     ToxinDomainScore = case_when(
-      str_detect(InterPro_accession_Names, "pattern1") ~ 2,
-      str_detect(InterPro_accession_Names, "pattern2") ~ 1,
+      str_detect(InterPro_accession_Names, pattern1) ~ 2,
+      str_detect(InterPro_accession_Names, pattern2) ~ 1,
       TRUE ~ 0
     )
   ) %>%
@@ -356,7 +374,7 @@ Annotationdf <- Annotationdf %>%
   ) %>%
   mutate(
     KallistoExpressionScore = case_when(
-      percent >= 1 | tpm_aggregates >= 1 ~ 2,
+      percent >= 1 | percent_aggregates >= 1 ~ 2,
       percent > 0 ~ 1,
       TRUE ~ 0
     )
@@ -377,9 +395,9 @@ Annotationdf <- Annotationdf %>%
   ) %>%
   mutate(
     GenomeSupportScore = case_when(
-      Genome_qcovs = 90 & Genome_pident >= 90 ~ 2,
-      Genome_qcovs >= 70 & Genome_pident >= 70 ~ 1,
-      is.na(Genome_qcovs) ~ NA_real_,
+      genome_qcovs = 90 & genome_pident >= 90 ~ 2,
+      genome_qcovs >= 70 & genome_pident >= 70 ~ 1,
+      is.na(genome_qcovs) ~ NA_real_,
       TRUE ~ 0
     )
   )
@@ -399,7 +417,8 @@ Annotationdf <- Annotationdf %>%
   ))
 
 Annotationdf <- Annotationdf %>%
-  mutate(across(everything(), ~str_remove_all(., ",")))
+  mutate(across(everything(), ~str_remove_all(., ","))) %>%
+  select(-Code, -Hit,	-Percentage_Identity,	-E_value,	-BitScore,	-Hit_species)
 
 write.csv(Annotationdf, paste0(sample, "_all_Annotated_df.csv"), row.names = FALSE)
 
