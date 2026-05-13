@@ -379,7 +379,7 @@ Annotationdf <- Annotationdf %>%
     GenomeSupportScore = case_when(
       Genome_qcovs = 90 & Genome_pident >= 90 ~ 2,
       Genome_qcovs >= 70 & Genome_pident >= 70 ~ 1,
-      is.na(Genome_qcovs) ~ NA_real,
+      is.na(Genome_qcovs) ~ "NA_real",
       TRUE ~ 0
     )
   )
