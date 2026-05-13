@@ -1,5 +1,5 @@
 ---
-title: "Transdecoder Tables Menu"
+title: "ORFs Tables Menu"
 output: 
   html_document:
     css: style2.css 

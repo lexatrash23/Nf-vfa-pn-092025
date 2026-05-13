@@ -64,7 +64,7 @@ RCODE = (
     "\n"
     "# !!! CONFIGURE YOUR PLOT HERE !!! \n"
     "# Output\n"
-    f'my_output <- "{_output_name}" \n'
+    'my_output <- "%OUTPUT%" \n'
     "my_width <- 20\n"
     "my_height <- 15\n"
     'my_unit <- "cm"\n'
@@ -174,7 +174,8 @@ def _write_r_code(data):
     """
     r_file = open("%s%s" % (_plot_dir, _r_file), "w")
     r_file.write(
-        RCODE.replace("%s1", '"%s"' % _plot_dir)
+        RCODE.replace("%OUTPUT%", _output_name)
+        .replace("%s1", '"%s"' % _plot_dir)
         .replace("%s2", str(tuple(data["species"])))
         .replace("%s3", str(tuple(data["percentages"])))
         .replace("%s4", str(tuple(data["values"])))
