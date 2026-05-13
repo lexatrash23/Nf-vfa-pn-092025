@@ -316,13 +316,17 @@ if (!("Top" %in% colnames(Annotationdf))) {
   Annotationdf[["Top"]] <- NA
   Annotationdf[["Coverage"]] <- NA
   Annotationdf[["Unique"]] <- NA
-  
-  
 }
 
 if (!("Genome_qcovs" %in% colnames(Annotationdf))) {
   Annotationdf[["Genome_qcovs"]] <- NA
+  Annotationdf[["Genome_pident"]] <- NA
 }
+
+if (!("tpm_aggregates" %in% colnames(Annotationdf))) {
+  Annotationdf[["tpm_aggregates"]] <- NA
+}
+
 
 #Adding scoring 
 library(dplyr)
@@ -352,7 +356,7 @@ Annotationdf <- Annotationdf %>%
   ) %>%
   mutate(
     KallistoExpressionScore = case_when(
-      percent >= 1 | percent_agg >= 1 ~ 2,
+      percent >= 1 | tpm_aggregates >= 1 ~ 2,
       percent > 0 ~ 1,
       TRUE ~ 0
     )
