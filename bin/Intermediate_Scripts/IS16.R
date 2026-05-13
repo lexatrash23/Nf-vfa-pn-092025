@@ -415,10 +415,10 @@ write.csv(ProtSpaceAnnoation, paste0(sample, "_ProtSpaceAnnotation.csv"), row.na
 
 Pepseq <- AAStringSet(Annotationdf$PEP_Sequence)
 names(Pepseq) <- Annotationdf$Transdecoder_ID
-writeXStringSet(Pepseq, paste0(Sample_name,"_ProtSpacePEP.fasta"))
+writeXStringSet(Pepseq, paste0(sample,"_ProtSpacePEP.fasta"))
 
 cdsseq <- DNAStringSet(Annotationdf$CDS_Sequence)
 names(cdsseq) <- Annotationdf$Transdecoder_ID
-writeXStringSet(cdsseq, paste0(Sample_name,"_ProtspaceCDS.fasta"))
+writeXStringSet(cdsseq, paste0(sample,"_ProtspaceCDS.fasta"))
 
 
