@@ -419,6 +419,6 @@ writeXStringSet(Pepseq, paste0(sample,"_ProtSpacePEP.fasta"))
 
 cdsseq <- DNAStringSet(Annotationdf$CDS_Sequence)
 names(cdsseq) <- Annotationdf$Transdecoder_ID
-writeXStringSet(cdsseq, paste0(sample,"_ProtspaceCDS.fasta"))
+writeXStringSet(cdsseq, paste0(sample,"_ProtSpaceCDS.fasta"))
 
 
