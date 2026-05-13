@@ -1472,7 +1472,7 @@ process ProtSpace {
     // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
     """
     protspace prepare -i ${filteredlaxfasta} -e esm2_650m -m umap2 -o . 
-    protspace bundle -p projections/ -a ${ProtSpaceAnnotatedCSV} -o ${sample}.parquetbundle
+    protspace bundle -a ${ProtSpaceAnnotatedCSV} -o ${sample}.parquetbundle -a none
 
 
     """
@@ -1534,7 +1534,7 @@ process Minimap {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'bioconda::minimap bioconda::samtools bioconda::stringtie bioconda::bedtools'
+    conda 'bioconda::minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/Minimap/", mode: 'copy'
 
@@ -1555,7 +1555,6 @@ process Minimap {
     stringtie -o minimaptrial.gtf minimaptrial.sorted.bam
     rm -r minimaptrial.sam
     rm -r minimaptrial.bam
-    rm -r minimaptrial.sorted.bam
     samtools faidx ${genome}
     cut -f 1,2 ${genome}.fai > chrom.sizes
     bedtools slop -i minimaptrial.bed -g chrom.sizes -b 500 > minimaptrial.slop.bed

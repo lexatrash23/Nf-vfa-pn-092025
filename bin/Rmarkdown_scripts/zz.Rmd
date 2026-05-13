@@ -1,0 +1,36 @@
+---
+title: "GenomeViz"
+author: "Praveena Naidu"
+date: "2026-05-01"
+output: 
+  html_document:
+    self_contained: false
+---
+
+```{r setup, include=FALSE,echo=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(JBrowseR)
+library(htmltools)
+
+
+assembly <- assembly(
+    "GenomeFiles/expandedgenomeregions.fa",
+    bgzip = FALSE
+  )
+
+track_data <- track_feature(
+  "GenomeFiles/minimaptrial.bed.gz",
+  assembly,
+)
+
+
+tracks <- tracks(track_data)
+
+
+```
+
+```{r}
+JBrowseR("View", assembly = assembly, tracks = tracks)
+
+```
+
