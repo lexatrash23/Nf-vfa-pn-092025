@@ -93,8 +93,8 @@ Name <- params$AuthorName
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(IP_1, interpolate = TRUE)
-image2 <- rasterGrob(IP_1_Legend, interpolate = TRUE)
+image1 <- rasterGrob(readPNG(IP_1), interpolate = TRUE)
+image2 <- rasterGrob(readPNG(IP_1_Legend), interpolate = TRUE)
 
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
@@ -107,8 +107,8 @@ cat(" \n\n Figure 1. Relative expression of transcripts based on interproscan do
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(MF_1, interpolate = TRUE)
-image2 <- rasterGrob(MF_1_Legend, interpolate = TRUE)
+image1 <- rasterGrob(readPNG(MF_1), interpolate = TRUE)
+image2 <- rasterGrob(readPNG(MF_1_Legend), interpolate = TRUE)
 
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
@@ -121,8 +121,8 @@ cat(" \n\n Figure 1. Relative expression of transcripts based on Molecular Funct
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(BP_1, interpolate = TRUE)
-image2 <- rasterGrob(BP_1_Legend, interpolate = TRUE)
+image1 <- rasterGrob(readPNG(BP_1), interpolate = TRUE)
+image2 <- rasterGrob(readPNG(BP_1_Legend), interpolate = TRUE)
 
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
@@ -137,8 +137,8 @@ cat(" \n\n Figure 1. Relative expression of transcripts based on Biological Proc
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(IP_2, interpolate = TRUE)
-image2 <- rasterGrob(IP_2_Legend, interpolate = TRUE)
+image1 <- rasterGrob(readPNG(IP_2), interpolate = TRUE)
+image2 <- rasterGrob(readPNG(IP_2_Legend), interpolate = TRUE)
 
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
@@ -151,8 +151,8 @@ cat(" \n\n Figure 1. Relative expression of transcripts based on interproscan do
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(MF_2, interpolate = TRUE)
-image2 <- rasterGrob(MF_2_Legend, interpolate = TRUE)
+image1 <- rasterGrob(readPNG(MF_2), interpolate = TRUE)
+image2 <- rasterGrob(readPNG(MF_2_Legend), interpolate = TRUE)
 
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
@@ -165,8 +165,8 @@ cat(" \n\n Figure 1. Relative expression of transcripts based on Molecular Funct
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(BP_2, interpolate = TRUE)
-image2 <- rasterGrob(BP_2_Legend, interpolate = TRUE)
+image1 <- rasterGrob(readPNG(BP_2), interpolate = TRUE)
+image2 <- rasterGrob(readPNG(BP_2_Legend), interpolate = TRUE)
 
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
@@ -180,8 +180,8 @@ cat(" \n\n Figure 1. Relative expression of transcripts based on Biological Proc
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(IP_3, interpolate = TRUE)
-image2 <- rasterGrob(IP_3_Legend, interpolate = TRUE)
+image1 <- rasterGrob(readPNG(IP_3), interpolate = TRUE)
+image2 <- rasterGrob(readPNG(IP_3_Legend), interpolate = TRUE)
 
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
@@ -194,8 +194,8 @@ cat(" \n\n Figure 1. Relative expression of transcripts based on interproscan do
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(MF_3, interpolate = TRUE)
-image2 <- rasterGrob(MF_3_Legend, interpolate = TRUE)
+image1 <- rasterGrob(readPNG(MF_3), interpolate = TRUE)
+image2 <- rasterGrob(readPNG(MF_3_Legend), interpolate = TRUE)
 
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)
@@ -208,8 +208,8 @@ cat(" \n\n Figure 1. Relative expression of transcripts based on Molecular Funct
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(BP_3, interpolate = TRUE)
-image2 <- rasterGrob(BP_3_Legend, interpolate = TRUE)
+image1 <- rasterGrob(readPNG(BP_3), interpolate = TRUE)
+image2 <- rasterGrob(readPNG(BP_3_Legend), interpolate = TRUE)
 
 # Arrange side by side
 grid.arrange(image1, image2, ncol = 2)

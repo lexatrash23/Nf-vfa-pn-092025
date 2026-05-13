@@ -1258,8 +1258,8 @@ process RmarkdownZ {
       '\$Rmarkdown',
       output_dir='.',
       params=list(
-        VENN_LAX='\$Venn_abs1',
-        VENN_STRICT='\$Venn_abs2',
+        VENN1='\$Venn_abs1',
+        VENN2='\$Venn_abs2',
         TABLE='\$table_abs',
         AuthorName='${author}',
         SampleName='${sample}'
