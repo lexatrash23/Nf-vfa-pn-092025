@@ -23,7 +23,7 @@ sample <- args[9]
 Diamondblast6 <- args[10]
 
 
-#toxprotblast6, nontoxprotblast6, diamondblast6, transdf_final_filtered_strict , transdf_final_filtered_lax 
+#toxprotblast6, nontoxprotblast6, Diamondblast6, transdf_final_filtered_strict , transdf_final_filtered_lax 
 #toxprot metadata #nontoxprotmetadata
 #GO entry metadata 
 
@@ -202,7 +202,7 @@ parse_protein_xml <- function(xml_doc) {
 }
 
 if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
-  Diamond <- read.delim(diamondblast6, sep = "\t", header = FALSE)
+  Diamond <- read.delim(Diamondblast6, sep = "\t", header = FALSE)
   colnames(Diamond) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qframe")
   Diamond <- Diamond %>%
     arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
@@ -339,7 +339,7 @@ if (!("Top" %in% colnames(Annotationdf))) {
   Annotationdf[["Unique"]] <- NA
 }
 
-if (!("Genome_qcovs" %in% colnames(Annotationdf))) {
+if (!("genome_qcovs" %in% colnames(Annotationdf))) {
   Annotationdf[["genome_qcovs"]] <- NA
   Annotationdf[["genome_pident"]] <- NA
 }
@@ -375,7 +375,7 @@ Annotationdf <- Annotationdf %>%
   mutate(
     KallistoExpressionScore = case_when(
       percent >= 1 | percent_aggregates >= 1 ~ 2,
-      percent > 0 ~ 1,
+      percent > 0 | percent_aggregates > 0 ~ 1,
       TRUE ~ 0
     )
   ) %>%
