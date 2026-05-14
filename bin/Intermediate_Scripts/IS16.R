@@ -418,7 +418,7 @@ Annotationdf <- Annotationdf %>%
 
 Annotationdf <- Annotationdf %>%
   mutate(across(everything(), ~str_remove_all(., ","))) %>%
-  select(-Code, -Hit,	-Percentage_Identity,	-E_value,	-BitScore,	-Hit_species)
+  select(-Code,	-Percentage_Identity,	-E_value,	-BitScore,	-Hit_species)
 
 write.csv(Annotationdf, paste0(sample, "_all_Annotated_df.csv"), row.names = FALSE)
 

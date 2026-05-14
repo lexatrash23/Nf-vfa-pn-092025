@@ -1900,10 +1900,10 @@ workflow {
         return [it[0], it[40]]
     })
     RmarkdownCDEGIKInput | RmarkdownCDEGIK
-    //groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome.groupTuple()
-    //groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome.groupTuple()
-    groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome
-    groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome
+    groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome.groupTuple()
+    groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome.groupTuple()
+    //groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome
+    //groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome
     // RmarkdownH
     RmarkdownHInput = RmarkdownCDEGIKInput
         .join(kallistoAnalysisTrinity.out.trin_top20_png)
