@@ -359,8 +359,8 @@ Annotationdf <- Annotationdf %>%
   ) %>%
   mutate(
     ToxinDomainScore = case_when(
-      str_detect(InterPro_accession_Names, pattern1) ~ 2,
-      str_detect(InterPro_accession_Names, pattern2) ~ 1,
+      str_detect(InterPro_accession_Names, patterns$pattern1) ~ 2,
+      str_detect(InterPro_accession_Names, patterns$pattern2) ~ 1,
       TRUE ~ 0
     )
   ) %>%
