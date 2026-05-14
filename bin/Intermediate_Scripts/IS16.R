@@ -7,6 +7,7 @@ library(dplyr)
 library(tidyr)
 library(archive)
 library(readr)
+library(purrr)
 
 
 
