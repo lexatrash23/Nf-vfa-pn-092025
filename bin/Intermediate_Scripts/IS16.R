@@ -203,7 +203,7 @@ parse_protein_xml <- function(xml_doc) {
 
 if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
   Diamond <- read.delim(Diamondblast6, sep = "\t", header = FALSE)
-  colnames(Diamond) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qframe")
+  colnames(Diamond) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qframe","qcovs")
   Diamond <- Diamond %>%
     arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
     distinct(Transdecoder_ID, .keep_all = TRUE) %>%
