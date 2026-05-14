@@ -329,7 +329,7 @@ prepare_patterns <- function(file) {
   return(list(pattern1 = pattern1, pattern2 = pattern2))
 }
 
-patterns <- prepare_patterns(ToxnontoxIP)
+patterns <- prepare_patterns(toxvsnontoxIP)
 
 
 # Add column with NA values if it doesn't exist
