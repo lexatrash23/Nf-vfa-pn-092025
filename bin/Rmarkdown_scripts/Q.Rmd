@@ -1,5 +1,5 @@
 ---
-title: "Transdecoder Tables Sorted by BitScore "
+title: "Complete ORFs Tables Sorted by BitScore "
 output: 
   html_document:
     css: style.css 

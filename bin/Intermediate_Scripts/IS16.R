@@ -416,7 +416,8 @@ Annotationdf <- Annotationdf %>%
   ) %>%
   mutate(
     GenomeSupportScore = case_when(
-      genome_qcovs = 90 & genome_pident >= 90 ~ 2,
+      genome_qcovs == 100 & genome_pident == 100 ~ 3,
+      genome_qcovs >= 90 & genome_pident >= 90 ~ 2,
       genome_qcovs >= 70 & genome_pident >= 70 ~ 1,
       is.na(genome_qcovs) ~ NA_real_,
       TRUE ~ 0
@@ -430,10 +431,11 @@ Annotationdf <- Annotationdf %>%
     AnnotationScore == 1 | Blastscore == 2 ~ "Category 1",
     ToxinDomainScore == 2 ~ "Category 2",
     (is.na(Annotation_Source) | Annotation_Source == "NCBInr") &
-      (GenomeSupportScore == 2 |is.na(GenomeSupportScore)) &
+      (GenomeSupportScore >= 2 |is.na(GenomeSupportScore)) &
       (CysPerScore > 0 |
          KallistoExpressionScore > 0 |
-         ProteomicCoverageScore > 0) ~ "Category 3",
+         ProteomicCoverageScore > 0 | GenomeSupportScore == 3) ~ "Category 3",
+(Annotation_Source == "NonToxUniProt")  ~ "Putative non-toxins",
     TRUE ~ "NA"
   ))
 
@@ -444,7 +446,7 @@ Annotationdf <- Annotationdf %>%
 write.csv(Annotationdf, paste0(sample, "_all_Annotated_df.csv"), row.names = FALSE)
 
 Annotationdf <- Annotationdf %>%
-  filter(Category != "NA")
+  filter(Category != "NA" & Category != "Putative non-toxins")
   
 write.csv(Annotationdf, paste0(sample, "_Select_Annotated_df.csv"), row.names = FALSE)
 

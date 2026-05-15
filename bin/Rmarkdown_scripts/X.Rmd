@@ -1,5 +1,5 @@
 ---
-title: "SignalP Tables Sorted by Kallisto "
+title: "Secreted ORFs Tables Sorted by Kallisto "
 output: 
   html_document:
     css: style.css 

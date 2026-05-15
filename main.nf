@@ -1465,14 +1465,17 @@ process ProtSpace {
     tuple val(sample), path(filteredlaxfasta), path(ProtSpaceAnnotatedCSV)
 
     output:
-    tuple val(sample), path("tmp/*.parquet"), emit: ProtSpaceParquet
+    tuple val(sample), path("projections/projections_data.parquet"), emit: ProtSpaceParquet
     tuple val(sample), path("*.parquetbundle")
 
     script:
     // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
     """
-    protspace prepare -i ${filteredlaxfasta} -e esm2_650m -m umap2 -o . 
-    protspace bundle -a ${ProtSpaceAnnotatedCSV} -o ${sample}.parquetbundle
+    protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
+    protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
+    protspace annotate -i embeddings/esm2_3b.h5 -a ${ProtSpaceAnnotatedCSV} -o ${sample}.parquet
+    protspace bundle -p projections/ -a ${sample}.parquet -o ${sample}.parquetbundle
+
 
 
     """
@@ -1542,17 +1545,19 @@ process Minimap {
     tuple val(sample), path(genome), path(FilteredLaxcds)
 
     output:
-    tuple val(sample), path("*.bed"), emit: bedfile
-    tuple val(sample), path("*.gtf"), emit: gtffile
-    tuple val(sample), path("${sample}.expandedgenomeregions.fa"), emit: selectfasta
+    tuple val(sample), path("${sample}.minimaptrial.sorted.bam"), emit: selectfasta
+    tuple val(sample), path("${sample}.minimaptrial.sorted.bam.bai"), emit: selectfastafai
     tuple val(sample), path("${sample}.expandedgenomeregions.fa.fai"), emit: selectfastafai
+    tuple val(sample), path("${sample}.expandedgenomeregions.fa.fai"), emit: selectfastafai
+
 
     script:
     """
     minimap2 -ax splice:hq -uf ${genome} ${FilteredLaxcds} > minimaptrial.sam
     samtools view -bS minimaptrial.sam > minimaptrial.bam
     samtools sort minimaptrial.bam -o minimaptrial.sorted.bam
-    stringtie -o minimaptrial.gtf minimaptrial.sorted.bam
+    stringtie -o minimaptrial.gtf ${sample}.minimaptrial.sorted.bam
+    bedtools bamtobed -split -i minimaptrial.bam > minimaptrial.bed
     rm -r minimaptrial.sam
     rm -r minimaptrial.bam
     samtools faidx ${genome}
@@ -1560,6 +1565,7 @@ process Minimap {
     bedtools slop -i minimaptrial.bed -g chrom.sizes -b 500 > minimaptrial.slop.bed
     bedtools getfasta -fi ${genome} -bed minimaptrial.slop.bed -s -name -split -fo ${sample}.expandedgenomeregions.fa
     samtools faidx ${sample}.expandedgenomeregions.fa
+    samtools faidx ${${sample}.minimaptrial.sorted.bam}
     """
 }
 // Define input file patterns via parameters

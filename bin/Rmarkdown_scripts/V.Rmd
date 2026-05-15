@@ -1,5 +1,5 @@
 ---
-title: "SignalP Tables Sorted by BitScore "
+title: "Secreted ORFs Tables Sorted by BitScore "
 output: 
   html_document:
     css: style.css 

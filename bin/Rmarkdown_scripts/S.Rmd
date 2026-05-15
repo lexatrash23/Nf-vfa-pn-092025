@@ -1,5 +1,5 @@
 ---
-title: "Transdecoder Tables Sorted by Kallisto "
+title: "Complete ORFs Tables Sorted by Kallisto "
 output: 
   html_document:
     css: style.css 
