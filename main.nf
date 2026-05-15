@@ -1565,7 +1565,7 @@ process Minimap {
     bedtools slop -i minimaptrial.bed -g chrom.sizes -b 500 > minimaptrial.slop.bed
     bedtools getfasta -fi ${genome} -bed minimaptrial.slop.bed -s -name -split -fo ${sample}.expandedgenomeregions.fa
     samtools faidx ${sample}.expandedgenomeregions.fa
-    samtools faidx ${${sample}.minimaptrial.sorted.bam}
+    samtools faidx ${sample}.minimaptrial.sorted.bam}
     """
 }
 // Define input file patterns via parameters
