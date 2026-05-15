@@ -218,6 +218,7 @@ if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
   AccessionNo_metadata <- fetch_protein_metadata(Diamond_AccessionNo_distinct$AccessionNo)
   Diamond_with_metadata <- left_join(Diamond,AccessionNo_metadata, by = "AccessionNo" )
   Diamond_with_metadata <- Diamond_with_metadata%>%
+  mutate(Source = "NCBInr")  %>%
     mutate(
       EC_class_number = str_extract(EC.number, "^[0-9]"),
       EC_class_name = ec_class_map[EC_class_number]
@@ -229,13 +230,16 @@ if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
   Diamond_maindf <- Diamond_maindf %>%
     relocate(Name, .after = AccessionNo) %>%
     relocate(Species, .after = Name) %>%
-    select(-Gene_Name,-Source,-EC_class_name,-EC.number) 
+    select(-EC.number)
   names(Diamond_maindf)[names(Diamond_maindf) == "AccessionNo"] <- paste0(prefix, "_AccessionNo")
   names(Diamond_maindf)[names(Diamond_maindf) == "pident"] <- paste0(prefix, "_pident")
   names(Diamond_maindf)[names(Diamond_maindf) == "evalue"] <- paste0(prefix, "_evalue")
   names(Diamond_maindf)[names(Diamond_maindf) == "bitscore"] <- paste0(prefix, "_bitscore")
   names(Diamond_maindf)[names(Diamond_maindf) == "qcovs"] <- paste0(prefix, "_qcovs")
   names(Diamond_maindf)[names(Diamond_maindf) == "Name"] <- paste0(prefix, "_Name")
+  names(Diamond_maindf)[names(Diamond_maindf) == "Gene_Name"] <- paste0(prefix, "_Gene_Name")
+  names(Diamond_maindf)[names(Diamond_maindf) == "EC_class_name"] <- paste0(prefix, "_EC_class_name")
+
   names(Diamond_maindf)[names(Diamond_maindf) == "Species"] <- paste0(prefix, "_Species")
   blastresults2 <- full_join(blastresults2,Diamond_maindf, by ="Transdecoder_ID")
   
@@ -291,7 +295,22 @@ if (!("percent_aggregates" %in% colnames(transdf_final_filtered_lax))) {
 Annotationdf <- transdf_final_filtered_lax %>%
   left_join(df_to_compare, by ="Transdecoder_ID") %>%
   left_join(transdf,by ="Transdecoder_ID") %>%
-  left_join(blastresults2, by = "Transdecoder_ID") %>%
+  left_join(blastresults2, by = "Transdecoder_ID") 
+
+
+
+if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
+  Annotationdf <- Annotationdf %>%
+    mutate(
+      Protein_Name = case_when(is.na(Annotation_Source) & !is.na(NCBInr_Name) ~ NCBInr_Name, TRUE ~ Protein_Name),
+      Gene_Name = case_when(is.na(Annotation_Source) & !is.na(NCBInr_Name) ~ NCBInr_Gene_Name, TRUE ~ Gene_Name),
+      Enzyme_Class = case_when(is.na(Annotation_Source) & !is.na(NCBInr_Name) ~ NCBInr_EC_class_name, TRUE ~ Enzyme_Class),
+      Annotation_Source = case_when(is.na(Annotation_Source) & !is.na(NCBInr_Name) ~ Source, TRUE ~ Annotation_Source)
+    ) %>%
+    dplyr::select(-NCBInr_Gene_Name,-NCBInr_EC_class_name,-Source)
+}
+
+Annotationdf <- Annotationdf %>%
   dplyr::select(Transdecoder_ID,UniqueSequenceName, ORF_type,	SP,Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,Mature_Length,PEP_Length,CDS_Length,tpm, est_counts,percent,percent_aggregates,cumulativepercent,Signal_Sequence,Mature_Sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Phobius_Name,TMHMM,Domain_Rank,everything())
 
 
