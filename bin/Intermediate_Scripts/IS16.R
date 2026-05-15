@@ -197,7 +197,7 @@ parse_protein_xml <- function(xml_doc) {
   AccessionNo = AN,
     Name = protein_name,
     Species = organism,
-    EC_Number = ec_number,
+    EC.number = ec_number,
     Gene_Name = gene_name,
     stringsAsFactors = FALSE
   )
