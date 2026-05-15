@@ -1547,7 +1547,7 @@ process Minimap {
     output:
     tuple val(sample), path("${sample}.minimaptrial.sorted.bam"), emit: selectbam
     tuple val(sample), path("${sample}.minimaptrial.sorted.bam.bai"), emit: selectbambai
-    tuple val(sample), path("${sample}.expandedgenomeregions.fa.fai"), emit: selectfastafai
+    tuple val(sample), path("${sample}.expandedgenomeregions.fa"), emit: selectfasta
     tuple val(sample), path("${sample}.expandedgenomeregions.fa.fai"), emit: selectfastafai
 
 
