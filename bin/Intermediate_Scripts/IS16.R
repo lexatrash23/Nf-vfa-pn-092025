@@ -187,13 +187,14 @@ parse_protein_xml <- function(xml_doc) {
     if (inherits(res, "xml_missing")) return(NA_character_)
     xml_text(res)
   }
+  AN <- get_text(xml_doc, ".//GBSeq_accession-version")
   protein_name <- get_text(xml_doc, ".//GBSeq_definition")
   organism <- get_text(xml_doc, ".//GBSeq_organism")
   gene_name <- get_text(xml_doc, ".//GBQualifier[GBQualifier_name='gene']/GBQualifier_value")
   ec_number <- get_text(xml_doc, ".//GBQualifier[GBQualifier_name='EC_number']/GBQualifier_value")
-  
   # Return as dataframe row
   data.frame(
+  AccessionNo = AN,
     Name = protein_name,
     Species = organism,
     EC_Number = ec_number,
@@ -215,7 +216,7 @@ if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
     distinct(AccessionNo)
   
   AccessionNo_metadata <- fetch_protein_metadata(Diamond_AccessionNo_distinct$AccessionNo)
-  Diamond_with_metadata <- left_join(Diamond,AccessionNo_metadata, by = "Transdecoder_ID" )
+  Diamond_with_metadata <- left_join(Diamond,AccessionNo_metadata, by = "AccessionNo" )
   Diamond_with_metadata <- Diamond_with_metadata%>%
     mutate(
       EC_class_number = str_extract(EC.number, "^[0-9]"),
