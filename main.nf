@@ -1545,8 +1545,8 @@ process Minimap {
     tuple val(sample), path(genome), path(FilteredLaxcds)
 
     output:
-    tuple val(sample), path("${sample}.minimaptrial.sorted.bam"), emit: selectfasta
-    tuple val(sample), path("${sample}.minimaptrial.sorted.bam.bai"), emit: selectfastafai
+    tuple val(sample), path("${sample}.minimaptrial.sorted.bam"), emit: selectbam
+    tuple val(sample), path("${sample}.minimaptrial.sorted.bam.bai"), emit: selectbambai
     tuple val(sample), path("${sample}.expandedgenomeregions.fa.fai"), emit: selectfastafai
     tuple val(sample), path("${sample}.expandedgenomeregions.fa.fai"), emit: selectfastafai
 
