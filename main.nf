@@ -1533,7 +1533,7 @@ process Minimap {
     maxRetries 4
 
 
-    label 'process_low'
+    label 'process_medium'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
