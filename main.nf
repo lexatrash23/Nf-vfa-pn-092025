@@ -1475,7 +1475,7 @@ process ProtSpace {
 
     protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
     protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
-    protspace annotate -i embeddings/esm2_3b.h5 -a '\$ProtSpaceAnnotatedCSV_abs' -o ${sample}.parquet
+    protspace annotate -i embeddings/esm2_3b.h5 -a '\${ProtSpaceAnnotatedCSV_abs}' -o ${sample}.parquet
     protspace bundle -p projections/ -a ${sample}.parquet -o ${sample}.parquetbundle
 
 
