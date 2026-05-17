@@ -711,7 +711,6 @@ process RmarkdownH {
     """
     kallistotop20graphtrinity_abs=\$(readlink -f "${kallistotop20graphtrinity}")
     kallistotop500graphtrinity_abs=\$(readlink -f "${kallistotop500graphtrinity}")
-    busco_figure_abs=\$(readlink -f "${busco_figure}")
     alluvial1_abs=\$(readlink -f "${alluvial1}")
     alluvial2_abs=\$(readlink -f "${alluvial2}")
     pie1_abs=\$(readlink -f "${pie1}")
@@ -720,13 +719,26 @@ process RmarkdownH {
     pie4_abs=\$(readlink -f "${pie4}")
     topkallisto_abs=\$(readlink -f "${topkallisto}")
 
+    busco_files=(${busco_figure})
+    busco_figure1_abs=\${busco_files[0]:-""}
+    busco_figure2_abs=\${busco_files[1]:-""}
+    busco_figure3_abs=\${busco_files[2]:-""}
+    
+    # Get absolute paths only for files that exist
+    [ -n "\$busco_figure1_abs" ] && busco_figure1_abs=\$(readlink -f "\$busco_figure1_abs")
+    [ -n "\$busco_figure2_abs" ] && busco_figure2_abs=\$(readlink -f "\$busco_figure2_abs")
+    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")
+
+
     Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/H.Rmd',
       output_dir='.',
       params=list(
         kallistotop20graphtrinity='\$kallistotop20graphtrinity_abs',
         kallistotop500graphtrinity='\$kallistotop500graphtrinity_abs',
-        busco_figure='\$busco_figure_abs',
+        busco_figure1='\$busco_figure1_abs',
+        busco_figure2='\$busco_figure2_abs',
+        busco_figure3='\$busco_figure3_abs',
         alluvial1='\$alluvial1_abs',
         alluvial2='\$alluvial2_abs',
         pie1='\$pie1_abs',

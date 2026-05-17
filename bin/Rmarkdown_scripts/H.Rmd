@@ -53,7 +53,6 @@ library(downloadthis)
 ```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 kallistotop20graphtrinity <- params$kallistotop20graphtrinity
 kallistotop500graphtrinity <- params$kallistotop500graphtrinity
-busco_figure <- params$busco_figure
 alluvial1 <- params$alluvial1
 alluvial2 <- params$alluvial2
 pie1 <- params$pie1
@@ -63,6 +62,8 @@ pie4 <- params$pie4
 topkallisto <- params$topkallisto
 Sample_Name <- params$SampleName
 Name <- params$AuthorName
+
+
 ```
 
 <hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
@@ -77,8 +78,18 @@ Name <- params$AuthorName
 ### BUSCO  
 
 ```{r, results='asis'}
-knitr::include_graphics(busco_figure)
+if (nchar(params$busco_figure1) > 0) {
+  knitr::include_graphics(params$busco_figure1)
+}
 
+if (nchar(params$busco_figure2) > 0) {
+  knitr::include_graphics(params$busco_figure2)
+}
+
+if (nchar(params$busco_figure3) > 0) {
+  # Use busco_figure3
+  knitr::include_graphics(params$busco_figure3)
+}
 ```
 
 ### Kallisto Distribution of Top 500 expressed transcripts 
