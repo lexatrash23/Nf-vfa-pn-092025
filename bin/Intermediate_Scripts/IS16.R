@@ -439,6 +439,8 @@ Annotationdf <- Annotationdf %>%
     TRUE ~ "Lower genome alignment transcripts"
   ))
 
+Annotationdf$Protein_Name <- gsub("\\[.*?\\]", "", Annotationdf$Protein_Name)
+
 Annotationdf <- Annotationdf %>%
   mutate(across(everything(), ~str_remove_all(., ","))) %>%
   select(-Code,	-Percentage_Identity,	-E_value,	-BitScore,	-Hit_species)

@@ -780,7 +780,6 @@ process RmarkdownJ {
     """
     kallistotop20graphtransdecoder_abs=\$(readlink -f "${kallistotop20graphtransdecoder}")
     kallistotop500graphtransdecoder_abs=\$(readlink -f "${kallistotop500graphtransdecoder}")
-    busco_figure_transdecoder_abs=\$(readlink -f "${busco_figure_transdecoder}")
     alluvial3_abs=\$(readlink -f "${alluvial3}")
     alluvial4_abs=\$(readlink -f "${alluvial4}")
     pie5_abs=\$(readlink -f "${pie5}")
@@ -789,13 +788,26 @@ process RmarkdownJ {
     pie8_abs=\$(readlink -f "${pie8}")
     topkallisto_transdecoder_abs=\$(readlink -f "${topkallisto_transdecoder}")
 
+    busco_files=(${busco_figure_transdecoder})
+    busco_figure1_abs=\${busco_files[0]:-""}
+    busco_figure2_abs=\${busco_files[1]:-""}
+    busco_figure3_abs=\${busco_files[2]:-""}
+    
+    # Get absolute paths only for files that exist
+    [ -n "\$busco_figure1_abs" ] && busco_figure1_abs=\$(readlink -f "\$busco_figure1_abs")
+    [ -n "\$busco_figure2_abs" ] && busco_figure2_abs=\$(readlink -f "\$busco_figure2_abs")
+    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")
+
+
     Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/J.Rmd',
       output_dir='.',
       params=list(
         kallistotop20graphtransdecoder='\$kallistotop20graphtransdecoder_abs',
         kallistotop500graphtransdecoder='\$kallistotop500graphtransdecoder_abs',
-        busco_figure_transdecoder='\$busco_figure_transdecoder_abs',
+        busco_figure1='\$busco_figure1_abs',
+        busco_figure2='\$busco_figure2_abs',
+        busco_figure3='\$busco_figure3_abs',
         alluvial3='\$alluvial3_abs',
         alluvial4='\$alluvial4_abs',
         pie5='\$pie5_abs',
@@ -1487,7 +1499,7 @@ process ProtSpace {
 
     protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
     protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
-    protspace bundle -p projections/ -a \$ProtSpaceAnnotatedCSV_abs -o ${sample}.parquetbundle
+    protspace prepare -i embeddings/esm2_3b.h5 -a ${ProtSpaceAnnotatedCSV}
 
 
 
@@ -1558,10 +1570,10 @@ process Minimap {
     tuple val(sample), path(genome), path(FilteredLaxcds)
 
     output:
-    tuple val(sample), path("${sample}.minimaptrial.sorted.bam"), emit: selectbam
-    tuple val(sample), path("${sample}.minimaptrial.sorted.bam.bai"), emit: selectbambai
-    tuple val(sample), path("${sample}.expandedgenomeregions.fa"), emit: selectfasta
-    tuple val(sample), path("${sample}.expandedgenomeregions.fa.fai"), emit: selectfastafai
+    tuple val(sample), path("minimaptrial.sorted.bam"), emit: selectbam
+    tuple val(sample), path("minimaptrial.sorted.bam.bai"), emit: selectbambai
+    tuple val(sample), path("expandedgenomeregions.fa"), emit: selectfasta
+    tuple val(sample), path("expandedgenomeregions.fa.fai"), emit: selectfastafai
 
 
     script:
@@ -1569,15 +1581,15 @@ process Minimap {
     minimap2 -ax splice:hq -uf ${genome} ${FilteredLaxcds} > minimaptrial.sam
     samtools view -bS minimaptrial.sam > minimaptrial.bam
     samtools sort minimaptrial.bam -o minimaptrial.sorted.bam
-    stringtie -o minimaptrial.gtf ${sample}.minimaptrial.sorted.bam
+    stringtie -o minimaptrial.gtf minimaptrial.sorted.bam
     bedtools bamtobed -split -i minimaptrial.bam > minimaptrial.bed
     rm -r minimaptrial.sam
     samtools faidx ${genome}
     cut -f 1,2 ${genome}.fai > chrom.sizes
     bedtools slop -i minimaptrial.bed -g chrom.sizes -b 500 > minimaptrial.slop.bed
-    bedtools getfasta -fi ${genome} -bed minimaptrial.slop.bed -s -name -split -fo ${sample}.expandedgenomeregions.fa
-    samtools faidx ${sample}.expandedgenomeregions.fa
-    samtools faidx ${sample}.minimaptrial.sorted.bam}
+    bedtools getfasta -fi ${genome} -bed minimaptrial.slop.bed -s -name -split -fo expandedgenomeregions.fa
+    samtools faidx expandedgenomeregions.fa
+    samtools faidx minimaptrial.sorted.bam}
     rm -r minimaptrial.bam
 
     """

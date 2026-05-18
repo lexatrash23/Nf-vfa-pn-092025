@@ -92,6 +92,8 @@ if (nchar(params$busco_figure3) > 0) {
   # Use busco_figure3
   knitr::include_graphics(params$busco_figure3)
 }
+cat(" \n\n Figure 1. BUSCO score of translatome. \n\n ") 
+
 ```
 
 ### Kallisto Distribution of Top 500 expressed transcripts 

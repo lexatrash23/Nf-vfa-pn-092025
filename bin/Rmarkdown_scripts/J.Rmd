@@ -6,7 +6,9 @@ output:
 params:
   kallistotop20graphtransdecoder: NULL
   kallistotop500graphtransdecoder: NULL
-  busco_figure_transdecoder: NULL
+  busco_figure1: NULL
+  busco_figure2: NULL
+  busco_figure3: NULL
   alluvial3: NULL
   alluvial4: NULL
   pie5: NULL
@@ -55,7 +57,6 @@ library(downloadthis)
 #load files 
 kallistotop20graphtransdecoder <- params$kallistotop20graphtransdecoder
 kallistotop500graphtransdecoder <- params$kallistotop500graphtransdecoder
-busco_figure <- params$busco_figure_transdecoder
 alluvial3 <- params$alluvial3
 alluvial4 <- params$alluvial4
 pie5 <- params$pie5
@@ -78,12 +79,25 @@ Name <- params$AuthorName
 
 ### BUSCO 
 
+
 ```{r, results='asis'}
-busco  <- readPNG(busco_figure)
-#plot the busco graph 
-busco <- grid.raster(busco)
+if (nchar(params$busco_figure1) > 0) {
+  knitr::include_graphics(params$busco_figure1)
+}
+
+if (nchar(params$busco_figure2) > 0) {
+  knitr::include_graphics(params$busco_figure2)
+}
+
+if (nchar(params$busco_figure3) > 0) {
+  # Use busco_figure3
+  knitr::include_graphics(params$busco_figure3)
+}
+
 cat(" \n\n Figure 1. BUSCO score of translatome. \n\n ") 
+
 ```
+
 
 ### Kallisto Distribution of Top 500 expressed transcripts 
 
