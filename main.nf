@@ -1441,8 +1441,8 @@ process Annotate {
     conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/AnnotatedData/", pattern: "*Annotated_df.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpaceData/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpaceData/", pattern: "*.fasta", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpace/Input/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpace/Input/", pattern: "*.fasta", mode: 'copy'
 
     input:
     tuple val(sample), path(final_filtered_lax), path(toxprotblast6), path(nontoxprotblast6), path(Diamondblast6), path(toxprotblastmetadata), path(nontoxprotmetadata), path(toxvsnontoxIP), path(toxvsnontoxMF), path(toxvsnontoxBP)
@@ -1483,7 +1483,7 @@ process ProtSpace {
 
 
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpace/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpace/results/", mode: 'copy'
 
     input:
     tuple val(sample), path(filteredlaxfasta), path(ProtSpaceAnnotatedCSV)
@@ -2016,8 +2016,8 @@ workflow {
     RmarkdownXInput | RmarkdownX
 
 
-    // RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
-    // RmarkdownUInput | RmarkdownU
+     RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
+     RmarkdownUInput | RmarkdownU
 
     /*
     Rmarkdown
