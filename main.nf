@@ -1487,8 +1487,7 @@ process ProtSpace {
 
     protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
     protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
-    protspace annotate -i embeddings/esm2_3b.h5 -a \$ProtSpaceAnnotatedCSV_abs -o ${sample}.parquet
-    protspace bundle -p projections/ -a ${sample}.parquet -o ${sample}.parquetbundle
+    protspace bundle -p projections/ -a \$ProtSpaceAnnotatedCSV_abs -o ${sample}.parquetbundle
 
 
 
@@ -1573,13 +1572,14 @@ process Minimap {
     stringtie -o minimaptrial.gtf ${sample}.minimaptrial.sorted.bam
     bedtools bamtobed -split -i minimaptrial.bam > minimaptrial.bed
     rm -r minimaptrial.sam
-    rm -r minimaptrial.bam
     samtools faidx ${genome}
     cut -f 1,2 ${genome}.fai > chrom.sizes
     bedtools slop -i minimaptrial.bed -g chrom.sizes -b 500 > minimaptrial.slop.bed
     bedtools getfasta -fi ${genome} -bed minimaptrial.slop.bed -s -name -split -fo ${sample}.expandedgenomeregions.fa
     samtools faidx ${sample}.expandedgenomeregions.fa
     samtools faidx ${sample}.minimaptrial.sorted.bam}
+    rm -r minimaptrial.bam
+
     """
 }
 // Define input file patterns via parameters

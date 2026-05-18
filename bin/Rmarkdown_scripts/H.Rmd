@@ -6,7 +6,9 @@ output:
 params:
   kallistotop20graphtrinity: NULL
   kallistotop500graphtrinity: NULL
-  busco_figure: NULL
+  busco_figure1: NULL
+  busco_figure2: NULL
+  busco_figure3: NULL
   alluvial1: NULL
   alluvial2: NULL
   pie1: NULL
