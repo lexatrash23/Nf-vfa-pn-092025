@@ -255,9 +255,9 @@ if (!is.na(Blastn_result) && Blastn_result != "NULL") {
     ungroup()
   
   transdf_filtered <- transdf_filtered %>% arrange (
+    desc(genome_bitscore),
     desc(genome_qcovs),
     desc(genome_pident),
-    desc(genome_bitscore),
     desc(PEP_Length),
     desc(percent),
   ) %>%
