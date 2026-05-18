@@ -434,9 +434,9 @@ Annotationdf <- Annotationdf %>%
       (GenomeSupportScore >= 2 |is.na(GenomeSupportScore)) &
       (CysPerScore > 0 |
          KallistoExpressionScore > 0 |
-         ProteomicCoverageScore > 0 | GenomeSupportScore == 3) ~ "Category 3",
+         ProteomicCoverageScore > 0 | (genome_qcovs == 100 & genome_pident >=95)) ~ "Category 3",
 (Annotation_Source == "NonToxUniProt")  ~ "Putative non-toxins",
-    TRUE ~ "NA"
+    TRUE ~ "Lower genome alignment transcripts"
   ))
 
 Annotationdf <- Annotationdf %>%
@@ -446,7 +446,7 @@ Annotationdf <- Annotationdf %>%
 write.csv(Annotationdf, paste0(sample, "_all_Annotated_df.csv"), row.names = FALSE)
 
 Annotationdf <- Annotationdf %>%
-  filter(Category != "NA" & Category != "Putative non-toxins")
+  filter(Category != "Lower genome alignment transcripts" & Category != "Putative non-toxins")
   
 write.csv(Annotationdf, paste0(sample, "_Select_Annotated_df.csv"), row.names = FALSE)
 
