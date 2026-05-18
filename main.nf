@@ -1589,8 +1589,7 @@ process Minimap {
     bedtools slop -i minimaptrial.bed -g chrom.sizes -b 500 > minimaptrial.slop.bed
     bedtools getfasta -fi ${genome} -bed minimaptrial.slop.bed -s -name -split -fo expandedgenomeregions.fa
     samtools faidx expandedgenomeregions.fa
-    samtools faidx minimaptrial.sorted.bam}
-    rm -r minimaptrial.bam
+    samtools faidx minimaptrial.sorted.bam
 
     """
 }
