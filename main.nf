@@ -1252,7 +1252,7 @@ process RmarkdownZ {
     cpus { task.cpus * task.attempt }
     time { task.time * task.attempt }
 
-    conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown r-DT R-dplyr r-knitr r-png r-grid r-downloadthis r-gridExtra'
+    conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown r-DT R-dplyr r-knitr r-png r-gridbase r-downloadthis r-gridExtra'
 
     publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
 
