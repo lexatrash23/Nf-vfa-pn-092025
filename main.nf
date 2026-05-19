@@ -13,7 +13,7 @@ process kallistoAnalysisTrinity {
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/KallistoAnalysis/Trinity/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/Kallisto/Transcriptome/", mode: 'copy'
 
     input:
     tuple val(sample), path(kallisto_file_trinity)
@@ -44,7 +44,7 @@ process kallistoAnalysisTrans {
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/KallistoAnalysis/Transdecoder/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/Kallisto/ORFs/", mode: 'copy'
 
     input:
     tuple val(sample), path(kallisto_file_transdecoder)
@@ -74,7 +74,7 @@ process ExtractSignalSequences {
 
     conda 'python=3.8 biopython'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Signal_sequences/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/SignalSequences/", mode: 'copy'
 
     input:
     tuple val(sample), path(secreted_pep), path(mature_fasta)
@@ -101,8 +101,7 @@ process CreateTrinityDataframe {
 
     conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/TrinityDataframe/", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/RappData/TrinityDataframe/", pattern: "*.gz", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/Dataframes/Transcriptome/", mode: 'copy'
 
     input:
     tuple val(sample), path(trinity_fasta), path(blastx_file), path(kallisto_csv)
@@ -131,7 +130,7 @@ process CreateInterproscanDataframe {
 
     conda 'r-base bioconductor-biostrings r-dplyr bioconductor-go.db bioconductor-biomart r-tidyr'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/InterproscanDataframe/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/Dataframes/ORFs/", mode: 'copy'
 
     input:
     tuple val(sample), path(Interproscan), path(ListFile), path(PantherFile)
@@ -160,8 +159,8 @@ process CreateTransdecoderDataframe {
     conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings r-stringr'
 
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/TransdecoderDataframe/", pattern: "*.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/Secreted_proteins_fasta/", pattern: "*.fasta", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/Dataframes/ORFs/", pattern: "*.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/Fastas/ORFs/", pattern: "*.fasta", mode: 'copy'
 
     input:
     tuple val(sample), path(transdecoder_pep), path(transdecoder_cds), path(blastp_file), path(mature_fasta), path(signalsequences), path(Interproscan_dataframe), path(kallistotrans)
@@ -195,7 +194,7 @@ process BUSCOtranscriptome {
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/busco/transcriptome/${count}/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/busco/transcriptome/${count}/", mode: 'copy'
 
     input:
     tuple val(sample), path(buscodirtr), val(count)
@@ -224,7 +223,7 @@ process BUSCOtranslatome {
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/busco/translatome/${count}/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/busco/translatome/${count}/", mode: 'copy'
 
     input:
     tuple val(sample), path(buscodirtl), val(count)
@@ -254,8 +253,7 @@ process FigureGenerationTrinity {
     container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'
 
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Images/Trinity", pattern: "*.png", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/Trinity", pattern: "*.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
 
     input:
     tuple val(sample), path(TBK)
@@ -289,8 +287,7 @@ process FigureGenerationTransdecoder {
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Images/Transdecoder/", pattern: "*.png", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/Transdecoder", pattern: "*.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/HTMLFigures/ORFs/", mode: 'copy'
 
     input:
     tuple val(sample), path(transdf)
@@ -326,8 +323,7 @@ process FigureGenerationSignalp {
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Images/SignalP/", pattern: "*.png", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/SignalP/", pattern: "*.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/HTMLFigures/Secreted/", mode: 'copy'
 
     input:
     tuple val(sample), path(transdf)
@@ -361,7 +357,7 @@ process TableGenerationTrinity {
 
     conda 'r-base=4.3 r-dplyr r-DT'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/Trinity", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
 
     input:
     tuple val(sample), path(TBK), val(genome_id), val(species)
@@ -393,8 +389,8 @@ process TableGenerationTransdecoder {
 
     conda 'r-base=4.3 r-dplyr r-DT r-stringr'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/Transdecoder", pattern: "*{5,6,7,8}.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/SignalP", pattern: "*{9,10,11,12}.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/HTMLFigures/ORFs/", pattern: "*{5,6,7,8}.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/HTMLFigures/Secreted/", pattern: "*{9,10,11,12}.csv", mode: 'copy'
 
     input:
     tuple val(sample), path(transdf), val(genome_id), val(species)
@@ -430,7 +426,7 @@ process ToxinVsNonToxin {
 
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
 
-    publishDir "CommonMetadata/Analysis/results/ToxinVsNonToxinMetaData/", mode: 'copy'
+    publishDir "CommonIntermediateFiles/Analysis/ToxinVsNonToxinMetaData/", mode: 'copy'
 
     input:
     tuple path(toxprotblastmetadata), path(nontoxprotmetadata), path(IP_metadata)
@@ -464,7 +460,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Overview/Dataframes", pattern: "*.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/Overview/Dataframes/Unannotated/", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Analysis/results/Overview/Fastas", pattern: "*.fasta", mode: 'copy'
 
@@ -515,8 +511,7 @@ process CreateInterproscanFigures {
 
     conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Images/Interproscan", pattern: "*.png", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/Figures/Tables/Interproscan", pattern: "*.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/HTMLFigures/Interproscan/", pattern: "*.png", mode: 'copy'
 
     input:
     tuple val(sample), path(transdf_distinct_csv), path(toxvsnontoxIP), path(toxvsnontoxMF), path(toxvsnontoxBP)
@@ -562,7 +557,7 @@ process RmarkdownB {
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(samplesheet)
@@ -630,7 +625,7 @@ process RmarkdownA {
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), val(sampleURL)
@@ -662,7 +657,7 @@ process RmarkdownCDEGIK {
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author)
@@ -699,7 +694,7 @@ process RmarkdownH {
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(kallistotop20graphtrinity), path(kallistotop500graphtrinity), path(alluvial1), path(alluvial2), path(pie1), path(pie2), path(pie3), path(pie4), path(topkallisto), path(busco_figure)
@@ -768,7 +763,7 @@ process RmarkdownJ {
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(kallistotop20graphtransdecoder), path(kallistotop500graphtransdecoder), path(alluvial3), path(alluvial4), path(pie5), path(pie6), path(pie7), path(pie8), path(topkallisto_transdecoder), path(busco_figure_transdecoder)
@@ -836,7 +831,7 @@ process RmarkdownL {
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(alluvial5), path(alluvial6), path(pie9), path(pie10), path(pie11), path(pie12), path(topkallisto_signalp)
@@ -887,7 +882,7 @@ process RmarkdownM {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Table1)
@@ -927,7 +922,7 @@ process RmarkdownN {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Table2), path(Table3)
@@ -969,7 +964,7 @@ process RmarkdownO {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Table4)
@@ -1009,7 +1004,7 @@ process RmarkdownQ {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Table5)
@@ -1049,7 +1044,7 @@ process RmarkdownR {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Table6), path(Table7)
@@ -1091,7 +1086,7 @@ process RmarkdownS {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Table8)
@@ -1133,7 +1128,7 @@ process RmarkdownV {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Table9)
@@ -1173,7 +1168,7 @@ process RmarkdownW {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Table10), path(Table11)
@@ -1215,7 +1210,7 @@ process RmarkdownX {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Table12)
@@ -1254,7 +1249,7 @@ process RmarkdownZ {
 
     conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown r-DT R-dplyr r-knitr r-png r-gridbase r-downloadthis r-gridExtra'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(Vennlax), path(VennStrict), path(table), path(Genome), val(protspace)
@@ -1305,7 +1300,7 @@ process RmarkdownF {
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-png r-gridbase r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(IP_1), path(IP_2), path(IP_3), path(IP_1_Legend), path(IP_2_Legend), path(IP_3_Legend), path(MF_1), path(MF_2), path(MF_3), path(MF_1_Legend), path(MF_2_Legend), path(MF_3_Legend), path(BP_1), path(BP_2), path(BP_3), path(BP_1_Legend), path(BP_2_Legend), path(BP_3_Legend)
@@ -1376,7 +1371,7 @@ process Blast0Chunks {
 
     conda 'r-base=4.3'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/RappData/Alignmentapp", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/Blast0/", mode: 'copy'
 
     input:
     tuple val(sample), path(blastx0), path(blastp0)
@@ -1408,7 +1403,7 @@ process Blast0Chunksn {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/RappData/Alignmentapp", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/Blast0/", mode: 'copy'
 
     input:
     tuple val(sample), path(blastx0), path(blastp0), path(blastn0)
@@ -1440,9 +1435,10 @@ process Annotate {
 
     conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/AnnotatedData/", pattern: "*Annotated_df.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpace/Input/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpace/Input/", pattern: "*.fasta", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/Overview/Dataframes/Annotated/", pattern: "*Annotated_df.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/ProtSpace/Input/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/ProtSpace/Input/", pattern: "*.fasta", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/", pattern: "*Select_Annotated_df.csv", mode: 'copy'
 
     input:
     tuple val(sample), path(final_filtered_lax), path(toxprotblast6), path(nontoxprotblast6), path(Diamondblast6), path(toxprotblastmetadata), path(nontoxprotmetadata), path(toxvsnontoxIP), path(toxvsnontoxMF), path(toxvsnontoxBP)
@@ -1483,7 +1479,8 @@ process ProtSpace {
 
 
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/ProtSpace/results/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/ProtSpace/results/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/", pattern: "*.parquetbundle", mode: 'copy'
 
     input:
     tuple val(sample), path(filteredlaxfasta), path(ProtSpaceAnnotatedCSV)
@@ -1521,7 +1518,7 @@ process RmarkdownU {
 
     conda 'r-base=4.3 r-rmarkdown'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/htmls", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/htmls/", mode: 'copy'
 
     input:
     tuple val(sample), val(author), path(parquet), path(metadata)
@@ -1564,7 +1561,7 @@ process Minimap {
 
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
-    publishDir "${params.outdir}/${sample}/Analysis/results/Minimap/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Analysis/results/IntermediateFiles/Minimap/", mode: 'copy'
 
     input:
     tuple val(sample), path(genome), path(FilteredLaxcds)
@@ -1574,7 +1571,6 @@ process Minimap {
     tuple val(sample), path("minimaptrial.sorted.bam.bai"), emit: selectbambai
     tuple val(sample), path("expandedgenomeregions.fa"), emit: selectfasta
     tuple val(sample), path("expandedgenomeregions.fa.fai"), emit: selectfastafai
-
 
     script:
     """
@@ -2016,8 +2012,8 @@ workflow {
     RmarkdownXInput | RmarkdownX
 
 
-     RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
-     RmarkdownUInput | RmarkdownU
+    RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
+    RmarkdownUInput | RmarkdownU
 
     /*
     Rmarkdown
