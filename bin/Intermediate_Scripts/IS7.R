@@ -283,7 +283,7 @@ BP_plot <- ggplot(transdf_distinct_BP, aes(x = 2, y = RelativeProportion, fill =
   annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(transdf_distinct_BP$RelativeProportion),
            fill = "white", color = NA) +
   theme_void() +
-  labs(fill = "Venom-associated Molecular Functions") +
+  labs(fill = "Venom-associated Biological Processess") +
   theme(
     legend.position = "right",
     legend.title = element_text(),

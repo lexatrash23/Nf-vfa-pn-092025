@@ -1,5 +1,5 @@
 ---
-title: "SignalP Tables Menu"
+title: "Secreted Proteins Tables Menu"
 output: 
   html_document:
     css: style2.css 

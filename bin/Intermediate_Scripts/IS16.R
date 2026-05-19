@@ -440,6 +440,7 @@ Annotationdf <- Annotationdf %>%
   ))
 
 Annotationdf$Protein_Name <- gsub("\\[.*?\\]", "", Annotationdf$Protein_Name)
+Annotationdf$NCBInr_Name <- gsub("\\[.*?\\]", "", Annotationdf$NCBInr_Name)
 
 Annotationdf <- Annotationdf %>%
   mutate(across(everything(), ~str_remove_all(., ","))) %>%

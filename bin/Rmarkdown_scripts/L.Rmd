@@ -70,18 +70,18 @@ Name <- params$AuthorName
 **`r Sample_Name`** 
 <hr style="border: 1px solid white; width: 100%; margin:0px; padding:0px;" />
 
-
-### % of Signalp Transcripts with a significant hit to a unitprot toxin
+<div align="center">
+### % of Secreted ORFs with a significant hit to a unitprot toxin
 
 ```{r, results='asis'}
 
 P1 <- readPNG(pie9)
 P1 <- grid.raster(P1)
-cat("\n\n Figure 1. Pie chart showing the percentage of Transdecoder transcripts with predicted signal sequences that showed a significant hit to annotated uniprot toxin. Blastp was done using the transdecoder file as the query and the annotated toxin database from uniprot as the database.Pie chart represents what percentage of distinct trinity transcripts had at least one uniprot toxin match with a BitScore of at least 150.\n\n")
+cat("\n\n Figure 1. Pie chart showing the percentage of Transdecoder transcripts with predicted signal sequences that showed a significant hit to annotated uniprot toxin. Blastp was done using the transdecoder file as the query and the annotated toxin database from uniprot as the database.Pie chart represents what percentage of distinct trinity transcripts had at least one uniprot toxin match with a BitScore of at least 50. \n\n")
 ```
 
 
-### Most significant uniprot toxin hit per transcript (BitScore > 50)
+### Most significant uniprot toxin hit per transcript
 
 ```{r, results='asis'}
 A1 <- readPNG(alluvial5)
@@ -89,38 +89,38 @@ A1 <- grid.raster(A1)
 cat("\n\nFigure 2. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 50. On the right is each of the distinct Transdecoder transcripts with predicted signal sequences with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display.\n\n") 
 ```
 
-### Most significant uniprot toxin hit per transcript (BitScore > 300)
+### Most significant uniprot toxin hit per transcript 
 
 
 ```{r, results='asis'}
 A2 <- readPNG(alluvial6)
 A2 <- grid.raster(A2)
-cat("\n\nFigure 3. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 150 On the right is each of the distinct Transdecoder transcripts with predicted signal sequences with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display.\n\n") 
+cat("\n\nFigure 3. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 250 On the right is each of the distinct Transdecoder transcripts with predicted signal sequences with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display.\n\n") 
 ```
 
-### % of Relative kallisto-predicted expression of transcripts with and without uniprot toxin hit (E-value < 1e-5)
+### % of Relative kallisto-predicted expression of transcripts with and without uniprot toxin hit 
 
 ```{r, results='asis'}
 P2 <- readPNG(pie10)
 P2 <- grid.raster(P2)
-cat("\n\nFigure 4. Pie Chart displaying the relative percentage of Kallisto-predicted transcripts with a hit to uniprot toxin with an E-value of less than 1e^-5.\n\n") 
+cat("\n\n Figure 4. Pie Chart displaying the kallisto-estimated expression of transcripts with and without a hit to uniprot toxin with an E-value of less than 1e^-5. \n\n ") 
 ```
 
-### % kallisto-predicted expression of transcripts with and without uniprot toxin hit (BitScore > 150)
+### % kallisto-predicted expression of transcripts with and without uniprot toxin hit
 
 ```{r, results='asis'}
 P3 <- readPNG(pie11)
 P3 <- grid.raster(P3)
-cat("\n\nFigure 5. Pie Chart displaying the relative percentage of Kallisto-predicted transcripts with a hit to uniprot toxin with a bitscore of at least 150.\n\n") 
+cat("\n\n Figure 5. Pie Chart displaying the kallisto-estimated expression of transcripts with and without a hit to uniprot toxin(BitScore\(\ge \)50). \n\n ") 
 ```
 
 
-### Relative kallisto-predicted expression of transcripts with uniprot toxin hit (BitScore > 150)
+### Relative kallisto-predicted expression of transcripts with uniprot toxin hit 
 
 ```{r, results='asis'}
 P4 <- readPNG(pie12)
 P4 <- grid.raster(P4)
-cat("\n\nFigure 6. Pie Chart showing the relative kallisto-predicted expression of the transcripts with a uniprot toxin hit of at least 150.\n\n") 
+cat("\n\n Figure 6. Pie Chart showing the relative kallisto-predicted expression of the transcripts with a uniprot toxin hit(BitScore\(\ge \)50)  .\n\n") 
 ```
 
 ### Top 10 relatively most expressed unitprot toxin matched transcripts 
@@ -152,6 +152,8 @@ Table15 %>%
 ```
 
 ```{r, results='asis'}
-cat("\n\nTable1. Top 10 relatively most expressed uniprot toxin matched transcripts expressed a percentage of all transcripts with at least one significant uniprot toxin (BitScore >150)\n\n") 
+cat("\n\nTable1. Top 10 relatively most expressed uniprot toxin matched transcripts expressed a percentage of all transcripts with at least one significant uniprot toxin (BitScore\(\ge \)50).\n\n") 
 
 ```
+
+</div>

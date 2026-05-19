@@ -69,7 +69,7 @@ ggsave(filename = file.path("pie9.png"),, plot = pie9, width = 8, height = 6, dp
 Distinct_Transcripts_hits <- Distinct_Transcripts[!is.na(Distinct_Transcripts$Hit),]
 #bitscore 50 cutoff
 Distinct_Transcripts_50 <- Distinct_Transcripts_hits[(Distinct_Transcripts_hits$BitScore >= 50),]
-#bitscore 300 cutoff
+#bitscore 250 cutoff
 Distinct_Transcripts_250 <- Distinct_Transcripts_hits[(Distinct_Transcripts_hits$BitScore >= 250),]
 
 alluvial5 <-  ggplot(data = Distinct_Transcripts_50,
@@ -84,7 +84,7 @@ alluvial5 <-  ggplot(data = Distinct_Transcripts_50,
                        legend.key.size = unit(0.5, "cm"),  # Make the legend keys (colored boxes) smaller
                        legend.key.height = unit(0.3, "cm"),  # Adjust height of the key
                        legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = -0.5, vjust = 1)) +
-  labs(title = "Most significant unitprot toxin hit per transcript(Bitscore≥50)")
+  labs(title = "Most significant unitprot toxin hit per transcript")
 
 ggsave(filename = file.path("alluvial5.png"), plot = alluvial5, width = 8, height = 6, dpi = 600)
 
@@ -100,7 +100,7 @@ alluvial6 <- ggplot(data = Distinct_Transcripts_250,
                        legend.key.size = unit(0.5, "cm"),  # Make the legend keys (colored boxes) smaller
                        legend.key.height = unit(0.5, "cm"),  # Adjust height of the key
                        legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = 0.5) ) +
-  labs(title = "Most significant unitprot toxin hit per transcript(Bitscore≥250)")
+  labs(title = "Most significant unitprot toxin hit per transcript")
 
 ggsave(filename = file.path("alluvial6.png"), plot = alluvial6, width = 8, height = 6, dpi = 600)
 
@@ -144,7 +144,7 @@ pie11 <- ggplot(pie_data2, aes(x = "", y = Value, fill = Category)) +
   geom_bar(stat = "identity", width = 1, color = "black") +
   coord_polar(theta = "y", start = 0) +  # Set the starting angle for the slices
   theme_void() +  # Removes axes and background
-  labs(title = "% of Expression from transcripts with uniprot toxin hits(BitScore≥50) ") +
+  labs(title = "% of Expression from transcripts with uniprot toxin hits ") +
   geom_text(aes(label = paste0(round(Value/sum(Value) * 100, 1), "%")),
             position = position_stack(vjust = 0.5), size = 3) +
   scale_fill_manual(values = c("With Hits" = "#4C9E9A", "Without Hits" = "#B0B0B0")) +
