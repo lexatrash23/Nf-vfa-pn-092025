@@ -198,7 +198,7 @@ Table14 %>%
 
 
 ```{r, results='asis'}
-cat("\n\n Table1. Top 10 relatively most expressed uniprot toxin matched transcripts expressed a percentage of all transcripts with at least one significant uniprot toxin(BitScore\(\ge \)50).\n\n ") 
+cat("\n\nTable 1. Top 10 relatively most expressed UniProt toxin-matched transcripts expressed as a percentage of all transcripts with at least one significant UniProt toxin match (BitScore\\(\\geq 50\\)).\n\n")
 ```
 
 </div>
