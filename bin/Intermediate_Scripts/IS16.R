@@ -308,6 +308,9 @@ if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
       Annotation_Source = case_when(is.na(Annotation_Source) & !is.na(NCBInr_Name) ~ Source, TRUE ~ Annotation_Source)
     ) %>%
     dplyr::select(-NCBInr_Gene_Name,-NCBInr_EC_class_name,-Source)
+    
+Annotationdf$NCBInr_Name <- gsub("\\[.*?\\]", "", Annotationdf$NCBInr_Name)
+
 }
 
 Annotationdf <- Annotationdf %>%
@@ -440,7 +443,6 @@ Annotationdf <- Annotationdf %>%
   ))
 
 Annotationdf$Protein_Name <- gsub("\\[.*?\\]", "", Annotationdf$Protein_Name)
-Annotationdf$NCBInr_Name <- gsub("\\[.*?\\]", "", Annotationdf$NCBInr_Name)
 
 Annotationdf <- Annotationdf %>%
   mutate(across(everything(), ~str_remove_all(., ","))) %>%
