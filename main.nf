@@ -418,7 +418,7 @@ process ToxinVsNonToxin {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1427,7 +1427,7 @@ process Annotate {
     maxRetries 4
 
 
-    label 'process_single'
+    label 'process_bare'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
@@ -1534,7 +1534,7 @@ process RmarkdownU {
 
 
     Rscript -e "rmarkdown::render(
-      '${workflow.projectDir}/bin/Rmarkdown_scripts/Z.Rmd',
+      '${workflow.projectDir}/bin/Rmarkdown_scripts/U.Rmd',
       output_dir='.',
       params=list(
         VENN='\$parquet_abs',
