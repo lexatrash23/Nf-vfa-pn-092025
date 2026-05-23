@@ -1427,7 +1427,7 @@ process Annotate {
     maxRetries 4
 
 
-    label 'process_bare'
+    label 'process_single'
     label 'process_long'
 
     cpus { task.cpus * task.attempt }
