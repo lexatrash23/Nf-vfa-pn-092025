@@ -1281,7 +1281,8 @@ process RmarkdownZ {
         VENN2='\$Venn_abs2',
         TABLE='\$table_abs',
         AuthorName='${author}',
-        SampleName='${sample}'
+        SampleName='${sample}',
+        Path= '${workflow.projectDir}/bin/Rmarkdown_scripts'
       )
     )"
     """
