@@ -3,8 +3,11 @@
 // Process 1: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrinity {
 
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
     label 'process_bare'
 
@@ -33,8 +36,11 @@ process kallistoAnalysisTrinity {
 // Process 2: For kallistoanalysistrans.py dependencies:python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrans {
 
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -63,8 +69,11 @@ process kallistoAnalysisTrans {
 
 // Process 3: Extract Signal Sequences dependencies python biopython
 process ExtractSignalSequences {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -90,8 +99,11 @@ process ExtractSignalSequences {
 
 // Process 4: Create Trinity Dataframe dependecies : R, biocmanager 
 process CreateTrinityDataframe {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -118,8 +130,11 @@ process CreateTrinityDataframe {
 
 // Process 5: Create Interproscan Dataframe dependecies : R, biocmanager 
 process CreateInterproscanDataframe {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -146,8 +161,11 @@ process CreateInterproscanDataframe {
 
 // Process 6: Create Transdecoder Dataframe dependecies : R, biocmanager 
 process CreateTransdecoderDataframe {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -181,8 +199,11 @@ process CreateTransdecoderDataframe {
 
 // Process 8: Create BUSCOgraphtranscriptome  
 process BUSCOtranscriptome {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -210,8 +231,11 @@ process BUSCOtranscriptome {
 
 // Process 9: Create BUSCOgraphtranslatome 
 process BUSCOtranslatome {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -239,8 +263,11 @@ process BUSCOtranslatome {
 
 // Process 10: Create FigureGenerationTrinity
 process FigureGenerationTrinity {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -275,8 +302,11 @@ process FigureGenerationTrinity {
 
 // Process 11: Create FigureGenerationTransdecoder
 process FigureGenerationTransdecoder {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -311,8 +341,11 @@ process FigureGenerationTransdecoder {
 
 // Process 13: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -345,8 +378,11 @@ process FigureGenerationSignalp {
 
 // Process 12: Create TableGenerationTrinity
 process TableGenerationTrinity {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -377,8 +413,11 @@ process TableGenerationTrinity {
 
 // Process 11: Create TableGenerationTransdecoder  
 process TableGenerationTransdecoder {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -414,8 +453,11 @@ process TableGenerationTransdecoder {
 
 process ToxinVsNonToxin {
 
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_single'
@@ -448,8 +490,11 @@ process ToxinVsNonToxin {
 
 process AddMSGenomeIfAvailableAndCreateOverview {
 
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -499,8 +544,11 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
 // Process 7: Create CreateInterproscanFigures
 process CreateInterproscanFigures {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -545,8 +593,11 @@ process CreateInterproscanFigures {
 
 // Process 21: RmarkdownB
 process RmarkdownB {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -585,8 +636,11 @@ process RmarkdownB {
 
 process CreateSampleSheet {
 
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -613,8 +667,11 @@ process CreateSampleSheet {
 
 // Process 20: RmarkdownA
 process RmarkdownA {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -645,8 +702,11 @@ process RmarkdownA {
 
 // Process 22:
 process RmarkdownCDEGIK {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_single'
@@ -682,8 +742,11 @@ process RmarkdownCDEGIK {
 
 // Process 23:
 process RmarkdownH {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_single'
@@ -751,8 +814,11 @@ process RmarkdownH {
 
 // Process 24:
 process RmarkdownJ {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_single'
@@ -819,8 +885,11 @@ process RmarkdownJ {
 
 // Process 25:
 process RmarkdownL {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -870,8 +939,11 @@ process RmarkdownL {
 
 // Process 26:
 process RmarkdownM {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -910,8 +982,11 @@ process RmarkdownM {
 
 // Process 27:
 process RmarkdownN {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -952,8 +1027,11 @@ process RmarkdownN {
 
 // Process 28:
 process RmarkdownO {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -992,8 +1070,11 @@ process RmarkdownO {
 
 // Process 29:
 process RmarkdownQ {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -1032,8 +1113,11 @@ process RmarkdownQ {
 
 // Process 30:
 process RmarkdownR {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -1074,8 +1158,11 @@ process RmarkdownR {
 
 // Process 31:
 process RmarkdownS {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -1116,8 +1203,11 @@ process RmarkdownS {
 
 // Process 32:
 process RmarkdownV {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -1156,8 +1246,11 @@ process RmarkdownV {
 
 // Process 33:
 process RmarkdownW {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -1198,8 +1291,11 @@ process RmarkdownW {
 
 // Process 34:
 process RmarkdownX {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -1238,8 +1334,11 @@ process RmarkdownX {
 
 // Process 35 STRICT:
 process RmarkdownZ {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
     label 'process_bare'
     label 'process_long'
@@ -1289,8 +1388,11 @@ process RmarkdownZ {
 }
 
 process RmarkdownF {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_single'
@@ -1360,8 +1462,11 @@ process RmarkdownF {
 }
 // Process 36:
 process Blast0Chunks {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -1392,8 +1497,11 @@ process Blast0Chunks {
 
 process Blast0Chunksn {
 
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -1424,8 +1532,11 @@ process Blast0Chunksn {
 
 process Annotate {
 
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_single'
@@ -1468,8 +1579,11 @@ process Annotate {
 
 process ProtSpace {
 
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_single'
@@ -1507,8 +1621,11 @@ process ProtSpace {
 
 // Process 35 ProtSpace Page // Optional:
 process RmarkdownU {
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_bare'
@@ -1550,8 +1667,11 @@ process RmarkdownU {
 //Minimap 
 process Minimap {
 
-    errorStrategy 'ignore'
+  errorStrategy 'retry'
     maxRetries 4
+
+    cpus { task.cpus * task.attempt }
+    time { task.time * task.attempt }
 
 
     label 'process_high'

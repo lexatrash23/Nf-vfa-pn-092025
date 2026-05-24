@@ -43,6 +43,8 @@ library(gridExtra)
 
 Sample_Name <- params$SampleName
 Name <- params$AuthorName
+path <- params$Path
+
 ```
 
 
