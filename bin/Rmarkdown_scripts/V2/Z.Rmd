@@ -25,6 +25,12 @@ params:
               color: white !important;
               opacity: 1;
            }"
+           
+           
+           
+body {
+    background-color: #141414;
+}    
 </style>
 
 ```{r setup, include=FALSE,echo = FALSE, message = FALSE, warning = FALSE}
@@ -66,20 +72,26 @@ venn1 <- rasterGrob(readPNG(params$VENN1), interpolate = TRUE)
 venn2 <- rasterGrob(readPNG(params$VENN2), interpolate = TRUE)
 
 # Arrange side by side
-grid.arrange(venn1, venn2, ncol = 2)
+grid.arrange(
+  arrangeGrob(venn1, top = "Lax Filtering"),
+  arrangeGrob(venn2, top = "Strict Filtering"),
+  ncol = 2
+)
 
-
-cat(" \n\n Figure 1. Venn diagrams illustrating the criteria used to filter TransDecoder-predicted complete ORFs with predicted signal peptides for putative venom sequences. Under lax filtering conditions (left), sequences were retained if they met at least one of the following criteria: presence of at least one domain shared with a ToxProt-annotated protein (red; TD), a BLAST match to a ToxProt-annotated protein with a bitscore ≥50 (green; TP), detectable Kallisto-predicted expression (yellow; KE), at least one unique peptide match identified by mass spectrometry database search where available (blue; MS), or a cysteine content of at least 1%.Under strict filtering conditions (right), sequences were retained if they met at least one of the following criteria: presence of at least one domain overrepresented in ToxProt-annotated proteins relative to non-ToxProt reviewed proteins (red; TD), a BLAST match to a ToxProt-annotated protein with a bitscore ≥250 (green; TP), Kallisto-predicted expression representing at least 1% of total expression (yellow; KE), at least 50% sequence coverage by mass spectrometry where available (blue; MS), or a cysteine content of at least 5%.Additionally, for samples with an available genome assembly, all ORFs were pre-filtered to retain only sequences with at least 70% query coverage against the genome under lax conditions, or 100% query coverage under strict conditions. \n\n ") 
+cat(" \n\n Figure 1. Venn diagrams illustrating the criteria used to filter TransDecoder-predicted complete ORFs with predicted signal peptides for putative venom sequences. Under lax filtering conditions (left), sequences were retained if they met at least one of the following criteria: presence of at least one domain shared with a ToxProt-annotated protein (red; TD), a BLAST match to a ToxProt-annotated protein with a (BitScore\\(\\geq 50\\)) (green; TP), detectable Kallisto-predicted expression (yellow; KE), at least one unique peptide match identified by mass spectrometry database search where available (blue; MS), or a cysteine content of at least 1%.Under strict filtering conditions (right), sequences were retained if they met at least one of the following criteria: presence of at least one domain overrepresented in ToxProt-annotated proteins relative to non-ToxProt reviewed proteins (red; TD), a BLAST match to a ToxProt-annotated protein with a (BitScore\\(\\geq 250\\)) (green; TP), Kallisto-predicted expression representing at least 1% of total expression (yellow; KE), at least 50% sequence coverage by mass spectrometry where available (blue; MS), or a cysteine content of at least 5%.Additionally, for samples with an available genome assembly, all ORFs were pre-filtered to retain only sequences with at least 70% query coverage against the genome under lax conditions, or 100% query coverage under strict conditions. \n\n ") 
 
 ```
 
 ### Annotated filtered transcripts
 ```{r , echo=FALSE}
-cat(" \n\n This table displays all filtered ORFs that meet at least the lax conditions above. Transcripts labelled as category 1,2,3 indicate the most likely putative venom candidates. Category 1 transcripts either show a more significant match to a ToxProt reviewed protein than a non-ToxProt reviewed protein or match to a ToxProt reviewed protein with a bitscore  ≥250. Category 2 transcripts do not meet Category 1 criteria but they do possess a domain that is overrrepresented in ToxProt reviewed proteins compared to non-ToxProt reviewed proteins. Category 3 transcripts do not meet Category 1 or 2 criteria and do not show any significant matches (Bitscore ≥50) to any reviewed UniProt protein but do have at least 95% query coverage in the genome(if genome available) and meet atleast one of the following criteria: detectable Kallisto-predicted expression, at least one unique MS peptide match or cysteine content of at least 1%. \n\n ") 
+
 
 Uniontable <- read.csv(params$TABLE)
 datatable(
   Uniontable,
+   caption = htmltools::tags$caption(
+            style = 'caption-side: bottom; text-align: left;',
+            'Footnote: This table displays all filtered ORFs that meet at least the lax conditions above. Transcripts labelled as category 1,2,3 indicate the most likely putative venom candidates. Category 1 transcripts either show a more significant match to a ToxProt reviewed protein than a non-ToxProt reviewed protein or match to a ToxProt reviewed protein with a bitscore  ≥250. Category 2 transcripts do not meet Category 1 criteria but they do possess a domain that is overrrepresented in ToxProt reviewed proteins compared to non-ToxProt reviewed proteins. Category 3 transcripts do not meet Category 1 or 2 criteria and do not show any significant matches (Bitscore ≥50) to any reviewed UniProt protein but do have at least 95% query coverage in the genome(if genome available) and meet atleast one of the following criteria: detectable Kallisto-predicted expression, at least one unique MS peptide match or cysteine content of at least 1%.'),
   options = list(
     lengthMenu = c(5, 10, 15, 20),
     dom = 'Blfrtip',
