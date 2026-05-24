@@ -3,16 +3,17 @@
 // Process 1: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrinity {
 
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     label 'process_bare'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
@@ -36,17 +37,18 @@ process kallistoAnalysisTrinity {
 // Process 2: For kallistoanalysistrans.py dependencies:python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrans {
 
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
@@ -69,17 +71,18 @@ process kallistoAnalysisTrans {
 
 // Process 3: Extract Signal Sequences dependencies python biopython
 process ExtractSignalSequences {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'python=3.8 biopython'
 
@@ -99,17 +102,18 @@ process ExtractSignalSequences {
 
 // Process 4: Create Trinity Dataframe dependecies : R, biocmanager 
 process CreateTrinityDataframe {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
 
@@ -130,18 +134,19 @@ process CreateTrinityDataframe {
 
 // Process 5: Create Interproscan Dataframe dependecies : R, biocmanager 
 process CreateInterproscanDataframe {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base bioconductor-biostrings r-dplyr bioconductor-go.db bioconductor-biomart r-tidyr'
 
@@ -161,18 +166,19 @@ process CreateInterproscanDataframe {
 
 // Process 6: Create Transdecoder Dataframe dependecies : R, biocmanager 
 process CreateTransdecoderDataframe {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings r-stringr'
 
@@ -199,18 +205,19 @@ process CreateTransdecoderDataframe {
 
 // Process 8: Create BUSCOgraphtranscriptome  
 process BUSCOtranscriptome {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
@@ -231,18 +238,19 @@ process BUSCOtranscriptome {
 
 // Process 9: Create BUSCOgraphtranslatome 
 process BUSCOtranslatome {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
@@ -263,18 +271,19 @@ process BUSCOtranslatome {
 
 // Process 10: Create FigureGenerationTrinity
 process FigureGenerationTrinity {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
     container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'
@@ -302,18 +311,19 @@ process FigureGenerationTrinity {
 
 // Process 11: Create FigureGenerationTransdecoder
 process FigureGenerationTransdecoder {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
 
@@ -341,18 +351,19 @@ process FigureGenerationTransdecoder {
 
 // Process 13: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
 
@@ -378,18 +389,19 @@ process FigureGenerationSignalp {
 
 // Process 12: Create TableGenerationTrinity
 process TableGenerationTrinity {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-DT'
 
@@ -413,18 +425,19 @@ process TableGenerationTrinity {
 
 // Process 11: Create TableGenerationTransdecoder  
 process TableGenerationTransdecoder {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-DT r-stringr'
 
@@ -453,18 +466,19 @@ process TableGenerationTransdecoder {
 
 process ToxinVsNonToxin {
 
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
 
@@ -490,18 +504,19 @@ process ToxinVsNonToxin {
 
 process AddMSGenomeIfAvailableAndCreateOverview {
 
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings'
 
@@ -544,18 +559,19 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
 // Process 7: Create CreateInterproscanFigures
 process CreateInterproscanFigures {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
 
@@ -593,18 +609,19 @@ process CreateInterproscanFigures {
 
 // Process 21: RmarkdownB
 process RmarkdownB {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis r-rmarkdown'
 
@@ -636,18 +653,19 @@ process RmarkdownB {
 
 process CreateSampleSheet {
 
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     input:
     tuple val(sample_name), val(author_name), val(csv_content)
@@ -667,18 +685,19 @@ process CreateSampleSheet {
 
 // Process 20: RmarkdownA
 process RmarkdownA {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
 
@@ -702,18 +721,19 @@ process RmarkdownA {
 
 // Process 22:
 process RmarkdownCDEGIK {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
 
@@ -742,18 +762,19 @@ process RmarkdownCDEGIK {
 
 // Process 23:
 process RmarkdownH {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -814,18 +835,19 @@ process RmarkdownH {
 
 // Process 24:
 process RmarkdownJ {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -885,18 +907,19 @@ process RmarkdownJ {
 
 // Process 25:
 process RmarkdownL {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -939,18 +962,19 @@ process RmarkdownL {
 
 // Process 26:
 process RmarkdownM {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -982,18 +1006,19 @@ process RmarkdownM {
 
 // Process 27:
 process RmarkdownN {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1027,18 +1052,19 @@ process RmarkdownN {
 
 // Process 28:
 process RmarkdownO {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1070,18 +1096,19 @@ process RmarkdownO {
 
 // Process 29:
 process RmarkdownQ {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1113,18 +1140,19 @@ process RmarkdownQ {
 
 // Process 30:
 process RmarkdownR {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1158,18 +1186,19 @@ process RmarkdownR {
 
 // Process 31:
 process RmarkdownS {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1203,18 +1232,19 @@ process RmarkdownS {
 
 // Process 32:
 process RmarkdownV {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1246,18 +1276,19 @@ process RmarkdownV {
 
 // Process 33:
 process RmarkdownW {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1291,18 +1322,19 @@ process RmarkdownW {
 
 // Process 34:
 process RmarkdownX {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1334,17 +1366,18 @@ process RmarkdownX {
 
 // Process 35 STRICT:
 process RmarkdownZ {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown r-DT R-dplyr r-knitr r-png r-gridbase r-downloadthis r-gridExtra'
 
@@ -1388,18 +1421,19 @@ process RmarkdownZ {
 }
 
 process RmarkdownF {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-png r-gridbase r-rmarkdown'
 
@@ -1462,18 +1496,19 @@ process RmarkdownF {
 }
 // Process 36:
 process Blast0Chunks {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3'
 
@@ -1497,18 +1532,19 @@ process Blast0Chunks {
 
 process Blast0Chunksn {
 
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
 
@@ -1532,18 +1568,16 @@ process Blast0Chunksn {
 
 process Annotate {
 
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_single'
     label 'process_long'
-
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
 
@@ -1579,18 +1613,17 @@ process Annotate {
 
 process ProtSpace {
 
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
 
 
 
@@ -1621,18 +1654,19 @@ process ProtSpace {
 
 // Process 35 ProtSpace Page // Optional:
 process RmarkdownU {
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-rmarkdown'
 
@@ -1667,18 +1701,19 @@ process RmarkdownU {
 //Minimap 
 process Minimap {
 
-  errorStrategy 'retry'
+   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
     maxRetries 4
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
 
     label 'process_high'
     label 'process_long'
 
-    cpus { task.cpus * task.attempt }
-    time { task.time * task.attempt }
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
 
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
