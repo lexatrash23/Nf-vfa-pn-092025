@@ -7,7 +7,7 @@ output:
 params:
   parquet_path: NULL
   metadata_path: NULL
-  AuthorName: NU;LL
+  AuthorName: NULL
   SampleName: NULL
 ---
 
