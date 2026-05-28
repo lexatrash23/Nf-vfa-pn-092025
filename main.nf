@@ -1689,8 +1689,8 @@ process RmarkdownU {
       '${workflow.projectDir}/bin/Rmarkdown_scripts/U.Rmd',
       output_dir='.',
       params=list(
-        VENN='\$parquet_abs',
-        TABLE='\$metadata_abs',
+        parquet_path='\$parquet_abs',
+        metadata_path='\$metadata_abs',
         AuthorName = '${author}',
         SampleName = '${sample}'
       )
