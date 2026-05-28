@@ -326,15 +326,15 @@ Annotationdf <- Annotationdf %>%
 #InterPro_accession_Names, #GO_name, #Panther_ID_Names, 
 #MassSpecColumns, GenomeBlastColumns, NonToxUniProtColumns, #DiamondBlastColumns
 #Categorical scores
-#AnnotationScore (1,0) #ToxinDomainScore(2,1,0), #ProteomicCoverageScore(2,1,0), #KallistoExpressionScore(2,1,0), #CysPerScore(2,1,0), #Blastscore(2,1,0)
+#AnnotationScore (1,0) #ToxinDomainScore(2,1,0), #ProteomicCoverageScore(2,1,0), #KallistoExpressionScore(2,1,0), #CysPerScore(2,1,0), #BlastScore(2,1,0)
 #if genomeblastcolumns are present -> GenomeSupportScore(2,1,0) else GenomeSupportScore(NA)
 # 0 <- nothing, #2 <-pident ≥ 85 AND qcovs ≥ 85,  1 <- qcovs ≥ 50 AND pident ≥ 50
 
 #CategoryColumn. 
 
 #if genome is present, all have at least some match to the genome already 
-#Category1[Toxin similarity]: AnnoationScore =1 and/or Blastscore = 2
-#Category2[Domain similarity]: AnnoationScore =0 and Blastscore <2 and ToxinDomainScore =2 
+#Category1[Toxin similarity]: AnnoationScore =1 and/or BlastScore = 2
+#Category2[Domain similarity]: AnnoationScore =0 and BlastScore <2 and ToxinDomainScore =2 
 #Category3[Novel]: No reviewed uniprot match, ToxinDomainScore <2, KallistoExpressionScore >2 and/or ProteomicCoverageScore>2 and/or CysPerScore >2
 #4: remaining 
 # ADD NA genome and proteome columns if not there 
@@ -366,6 +366,10 @@ if (!("Top" %in% colnames(Annotationdf))) {
 if (!("genome_qcovs" %in% colnames(Annotationdf))) {
   Annotationdf[["genome_qcovs"]] <- NA
   Annotationdf[["genome_pident"]] <- NA
+}
+
+if (!("Minimap_mapq" %in% colnames(Annotationdf))) {
+  Annotationdf[["Minimap_mapq"]] <- NA
 }
 
 
@@ -411,7 +415,7 @@ Annotationdf <- Annotationdf %>%
     )
   ) %>%
   mutate(
-    Blastscore = case_when(
+    BlastScore = case_when(
       ToxProt_bitscore >= 250 ~ 2,
       ToxProt_bitscore >= 50 ~ 1,
       TRUE ~ 0
@@ -421,7 +425,7 @@ Annotationdf <- Annotationdf %>%
     GenomeSupportScore = case_when(
       genome_qcovs == 100 & genome_pident == 100 ~ 3,
       genome_qcovs >= 90 & genome_pident >= 90 ~ 2,
-      genome_qcovs >= 70 & genome_pident >= 70 ~ 1,
+      genome_qcovs >= 80 & genome_pident >= 80 ~ 1,
       is.na(genome_qcovs) ~ NA_real_,
       TRUE ~ 0
     )
@@ -431,13 +435,13 @@ Annotationdf <- Annotationdf %>%
 
 Annotationdf <- Annotationdf %>%
   mutate(Category = case_when(
-    AnnotationScore == 1 | Blastscore == 2 ~ "Category 1",
-    ToxinDomainScore == 2 ~ "Category 2",
+(GenomeSupportScore >= 2 |is.na(GenomeSupportScore)) &(AnnotationScore == 1 | BlastScore == 2) ~ "Category 1",
+(GenomeSupportScore >= 2 |is.na(GenomeSupportScore)) & ToxinDomainScore == 2 ~ "Category 2",
     (is.na(Annotation_Source) | Annotation_Source == "NCBInr") &
       (GenomeSupportScore >= 2 |is.na(GenomeSupportScore)) &
       (CysPerScore > 0 |
          KallistoExpressionScore > 0 |
-         ProteomicCoverageScore > 0 | (genome_qcovs == 100 & genome_pident >=95)) ~ "Category 3",
+         ProteomicCoverageScore > 0 | GenomeSupportScore == 3 ) ~ "Category 3",
 (Annotation_Source == "NonToxUniProt")  ~ "Putative non-toxins",
     TRUE ~ "Lower genome alignment transcripts"
   ))
@@ -456,7 +460,7 @@ Annotationdf <- Annotationdf %>%
 write.csv(Annotationdf, paste0(sample, "_Select_Annotated_df.csv"), row.names = FALSE)
 
 ProtSpaceAnnoation <- Annotationdf %>%
-  dplyr::select(Transdecoder_ID,UniqueSequenceName,PEP_Length,Signal_Length,Mature_Length,CysPer,tpm,Hit,Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,AnnotationScore,ToxinDomainScore,ProteomicCoverageScore,KallistoExpressionScore,CysPerScore,Blastscore,GenomeSupportScore,Category,Filter)
+  dplyr::select(Transdecoder_ID,UniqueSequenceName,PEP_Length,Signal_Length,Mature_Length,CysPer,tpm,Hit,Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,AnnotationScore,ToxinDomainScore,ProteomicCoverageScore,KallistoExpressionScore,CysPerScore,BlastScore,GenomeSupportScore,Category,Filter, Minimap_mapq)
 
 write.csv(ProtSpaceAnnoation, paste0(sample, "_ProtSpaceAnnotation.csv"), row.names = FALSE)
 

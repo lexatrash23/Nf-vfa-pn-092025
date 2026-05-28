@@ -3,7 +3,7 @@
 // Process 1: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrinity {
 
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -37,7 +37,7 @@ process kallistoAnalysisTrinity {
 // Process 2: For kallistoanalysistrans.py dependencies:python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrans {
 
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -71,7 +71,7 @@ process kallistoAnalysisTrans {
 
 // Process 3: Extract Signal Sequences dependencies python biopython
 process ExtractSignalSequences {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -102,7 +102,7 @@ process ExtractSignalSequences {
 
 // Process 4: Create Trinity Dataframe dependecies : R, biocmanager 
 process CreateTrinityDataframe {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -134,7 +134,7 @@ process CreateTrinityDataframe {
 
 // Process 5: Create Interproscan Dataframe dependecies : R, biocmanager 
 process CreateInterproscanDataframe {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -144,9 +144,6 @@ process CreateInterproscanDataframe {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base bioconductor-biostrings r-dplyr bioconductor-go.db bioconductor-biomart r-tidyr'
 
@@ -166,7 +163,7 @@ process CreateInterproscanDataframe {
 
 // Process 6: Create Transdecoder Dataframe dependecies : R, biocmanager 
 process CreateTransdecoderDataframe {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -176,9 +173,6 @@ process CreateTransdecoderDataframe {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings r-stringr'
 
@@ -205,7 +199,7 @@ process CreateTransdecoderDataframe {
 
 // Process 8: Create BUSCOgraphtranscriptome  
 process BUSCOtranscriptome {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -215,9 +209,6 @@ process BUSCOtranscriptome {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
@@ -238,7 +229,7 @@ process BUSCOtranscriptome {
 
 // Process 9: Create BUSCOgraphtranslatome 
 process BUSCOtranslatome {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -248,9 +239,6 @@ process BUSCOtranslatome {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
@@ -271,7 +259,7 @@ process BUSCOtranslatome {
 
 // Process 10: Create FigureGenerationTrinity
 process FigureGenerationTrinity {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -281,9 +269,6 @@ process FigureGenerationTrinity {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
     container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'
@@ -311,7 +296,7 @@ process FigureGenerationTrinity {
 
 // Process 11: Create FigureGenerationTransdecoder
 process FigureGenerationTransdecoder {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -321,9 +306,6 @@ process FigureGenerationTransdecoder {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
 
@@ -351,7 +333,7 @@ process FigureGenerationTransdecoder {
 
 // Process 13: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -361,9 +343,6 @@ process FigureGenerationSignalp {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
 
@@ -389,7 +368,7 @@ process FigureGenerationSignalp {
 
 // Process 12: Create TableGenerationTrinity
 process TableGenerationTrinity {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -399,9 +378,6 @@ process TableGenerationTrinity {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-DT'
 
@@ -425,7 +401,7 @@ process TableGenerationTrinity {
 
 // Process 11: Create TableGenerationTransdecoder  
 process TableGenerationTransdecoder {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -435,9 +411,6 @@ process TableGenerationTransdecoder {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-dplyr r-DT r-stringr'
 
@@ -466,7 +439,7 @@ process TableGenerationTransdecoder {
 
 process ToxinVsNonToxin {
 
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -477,8 +450,6 @@ process ToxinVsNonToxin {
     label 'process_single'
     label 'process_long'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
 
@@ -500,11 +471,48 @@ process ToxinVsNonToxin {
     """
 }
 
+//Process Minimap2: For all complete ORFs if genome is available, just to get alignment statistics
+process Minimap1 {
+
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
+    maxRetries 4
+
+    cpus { 2 * task.attempt }
+    time { 1 * task.attempt }
+
+
+    label 'process_high'
+    label 'process_long'
+
+
+
+    conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
+
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Minimap/AllCompleteORFs", mode: 'copy'
+
+    input:
+    tuple val(sample), path(genome), path(transdecoder_cds)
+
+    output:
+    tuple val(sample), path("*.bam")
+    tuple val(sample), path("*.paf"), emit: completecdspaf
+
+    script:
+    """
+    minimap2 -ax splice:hq -uf ${genome} ${transdecoder_cds} > completecdsalignment.paf
+    minimap2 -ax splice:hq -uf ${genome} ${transdecoder_cds} > completecdsminimap.sam
+    samtools view -bS completecdsminimap.sam > completecdsminimap.bam
+    rm -r *.sam
+
+    """
+}
+
 //Process 12: Add Massspec and Blastn6 results where available
 
 process AddMSGenomeIfAvailableAndCreateOverview {
 
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -515,17 +523,14 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     label 'process_bare'
     label 'process_long'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
-
-    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings'
+    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Dataframes/Unannotated/", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Fastas", pattern: "*.fasta", mode: 'copy'
 
     input:
-    tuple val(sample), val(species), path(massspec), path(blastn6), path(transdf), path(toxvsnontoxIP)
+    tuple val(sample), val(species), path(massspec), path(blastn6), path(transdf), path(paf), path(toxvsnontoxIP)
 
     output:
     tuple val(sample), path("*_Venn_strict.png"), emit: VennPngStrict
@@ -553,13 +558,19 @@ process AddMSGenomeIfAvailableAndCreateOverview {
         MS_ARG="NULL"
     fi
 
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" "${sample}" "${species}" ${transdf} ${toxvsnontoxIP}  \$BLASTN_ARG \$MS_ARG
+    if [ -s ${paf} ] && [ "\$(cat ${paf})" != "NULL" ]; then
+        MM_ARG="${paf}"
+    else
+        MM_ARG="NULL"
+    fi
+
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" "${sample}" "${species}" ${transdf} ${toxvsnontoxIP}  \$BLASTN_ARG \$MS_ARG \$MM_ARG
     """
 }
 
 // Process 7: Create CreateInterproscanFigures
 process CreateInterproscanFigures {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -569,9 +580,6 @@ process CreateInterproscanFigures {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
 
@@ -609,7 +617,7 @@ process CreateInterproscanFigures {
 
 // Process 21: RmarkdownB
 process RmarkdownB {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -619,9 +627,6 @@ process RmarkdownB {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis r-rmarkdown'
 
@@ -653,7 +658,7 @@ process RmarkdownB {
 
 process CreateSampleSheet {
 
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -663,9 +668,6 @@ process CreateSampleSheet {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     input:
     tuple val(sample_name), val(author_name), val(csv_content)
@@ -685,7 +687,7 @@ process CreateSampleSheet {
 
 // Process 20: RmarkdownA
 process RmarkdownA {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -695,9 +697,6 @@ process RmarkdownA {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
 
@@ -721,7 +720,7 @@ process RmarkdownA {
 
 // Process 22:
 process RmarkdownCDEGIK {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -762,7 +761,7 @@ process RmarkdownCDEGIK {
 
 // Process 23:
 process RmarkdownH {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -835,7 +834,7 @@ process RmarkdownH {
 
 // Process 24:
 process RmarkdownJ {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -907,7 +906,7 @@ process RmarkdownJ {
 
 // Process 25:
 process RmarkdownL {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -917,9 +916,6 @@ process RmarkdownL {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -962,7 +958,7 @@ process RmarkdownL {
 
 // Process 26:
 process RmarkdownM {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -972,9 +968,6 @@ process RmarkdownM {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1006,7 +999,7 @@ process RmarkdownM {
 
 // Process 27:
 process RmarkdownN {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1016,9 +1009,6 @@ process RmarkdownN {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1052,7 +1042,7 @@ process RmarkdownN {
 
 // Process 28:
 process RmarkdownO {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1062,9 +1052,6 @@ process RmarkdownO {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1096,7 +1083,7 @@ process RmarkdownO {
 
 // Process 29:
 process RmarkdownQ {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1106,9 +1093,6 @@ process RmarkdownQ {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1140,7 +1124,7 @@ process RmarkdownQ {
 
 // Process 30:
 process RmarkdownR {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1150,9 +1134,6 @@ process RmarkdownR {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1186,7 +1167,7 @@ process RmarkdownR {
 
 // Process 31:
 process RmarkdownS {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1196,9 +1177,6 @@ process RmarkdownS {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1232,7 +1210,7 @@ process RmarkdownS {
 
 // Process 32:
 process RmarkdownV {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1242,9 +1220,6 @@ process RmarkdownV {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1276,7 +1251,7 @@ process RmarkdownV {
 
 // Process 33:
 process RmarkdownW {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1286,9 +1261,6 @@ process RmarkdownW {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1322,7 +1294,7 @@ process RmarkdownW {
 
 // Process 34:
 process RmarkdownX {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1332,9 +1304,6 @@ process RmarkdownX {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1366,7 +1335,7 @@ process RmarkdownX {
 
 // Process 35 STRICT:
 process RmarkdownZ {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1421,7 +1390,7 @@ process RmarkdownZ {
 }
 
 process RmarkdownF {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1496,7 +1465,7 @@ process RmarkdownF {
 }
 // Process 36:
 process Blast0Chunks {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1506,9 +1475,6 @@ process Blast0Chunks {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3'
 
@@ -1532,7 +1498,7 @@ process Blast0Chunks {
 
 process Blast0Chunksn {
 
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1542,9 +1508,6 @@ process Blast0Chunksn {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
 
@@ -1568,7 +1531,7 @@ process Blast0Chunksn {
 
 process Annotate {
 
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1613,7 +1576,7 @@ process Annotate {
 
 process ProtSpace {
 
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1654,7 +1617,7 @@ process ProtSpace {
 
 // Process 35 ProtSpace Page // Optional:
 process RmarkdownU {
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1664,9 +1627,6 @@ process RmarkdownU {
 
     label 'process_bare'
     label 'process_long'
-
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
 
     conda 'r-base=4.3 r-rmarkdown'
 
@@ -1698,10 +1658,10 @@ process RmarkdownU {
     """
 }
 
-//Minimap 
+//Minimap for just our candidates that fall in category to visualise against genome 
 process Minimap {
 
-   errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
 
@@ -1712,17 +1672,15 @@ process Minimap {
     label 'process_high'
     label 'process_long'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
-
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Minimap/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Minimap/CandidateToxins/", mode: 'copy'
 
     input:
     tuple val(sample), path(genome), path(FilteredLaxcds)
 
     output:
+    tuple val(sample), path("minimaptrial.bam"), emit: bam
     tuple val(sample), path("minimaptrial.sorted.bam"), emit: selectbam
     tuple val(sample), path("minimaptrial.sorted.bam.bai"), emit: selectbambai
     tuple val(sample), path("expandedgenomeregions.fa"), emit: selectfasta
@@ -2011,11 +1969,24 @@ workflow {
     // Run CreateInterproscanFigures
     CreateInterproscanFiguresInput | CreateInterproscanFigures
 
+    //Minimap1 for all complete ORFs 
+
+    Minimap1Input = venomflowfiles
+        .filter { it[41] }
+        .map { item ->
+            def combinedcds2 = item[4] && item[4] != ''
+                ? item[4]
+                : (item[36] && item[36] != '' ? item[36] : item[37])
+            [item[0], item[41], combinedcds2]
+        }
+    //Minimap run 
+    Minimap1Input | Minimap
     // Overview 
 
     AddMSGenomeIfAvailableAndCreateOverviewInput = venomflowfiles
         .map { [it[0], it[18], it[19] ?: [], it[10] ?: []] }
         .join(CreateTransdecoderDataframe.out.transdf_distinct)
+        .join(Minimap1.out.completecdspaf)
         .combine(ToxinVsNonToxin.out.toxvsnontoxIP)
 
     AddMSGenomeIfAvailableAndCreateOverviewInput | AddMSGenomeIfAvailableAndCreateOverview

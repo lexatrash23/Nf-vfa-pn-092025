@@ -122,6 +122,10 @@ image1 <- rasterGrob(readPNG(BP_1), interpolate = TRUE)
 image2 <- rasterGrob(readPNG(BP_1_Legend), interpolate = TRUE)
 
 image1
+```
+
+```{r, results='asis',fig.align='center'}
+
 image2
 cat(" \n\n Figure 3. Relative expression of transcripts based on Biological Processess found in known toxins.  \n\n ") 
 
@@ -136,6 +140,10 @@ image1 <- rasterGrob(readPNG(IP_2), interpolate = TRUE)
 image2 <- rasterGrob(readPNG(IP_2_Legend), interpolate = TRUE)
 
 image1
+```
+
+```{r, results='asis',fig.align='center'}
+
 image2
 
 cat(" \n\n Figure 4. Relative expression of transcripts based on interproscan domains overrepresented in known toxin.  \n\n ") 
@@ -149,6 +157,10 @@ image1 <- rasterGrob(readPNG(MF_2), interpolate = TRUE)
 image2 <- rasterGrob(readPNG(MF_2_Legend), interpolate = TRUE)
 
 image1
+```
+
+```{r, results='asis',fig.align='center'}
+
 image2
 
 cat(" \n\n Figure 5. Relative expression of transcripts based on Molecular Functions overrepresented in known toxin.\n\n ") 
@@ -162,6 +174,10 @@ image1 <- rasterGrob(readPNG(BP_2), interpolate = TRUE)
 image2 <- rasterGrob(readPNG(BP_2_Legend), interpolate = TRUE)
 
 image1
+```
+
+```{r, results='asis',fig.align='center'}
+
 image2
 
 cat(" \n\n Figure 6. Relative expression of transcripts based on Biological Processess overrepresented in known toxin.\n\n ") 
@@ -176,6 +192,10 @@ image1 <- rasterGrob(readPNG(IP_3), interpolate = TRUE)
 image2 <- rasterGrob(readPNG(IP_3_Legend), interpolate = TRUE)
 
 image1
+```
+
+```{r, results='asis',fig.align='center'}
+
 image2
 
 cat(" \n\n Figure 7. Relative expression of transcripts based on interproscan domains.  \n\n ") 
@@ -189,6 +209,10 @@ image1 <- rasterGrob(readPNG(MF_3), interpolate = TRUE)
 image2 <- rasterGrob(readPNG(MF_3_Legend), interpolate = TRUE)
 
 image1
+```
+
+```{r, results='asis',fig.align='center'}
+
 image2
 cat(" \n\n Figure 8. Relative expression of transcripts based on Molecular Functions.\n\n ") 
 
@@ -201,6 +225,10 @@ image1 <- rasterGrob(readPNG(BP_3), interpolate = TRUE)
 image2 <- rasterGrob(readPNG(BP_3_Legend), interpolate = TRUE)
 
 image1
+```
+
+```{r, results='asis',fig.align='center'}
+
 image2
 
 cat(" \n\n Figure 9. Relative expression of transcripts based on Biological Processess.\n\n ") 

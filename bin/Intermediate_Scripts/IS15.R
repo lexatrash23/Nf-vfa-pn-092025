@@ -30,6 +30,7 @@ library(ggplot2)
 library(GenomicRanges)
 library(igraph)
 library(Biostrings)
+library(pafr)
 #load in command line arguments
 args <- commandArgs(trailingOnly = TRUE)
 Sample_name <- args[1] 
@@ -38,6 +39,7 @@ Transdf_distinct_file <- args[3]
 ToxnontoxIP <- args[4]
 Blastn_result <- args[5]
 mass_spec_file <- args[6]
+Minimap_result <- args[7]
 
 
 # Function to read in transdf and make transdf_distinct, filter for complete ORF with signal P //slightly different from other transdf distincct
@@ -95,6 +97,18 @@ read_blast <- function(file) {
   blast <- blast %>% arrange(desc(genome_bitscore)) %>% distinct(Transdecoder_ID, .keep_all = TRUE)
   return(blast)
 }
+
+read_PAF <- function(file) {
+  ali <- read_paf(file)
+  names(ali) <- ifelse(names(ali) %in% c("qname","qlen","qstart","qend","strand","tname","tlen","tstart","tend","nmatch","alen","mapq","NM","ms","AS","nn","ts","tp","cm","s1","s2","de","rl","cg"), paste0(prefix, "_", names(ali)), names(ali))
+  ali <- ali %>%
+    filter(Minimap_tp == "P") %>%
+    mutate(Minimap_pident = (Minimap_nmatch/Minimap_alen)*100) %>%
+    mutate(Minimap_pident=round(Minimap_pident, 2))  %>%
+    dplyr::rename(Transdecoder_ID = Minimap_qname)
+  return(ali)
+}
+
 
 # Filter and prepare Base
 prepare_base <- function(df) {
@@ -193,6 +207,12 @@ blastn <- if (!is.na(Blastn_result) && Blastn_result != "NULL") {
 } else {
   NULL
 }
+
+Minimap <- if (!is.na(Minimap) && Minimap != "NULL") {
+  read_PAF(Minimap_result)
+} else {
+  NULL
+}
 # Join mass spec and blast unfiltered
 transdf_unfiltered <- transdf
 if (!is.na(mass_spec_file) && mass_spec_file != "NULL") {
@@ -200,7 +220,14 @@ if (!is.na(mass_spec_file) && mass_spec_file != "NULL") {
 }
 if (!is.na(Blastn_result) && Blastn_result != "NULL") {
   transdf_unfiltered <- left_join(transdf_unfiltered, blastn, by="Transdecoder_ID")
+
 }
+
+if (!is.na(Minimap_result) && Minimap_result != "NULL") {
+  transdf_unfiltered <- left_join(transdf_unfiltered,Minimap, by="Transdecoder_ID")
+  
+}
+
 write.csv(transdf_unfiltered, paste0(Sample_name,"_transdf_distinct_final_unfiltered.csv"), row.names = FALSE)
 
 #Join mass spec and blast filtered
@@ -265,8 +292,19 @@ if (!is.na(Blastn_result) && Blastn_result != "NULL") {
     dplyr::select(-cluster)
   
   transdf_filtered <- transdf_filtered %>% 
-    filter(genome_qcovs >= 70)
+    filter(genome_qcovs >= 70 & genome_pident >= 70)
+  
+  
 
+
+}
+
+if (!is.na(Minimap_result) && Minimap_result != "NULL") {
+  ali <- Minimap %>%
+    dplyr::select(Transdecoder_ID,Minimap_tname,Minimap_tlen,Minimap_tstart,Minimap_tend,Minimap_nmatch,Minimap_mapq,Minimap_tp,Minimap_cg)
+  transdf_filtered <- left_join(transdf_filtered, Minimap , by = "Transdecoder_ID") %>%
+    filter(!is.na(Minimap_mapq)) %>%
+    filter(Minimap_mapq != "")
 }
 
 Base <- transdf_filtered
