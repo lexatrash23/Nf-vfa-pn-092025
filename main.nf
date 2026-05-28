@@ -1978,7 +1978,7 @@ workflow {
             [item[0], item[41], combinedcds2]
         }
     //Minimap run 
-    Minimap1Input | Minimap
+    Minimap1Input | Minimap1
     // Overview 
 
     AddMSGenomeIfAvailableAndCreateOverviewInput = venomflowfiles
