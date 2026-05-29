@@ -213,6 +213,7 @@ Minimap <- if (!is.na(Minimap_result) && Minimap_result != "NULL") {
 } else {
   NULL
 }
+print(mass_spec_file)
 # Join mass spec and blast unfiltered
 transdf_unfiltered <- transdf
 if (!is.na(mass_spec_file) && mass_spec_file != "NULL") {
