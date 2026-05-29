@@ -208,7 +208,7 @@ blastn <- if (!is.na(Blastn_result) && Blastn_result != "NULL") {
   NULL
 }
 
-Minimap <- if (!is.na(Minimap) && Minimap != "NULL") {
+Minimap <- if (!is.na(Minimap_result) && Minimap_result != "NULL") {
   read_PAF(Minimap_result)
 } else {
   NULL
