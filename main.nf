@@ -530,7 +530,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Fastas", pattern: "*.fasta", mode: 'copy'
 
     input:
-    tuple val(sample), val(species), path(massspec), path(blastn6), path(transdf), path(paf), path(toxvsnontoxIP)
+    tuple val(sample), val(species), path(massspec, arity: '0..1'), path(blastn6, arity: '0..1'), path(transdf), path(paf, arity: '0..1'), path(toxvsnontoxIP)
 
     output:
     tuple val(sample), path("*_Venn_strict.png"), emit: VennPngStrict
@@ -543,29 +543,14 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     //unfiltered
     path "*final_unfiltered.csv"
 
-    script:
+     script:
+    def ms_arg  = massspec ? "${massspec}" : "NULL"
+    def bn6_arg = blastn6  ? "${blastn6}"  : "NULL"
+    def paf_arg = paf      ? "${paf}"      : "NULL"
     """
-	# Check if file exists and is not empty placeholder
-    if [ -s ${blastn6} ] && [ "\$(cat ${blastn6})" != "NULL" ]; then
-        BLASTN_ARG="${blastn6}"
-    else
-        BLASTN_ARG="NULL"
-    fi
-
-     if [ -s ${massspec} ] && [ "\$(cat ${massspec})" != "NULL" ]; then
-        MS_ARG="${massspec}"
-    else
-        MS_ARG="NULL"
-    fi
-
-    if [ -s ${paf} ] && [ "\$(cat ${paf})" != "NULL" ]; then
-        MM_ARG="${paf}"
-    else
-        MM_ARG="NULL"
-    fi
-    echo "$MS_ARG"
-
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" "${sample}" "${species}" ${transdf} ${toxvsnontoxIP}  "\$BLASTN_ARG" "\$MS_ARG" "\$MM_ARG"
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" \
+        "${sample}" "${species}" ${transdf} ${toxvsnontoxIP} \
+        "${bn6_arg}" "${ms_arg}" "${paf_arg}"
     """
 }
 
@@ -1983,13 +1968,13 @@ workflow {
     // Overview 
 
     AddMSGenomeIfAvailableAndCreateOverviewInput = venomflowfiles
-        .map { [it[0], it[18], it[19] ?: [], it[10] ?: []] }
+        .map { it -> [it[0], it[18], it[19] ?: [], it[10] ?: []] }
         .join(CreateTransdecoderDataframe.out.transdf_distinct)
-        .join(Minimap1.out.completecdspaf)
+        .join(Minimap1.out.completecdspaf, remainder: true)
+        .map { it -> it[0..-2] + [it[-1] ?: []] }
         .combine(ToxinVsNonToxin.out.toxvsnontoxIP)
 
-    AddMSGenomeIfAvailableAndCreateOverviewInput | AddMSGenomeIfAvailableAndCreateOverview
-
+    AddMSGenomeIfAvailableAndCreateOverviewInput | AddMSGenomeIfAvailableAndCreateOverview  
     //Define Input for Annotate
     WithDiamond = venomflowfiles.filter { it[38] }.map { [it[0], it[7], it[39], it[38]] }
     //sample, blastptox, blastpnontox, diamond
