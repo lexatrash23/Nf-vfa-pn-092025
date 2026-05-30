@@ -543,10 +543,10 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     //unfiltered
     path "*final_unfiltered.csv"
 
-     script:
-    def ms_arg  = massspec ? "${massspec}" : "NULL"
-    def bn6_arg = blastn6  ? "${blastn6}"  : "NULL"
-    def paf_arg = paf      ? "${paf}"      : "NULL"
+    script:
+    def ms_arg = massspec ? "${massspec}" : "NULL"
+    def bn6_arg = blastn6 ? "${blastn6}" : "NULL"
+    def paf_arg = paf ? "${paf}" : "NULL"
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" \
         "${sample}" "${species}" ${transdf} ${toxvsnontoxIP} \
@@ -1974,7 +1974,7 @@ workflow {
         .map { it -> it[0..-2] + [it[-1] ?: []] }
         .combine(ToxinVsNonToxin.out.toxvsnontoxIP)
 
-    AddMSGenomeIfAvailableAndCreateOverviewInput | AddMSGenomeIfAvailableAndCreateOverview  
+    AddMSGenomeIfAvailableAndCreateOverviewInput | AddMSGenomeIfAvailableAndCreateOverview
     //Define Input for Annotate
     WithDiamond = venomflowfiles.filter { it[38] }.map { [it[0], it[7], it[39], it[38]] }
     //sample, blastptox, blastpnontox, diamond
