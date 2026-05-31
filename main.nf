@@ -530,8 +530,8 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Fastas", pattern: "*.fasta", mode: 'copy'
 
     input:
-    tuple val(sample), val(species), path(massspec, arity: '0..1'), path(blastn6, arity: '0..1'), path(transdf), path(paf, arity: '0..1'), path(toxvsnontoxIP)
-
+    tuple val(sample), val(species), path(massspec), path(blastn6), path(transdf), path(paf), path(toxvsnontoxIP)
+        
     output:
     tuple val(sample), path("*_Venn_strict.png"), emit: VennPngStrict
     tuple val(sample), path("*filtered_strict.csv"), emit: VennCsvStrict
@@ -543,10 +543,11 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     //unfiltered
     path "*final_unfiltered.csv"
 
+
     script:
-    def ms_arg = massspec ? "${massspec}" : "NULL"
-    def bn6_arg = blastn6 ? "${blastn6}" : "NULL"
-    def paf_arg = paf ? "${paf}" : "NULL"
+    def ms_arg  = massspec.name != 'NO_FILE' ? "${massspec}" : "NULL"
+    def bn6_arg = blastn6.name  != 'NO_FILE' ? "${blastn6}"  : "NULL"
+    def paf_arg = paf.name      != 'NO_FILE' ? "${paf}"      : "NULL"
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" \
         "${sample}" "${species}" ${transdf} ${toxvsnontoxIP} \
@@ -1968,10 +1969,10 @@ workflow {
     // Overview 
 
     AddMSGenomeIfAvailableAndCreateOverviewInput = venomflowfiles
-        .map { it -> [it[0], it[18], it[19] ?: [], it[10] ?: []] }
+        .map { it -> [it[0], it[18], it[19] ?: file('NO_FILE'), it[10] ?: file('NO_FILE')] }
         .join(CreateTransdecoderDataframe.out.transdf_distinct)
         .join(Minimap1.out.completecdspaf, remainder: true)
-        .map { it -> it[0..-2] + [it[-1] ?: []] }
+        .map { it -> it[0..-2] + [it[-1] ?: file('NO_FILE')] }
         .combine(ToxinVsNonToxin.out.toxvsnontoxIP)
 
     AddMSGenomeIfAvailableAndCreateOverviewInput | AddMSGenomeIfAvailableAndCreateOverview
