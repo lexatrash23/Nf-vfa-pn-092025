@@ -520,7 +520,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     time { 1 * task.attempt }
 
 
-    label 'process_bare'
+    label 'process_single'
     label 'process_long'
 
     conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr'
