@@ -100,6 +100,7 @@ read_blast <- function(file) {
 
 read_PAF <- function(file) {
   ali <- read_paf(file)
+  prefix <- "Minimap"
   names(ali) <- ifelse(names(ali) %in% c("qname","qlen","qstart","qend","strand","tname","tlen","tstart","tend","nmatch","alen","mapq","NM","ms","AS","nn","ts","tp","cm","s1","s2","de","rl","cg"), paste0(prefix, "_", names(ali)), names(ali))
   ali <- ali %>%
     filter(Minimap_tp == "P") %>%
