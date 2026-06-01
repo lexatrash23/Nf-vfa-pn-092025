@@ -500,7 +500,7 @@ process Minimap1 {
 
     script:
     """
-    minimap2 -ax splice:hq -uf ${genome} ${transdecoder_cds} > completecdsalignment.paf
+    minimap2 -cx splice:hq -uf ${genome} ${transdecoder_cds} > completecdsalignment.paf
     minimap2 -ax splice:hq -uf ${genome} ${transdecoder_cds} > completecdsminimap.sam
     samtools view -bS completecdsminimap.sam > completecdsminimap.bam
     rm -r *.sam
