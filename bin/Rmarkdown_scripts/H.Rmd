@@ -126,7 +126,7 @@ cat("\n\n Figure 4. Pie chart showing the percentage of transcripts that showed 
 ```
 
 
-### Most significant uniprot toxin hit per transcript
+### Most significant uniprot toxin hit per transcript (BitScore >= 50)
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 A1 <- readPNG(alluvial1)
@@ -134,7 +134,7 @@ A1 <- grid.raster(A1)
 cat("\n\n Figure 5. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 50. On the right is each of the distinct transcripts with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display. \n\n ") 
 ```
 
-### Most significant uniprot toxin hit per transcript
+### Most significant uniprot toxin hit per transcript (BitScore >= 250)
 
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
@@ -143,7 +143,7 @@ A2 <- grid.raster(A2)
 cat("\n\n Figure 6. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 250. On the right is each of the distinct transcripts with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display. \n\n") 
 ```
 
-### % of Relative kallisto-predicted expression of transcripts with and without uniprot toxin hit
+### % of Relative kallisto-predicted expression of transcripts with and without uniprot toxin hit (Evalue < 1e^-5)
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 P2 <- readPNG(pie2)
@@ -151,7 +151,7 @@ P2 <- grid.raster(P2)
 cat("\n\n Figure 7. Pie Chart displaying the kallisto-estimated expression of transcripts with and without a hit to uniprot toxin with an E-value of less than 1e^-5. \n\n ") 
 ```
 
-### % kallisto-predicted expression of transcripts with and without uniprot toxin hit 
+### % kallisto-predicted expression of transcripts with and without uniprot toxin hit (BitScore >= 50)
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 P3 <- readPNG(pie3)

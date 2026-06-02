@@ -1,5 +1,5 @@
 ---
-title: "Trinity Tables Sorted by Kallisto "
+title: "Transcriptome Tables Sorted by Kallisto "
 output: 
   html_document:
     css: style.css 

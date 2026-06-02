@@ -28,7 +28,8 @@ metadata_path <- params$metadata_path
 Name <-  params$AuthorName
 Sample_Name <-params$SampleName
 df <- open_dataset(parquet_path) %>% collect()
-metadata <- read.csv(metadata_path)
+metadata <- read.csv(metadata_path) %>%
+  dplyr::rename(identifier = Transdecoder_ID)
 
 df_annotated <- df %>%
   left_join(metadata, by = "identifier")

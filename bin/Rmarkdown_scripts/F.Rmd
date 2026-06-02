@@ -94,11 +94,8 @@ Name <- params$AuthorName
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(readPNG(IP_1), interpolate = TRUE)
-image2 <- rasterGrob(readPNG(IP_1_Legend), interpolate = TRUE)
-
-image1
-image2
+knitr::include_graphics(IP_1)
+knitr::include_graphics(IP_1_Legend)
 
 cat(" \n\n Figure 1. Relative expression of transcripts based on interproscan domains found in known toxins.\n\n ") 
 
@@ -107,10 +104,9 @@ cat(" \n\n Figure 1. Relative expression of transcripts based on interproscan do
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(readPNG(MF_1), interpolate = TRUE)
-image2 <- rasterGrob(readPNG(MF_1_Legend), interpolate = TRUE)
-image1
-image2
+
+knitr::include_graphics(MF_1)
+knitr::include_graphics(MF_1_Legend)
 cat(" \n\n Figure 2. Relative expression of transcripts based on Molecular Functions found in known toxins.  \n\n ") 
 
 ```
@@ -118,15 +114,9 @@ cat(" \n\n Figure 2. Relative expression of transcripts based on Molecular Funct
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(readPNG(BP_1), interpolate = TRUE)
-image2 <- rasterGrob(readPNG(BP_1_Legend), interpolate = TRUE)
 
-image1
-```
-
-```{r, results='asis',fig.align='center'}
-
-image2
+knitr::include_graphics(BP_1)
+knitr::include_graphics(BP_1_Legend)
 cat(" \n\n Figure 3. Relative expression of transcripts based on Biological Processess found in known toxins.  \n\n ") 
 
 ```
@@ -136,102 +126,60 @@ cat(" \n\n Figure 3. Relative expression of transcripts based on Biological Proc
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(readPNG(IP_2), interpolate = TRUE)
-image2 <- rasterGrob(readPNG(IP_2_Legend), interpolate = TRUE)
 
-image1
-```
-
-```{r, results='asis',fig.align='center'}
-
-image2
-
+knitr::include_graphics(IP_2)
+knitr::include_graphics(IP_2)
 cat(" \n\n Figure 4. Relative expression of transcripts based on interproscan domains overrepresented in known toxin.  \n\n ") 
-
 ```
 
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(readPNG(MF_2), interpolate = TRUE)
-image2 <- rasterGrob(readPNG(MF_2_Legend), interpolate = TRUE)
 
-image1
-```
 
-```{r, results='asis',fig.align='center'}
-
-image2
-
+knitr::include_graphics(MF_2)
+knitr::include_graphics(MF_2_Legend)
 cat(" \n\n Figure 5. Relative expression of transcripts based on Molecular Functions overrepresented in known toxin.\n\n ") 
-
 ```
 
 ```{r, results='asis',fig.align='center'}
 
-# Read images
-image1 <- rasterGrob(readPNG(BP_2), interpolate = TRUE)
-image2 <- rasterGrob(readPNG(BP_2_Legend), interpolate = TRUE)
 
-image1
-```
-
-```{r, results='asis',fig.align='center'}
-
-image2
-
+knitr::include_graphics(BP_2)
+knitr::include_graphics(BP_2_Legend)
 cat(" \n\n Figure 6. Relative expression of transcripts based on Biological Processess overrepresented in known toxin.\n\n ") 
-
 ```
 
 ### Relative Expression overrall
 ```{r, results='asis',fig.align='center'}
 
 # Read images
-image1 <- rasterGrob(readPNG(IP_3), interpolate = TRUE)
-image2 <- rasterGrob(readPNG(IP_3_Legend), interpolate = TRUE)
 
-image1
-```
-
-```{r, results='asis',fig.align='center'}
-
-image2
-
+knitr::include_graphics(IP_3)
+knitr::include_graphics(IP_3_Legend)
 cat(" \n\n Figure 7. Relative expression of transcripts based on interproscan domains.  \n\n ") 
 
+
 ```
+
 
 ```{r, results='asis',fig.align='center'}
 
-# Read images
-image1 <- rasterGrob(readPNG(MF_3), interpolate = TRUE)
-image2 <- rasterGrob(readPNG(MF_3_Legend), interpolate = TRUE)
 
-image1
-```
-
-```{r, results='asis',fig.align='center'}
-
-image2
+knitr::include_graphics(MF_3)
+knitr::include_graphics(MF_3_Legend)
 cat(" \n\n Figure 8. Relative expression of transcripts based on Molecular Functions.\n\n ") 
 
 ```
 
-```{r, results='asis',fig.align='center'}
-
-# Read images
-image1 <- rasterGrob(readPNG(BP_3), interpolate = TRUE)
-image2 <- rasterGrob(readPNG(BP_3_Legend), interpolate = TRUE)
-
-image1
-```
 
 ```{r, results='asis',fig.align='center'}
 
-image2
-
+knitr::include_graphics(BP_3)
+knitr::include_graphics(BP_3_Legend)
 cat(" \n\n Figure 9. Relative expression of transcripts based on Biological Processess.\n\n ") 
 
+
 ```
+
 </div>

@@ -86,7 +86,14 @@ alluvial5 <-  ggplot(data = Distinct_Transcripts_50,
                        legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = -0.5, vjust = 1)) +
   labs(title = "Most significant unitprot toxin hit per transcript")
 
-ggsave(filename = file.path("alluvial5.png"), plot = alluvial5, width = 8, height = 6, dpi = 600)
+plot_nolegend <- alluvial5 + theme(legend.position = "none")
+legend <- get_legend(alluvial5)
+legend_plot <- ggdraw(legend)
+w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
+h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
+
+ggsave("alluvial5_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("alluvial5_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 
 alluvial6 <- ggplot(data = Distinct_Transcripts_250,
                     aes(axis1 =Transdecoder_ID , axis2 = Hit)) +
@@ -102,7 +109,14 @@ alluvial6 <- ggplot(data = Distinct_Transcripts_250,
                        legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = 0.5) ) +
   labs(title = "Most significant unitprot toxin hit per transcript")
 
-ggsave(filename = file.path("alluvial6.png"), plot = alluvial6, width = 8, height = 6, dpi = 600)
+plot_nolegend <- alluvial6 + theme(legend.position = "none")
+legend <- get_legend(alluvial6)
+legend_plot <- ggdraw(legend)
+w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
+h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
+
+ggsave("alluvial6_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("alluvial6_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 
 
 #those with expression
@@ -202,5 +216,12 @@ Plot5 <- ggplot(new_df2, aes(x = "", y = total_percentage, fill = Hit)) +
     plot.title = element_text(size = 14, face = "bold", hjust = -0.1, vjust = 1)
   ) +
   labs(title = "Relative expression of transcripts with significant uniprot toxin(Evalue cutoff:1e-5)")
-ggsave(filename = file.path("pie12.png"), plot = Plot5, width = 8, height = 6, dpi = 600)
+plot_nolegend <- Plot5 + theme(legend.position = "none")
+legend <- get_legend(Plot5)
+legend_plot <- ggdraw(legend)
+w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
+h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
+
+ggsave("pie12_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("pie12_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 

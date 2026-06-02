@@ -1,5 +1,5 @@
 ---
-title: "Trinity Tables Sorted by BitScore - Distinct "
+title: "Transcriptome Tables Sorted by BitScore - Distinct "
 output: 
   html_document:
     css: style.css
