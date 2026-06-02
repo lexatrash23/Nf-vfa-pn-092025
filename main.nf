@@ -283,9 +283,13 @@ process FigureGenerationTrinity {
     tuple val(sample), path("pie1.png"), emit: pie1
     tuple val(sample), path("pie2.png"), emit: pie2
     tuple val(sample), path("pie3.png"), emit: pie3
-    tuple val(sample), path("pie4.png"), emit: pie4
-    tuple val(sample), path("alluvial1.png"), emit: alluvial1
-    tuple val(sample), path("alluvial2.png"), emit: alluvial2
+    tuple val(sample), path("pie4_plot.png"), emit: pie4Plot
+    tuple val(sample), path("pie4_legend.png"), emit: pie4Legend
+    tuple val(sample), path("alluvial1_plot.png"), emit: alluvial1Plot
+    tuple val(sample), path("alluvial1_legend.png"), emit: alluvial1Legend
+    tuple val(sample), path("alluvial2_plot.png"), emit: alluvial2Plot
+    tuple val(sample), path("alluvial2_legend.png"), emit: alluvial2Legend
+
     tuple val(sample), path("Table13.csv"), emit: Table13
 
     script:
@@ -318,9 +322,13 @@ process FigureGenerationTransdecoder {
     tuple val(sample), path("pie5.png"), emit: pie5
     tuple val(sample), path("pie6.png"), emit: pie6
     tuple val(sample), path("pie7.png"), emit: pie7
-    tuple val(sample), path("pie8.png"), emit: pie8
-    tuple val(sample), path("alluvial3.png"), emit: alluvial3
-    tuple val(sample), path("alluvial4.png"), emit: alluvial4
+    tuple val(sample), path("pie8_plot.png"), emit: pie8Plot
+    tuple val(sample), path("pie8_legend.png"), emit: pie8Legend
+    tuple val(sample), path("alluvial3_plot.png"), emit: alluvial3Plot
+    tuple val(sample), path("alluvial3_legend.png"), emit: alluvial3Legend
+    tuple val(sample), path("alluvial4_plot.png"), emit: alluvial4Plot
+    tuple val(sample), path("alluvial4_legend.png"), emit: alluvial4Legend
+
     tuple val(sample), path("Table14.csv"), emit: Table14
 
     script:
@@ -355,9 +363,12 @@ process FigureGenerationSignalp {
     tuple val(sample), path("pie9.png"), emit: pie9
     tuple val(sample), path("pie10.png"), emit: pie10
     tuple val(sample), path("pie11.png"), emit: pie11
-    tuple val(sample), path("pie12.png"), emit: pie12
-    tuple val(sample), path("alluvial5.png"), emit: alluvial5
-    tuple val(sample), path("alluvial6.png"), emit: alluvial6
+    tuple val(sample), path("pie12_plot.png"), emit: pie12Plot
+    tuple val(sample), path("pie12_legend.png"), emit: pie12Legend
+    tuple val(sample), path("alluvial5_plot.png"), emit: alluvial5Plot
+    tuple val(sample), path("alluvial5_legend.png"), emit: alluvial5Legend
+    tuple val(sample), path("alluvial6_plot.png"), emit: alluvial6Plot
+    tuple val(sample), path("alluvial6_legend.png"), emit: alluvial6Legend
     tuple val(sample), path("Table15.csv"), emit: Table15
 
     script:
@@ -767,7 +778,7 @@ process RmarkdownH {
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
     input:
-    tuple val(sample), val(author), path(kallistotop20graphtrinity), path(kallistotop500graphtrinity), path(alluvial1), path(alluvial2), path(pie1), path(pie2), path(pie3), path(pie4), path(topkallisto), path(busco_figure)
+    tuple val(sample), val(author), path(kallistotop20graphtrinity), path(kallistotop500graphtrinity), path(alluvial1plot), path(alluvial1legend), path(alluvial2plot), path(alluvial2legend), path(pie1), path(pie2), path(pie3), path(pie4plot), path(pie4legend),path(topkallisto), path(busco_figure)
 
     output:
     tuple val(sample), path("*.html")
@@ -776,12 +787,16 @@ process RmarkdownH {
     """
     kallistotop20graphtrinity_abs=\$(readlink -f "${kallistotop20graphtrinity}")
     kallistotop500graphtrinity_abs=\$(readlink -f "${kallistotop500graphtrinity}")
-    alluvial1_abs=\$(readlink -f "${alluvial1}")
-    alluvial2_abs=\$(readlink -f "${alluvial2}")
+    alluvial1P_abs=\$(readlink -f "${alluvial1plot}")
+    alluvial2P_abs=\$(readlink -f "${alluvial2plot}")
+    alluvial1L_abs=\$(readlink -f "${alluvial1legend}")
+    alluvial2L_abs=\$(readlink -f "${alluvial2legend}")
     pie1_abs=\$(readlink -f "${pie1}")
     pie2_abs=\$(readlink -f "${pie2}")
     pie3_abs=\$(readlink -f "${pie3}")
-    pie4_abs=\$(readlink -f "${pie4}")
+    pie4P_abs=\$(readlink -f "${pie4plot}")
+    pie4L_abs=\$(readlink -f "${pie4legend}")
+
     topkallisto_abs=\$(readlink -f "${topkallisto}")
 
     busco_files=(${busco_figure})
@@ -804,12 +819,15 @@ process RmarkdownH {
         busco_figure1='\$busco_figure1_abs',
         busco_figure2='\$busco_figure2_abs',
         busco_figure3='\$busco_figure3_abs',
-        alluvial1='\$alluvial1_abs',
-        alluvial2='\$alluvial2_abs',
+        alluvial1P='\$alluvial1P_abs',
+        alluvial1L='\$alluvial1L_abs',
+        alluvial2P='\$alluvial2P_abs',
+        alluvial2L='\$alluvial2L_abs',
         pie1='\$pie1_abs',
         pie2='\$pie2_abs',
         pie3='\$pie3_abs',
-        pie4='\$pie4_abs',
+        pie4P='\$pie4P_abs',
+        pie4L='\$pie4L_abs',
         topkallisto='\$topkallisto_abs',
         AuthorName = '${author}',
         SampleName = '${sample}'
@@ -840,7 +858,7 @@ process RmarkdownJ {
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
     input:
-    tuple val(sample), val(author), path(kallistotop20graphtransdecoder), path(kallistotop500graphtransdecoder), path(alluvial3), path(alluvial4), path(pie5), path(pie6), path(pie7), path(pie8), path(topkallisto_transdecoder), path(busco_figure_transdecoder)
+    tuple val(sample), val(author), path(kallistotop20graphtransdecoder), path(kallistotop500graphtransdecoder), path(alluvial3plot),path(alluvial3legend), path(alluvial4plot),path(alluvial4legend), path(pie5), path(pie6), path(pie7), path(pie8plot),path(pie8legend), path(topkallisto_transdecoder), path(busco_figure_transdecoder)
 
     output:
     tuple val(sample), path("*.html")
@@ -849,12 +867,15 @@ process RmarkdownJ {
     """
     kallistotop20graphtransdecoder_abs=\$(readlink -f "${kallistotop20graphtransdecoder}")
     kallistotop500graphtransdecoder_abs=\$(readlink -f "${kallistotop500graphtransdecoder}")
-    alluvial3_abs=\$(readlink -f "${alluvial3}")
-    alluvial4_abs=\$(readlink -f "${alluvial4}")
+    alluvial3P_abs=\$(readlink -f "${alluvial3plot}")
+    alluvial4P_abs=\$(readlink -f "${alluvial4plot}")
+    alluvial3L_abs=\$(readlink -f "${alluvial3legend}")
+    alluvial4L_abs=\$(readlink -f "${alluvial4legend}")
     pie5_abs=\$(readlink -f "${pie5}")
     pie6_abs=\$(readlink -f "${pie6}")
     pie7_abs=\$(readlink -f "${pie7}")
-    pie8_abs=\$(readlink -f "${pie8}")
+    pie8P_abs=\$(readlink -f "${pie8plot}")
+    pie8L_abs=\$(readlink -f "${pie8legend}")
     topkallisto_transdecoder_abs=\$(readlink -f "${topkallisto_transdecoder}")
 
     busco_files=(${busco_figure_transdecoder})
@@ -877,12 +898,15 @@ process RmarkdownJ {
         busco_figure1='\$busco_figure1_abs',
         busco_figure2='\$busco_figure2_abs',
         busco_figure3='\$busco_figure3_abs',
-        alluvial3='\$alluvial3_abs',
-        alluvial4='\$alluvial4_abs',
+        alluvial3P='\$alluvial3P_abs',
+        alluvial3L='\$alluvial3L_abs',
+        alluvial4P='\$alluvial4P_abs',
+        alluvial4L='\$alluvial4L_abs',
         pie5='\$pie5_abs',
         pie6='\$pie6_abs',
         pie7='\$pie7_abs',
-        pie8='\$pie8_abs',
+        pie8P='\$pie8P_abs',
+        pie8L='\$pie8L_abs',
         topkallisto_transdecoder='\$topkallisto_transdecoder_abs',
         AuthorName = '${author}',
         SampleName = '${sample}'
@@ -909,7 +933,7 @@ process RmarkdownL {
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
     input:
-    tuple val(sample), val(author), path(alluvial5), path(alluvial6), path(pie9), path(pie10), path(pie11), path(pie12), path(topkallisto_signalp)
+    tuple val(sample), val(author), path(alluvial5plot), path(alluvial5legend), path(alluvial6plot), path(alluvial6legend), path(pie9), path(pie10), path(pie11), path(pie12plot),path(pie12legend), path(topkallisto_signalp)
 
     output:
     tuple val(sample), path("*.html")
@@ -917,24 +941,30 @@ process RmarkdownL {
     script:
     """
 
-    alluvial5_abs=\$(readlink -f "${alluvial5}")
-    alluvial6_abs=\$(readlink -f "${alluvial6}")
+    alluvial5P_abs=\$(readlink -f "${alluvial5plot}")
+    alluvial6P_abs=\$(readlink -f "${alluvial6plot}")
+    alluvial5L_abs=\$(readlink -f "${alluvial5legend}")
+    alluvial6L_abs=\$(readlink -f "${alluvial6legend}")
     pie9_abs=\$(readlink -f "${pie9}")
     pie10_abs=\$(readlink -f "${pie10}")
     pie11_abs=\$(readlink -f "${pie11}")
-    pie12_abs=\$(readlink -f "${pie12}")
+    pie12P_abs=\$(readlink -f "${pie12plot}")
+    pie12L_abs=\$(readlink -f "${pie12legend}")
     topkallisto_signalp_abs=\$(readlink -f "${topkallisto_signalp}")
 
     Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/L.Rmd',
       output_dir='.',
       params=list(
-        alluvial5='\$alluvial5_abs',
-        alluvial6='\$alluvial6_abs',
+        alluvial5P='\$alluvial5P_abs',
+        alluvial5L='\$alluvial5L_abs',
+        alluvial6P='\$alluvial6P_abs',
+        alluvial6L='\$alluvial6L_abs',
         pie9='\$pie9_abs',
         pie10='\$pie10_abs',
         pie11='\$pie11_abs',
-        pie12='\$pie12_abs',
+        pie12P='\$pie12P_abs',
+        pie12L='\$pie12L_abs',
         topkallisto_signalp='\$topkallisto_signalp_abs',
         AuthorName = '${author}',
         SampleName = '${sample}'
@@ -2047,12 +2077,15 @@ workflow {
     RmarkdownHInput = RmarkdownCDEGIKInput
         .join(kallistoAnalysisTrinity.out.trin_top20_png)
         .join(kallistoAnalysisTrinity.out.trin_top500_png)
-        .join(FigureGenerationTrinity.out.alluvial1)
-        .join(FigureGenerationTrinity.out.alluvial2)
+        .join(FigureGenerationTrinity.out.alluvial1Plot)
+        .join(FigureGenerationTrinity.out.alluvial1Legend)
+        .join(FigureGenerationTrinity.out.alluvial2Plot)
+        join(FigureGenerationTrinity.out.alluvial2Legend)
         .join(FigureGenerationTrinity.out.pie1)
         .join(FigureGenerationTrinity.out.pie2)
         .join(FigureGenerationTrinity.out.pie3)
-        .join(FigureGenerationTrinity.out.pie4)
+        .join(FigureGenerationTrinity.out.pie4Plot)
+        .join(FigureGenerationTrinity.out.pie4Legend)
         .join(FigureGenerationTrinity.out.Table13)
         .join(groupedbuscotranscriptome)
 
@@ -2061,24 +2094,30 @@ workflow {
     RmarkdownJInput = RmarkdownCDEGIKInput
         .join(kallistoAnalysisTrans.out.trans_top20_png)
         .join(kallistoAnalysisTrans.out.trans_top500_png)
-        .join(FigureGenerationTransdecoder.out.alluvial3)
-        .join(FigureGenerationTransdecoder.out.alluvial4)
+        .join(FigureGenerationTransdecoder.out.alluvial3Plot)
+        .join(FigureGenerationTransdecoder.out.alluvial3Legend)
+        .join(FigureGenerationTransdecoder.out.alluvial4Plot)
+        .join(FigureGenerationTransdecoder.out.alluvial4Legend)
         .join(FigureGenerationTransdecoder.out.pie5)
         .join(FigureGenerationTransdecoder.out.pie6)
         .join(FigureGenerationTransdecoder.out.pie7)
-        .join(FigureGenerationTransdecoder.out.pie8)
+        .join(FigureGenerationTransdecoder.out.pie8Plot)
+        .join(FigureGenerationTransdecoder.out.pie8Legend)
         .join(FigureGenerationTransdecoder.out.Table14)
         .join(groupedbuscotranslatome)
 
     RmarkdownJInput | RmarkdownJ
     // RmarkdownL
     RmarkdownLInput = RmarkdownCDEGIKInput
-        .join(FigureGenerationSignalp.out.alluvial5)
-        .join(FigureGenerationSignalp.out.alluvial6)
+        .join(FigureGenerationSignalp.out.alluvial5Plot)
+        .join(FigureGenerationSignalp.out.alluvial5Legend)
+        .join(FigureGenerationSignalp.out.alluvial6Plot)
+        .join(FigureGenerationSignalp.out.alluvial6Legend)
         .join(FigureGenerationSignalp.out.pie9)
         .join(FigureGenerationSignalp.out.pie10)
         .join(FigureGenerationSignalp.out.pie11)
-        .join(FigureGenerationSignalp.out.pie12)
+        .join(FigureGenerationSignalp.out.pie12Plot)
+        .join(FigureGenerationSignalp.out.pie12Legend)
         .join(FigureGenerationSignalp.out.Table15)
 
     RmarkdownLInput | RmarkdownL

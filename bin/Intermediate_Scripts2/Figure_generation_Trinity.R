@@ -196,23 +196,47 @@ new_colors <- c(
 extended_color_palette <- c(color_palette, new_colors)
 sorted_df2 <- new_df2[order(-new_df2$total_percentage), ]
 head(sorted_df2)
-Plot3 <- ggplot(new_df2, aes(x = "", y = total_percentage, fill = Hit)) +
-  geom_bar(stat = "identity", width = 1, color = "black") +  # Add border to the slices
+PercentSum = sum(Distinct_Transcripts_50_with_kallisto$percent)
+label_text2 <- paste0("Total Expression Represented: ", round(PercentSum, 2), "%")
+threshold <- 5
+
+#Add relativeproportion column, text labels, and positions for labels
+Distinct_Transcripts_50_with_kallisto_mod <- Distinct_Transcripts_50_with_kallisto %>%
+  mutate(RelativeProportion = round(((percent/PercentSum)*100),1)) %>%
+  dplyr::select(Transdecoder_ID,Hit,RelativeProportion ) %>%
+  mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Hit, ", ", RelativeProportion, "%"), width = 15),"")) %>%
+  arrange(Hit) %>%
+  mutate(csum = rev(cumsum(rev(RelativeProportion))),
+         pos = RelativeProportion/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), RelativeProportion/2, pos))
+
+
+
+Plot3 <- ggplot(Distinct_Transcripts_50_with_kallisto_mod, aes(x = 2, y = RelativeProportion, fill = fct_inorder(Hit))) +
+  geom_bar(stat = "identity", color = "black", width = 1) +
   coord_polar(theta = "y") +
-  geom_point(data = data.frame(x = 0, y = 0), aes(x = x, y = y), size = 75, color = "white", fill = "white") +
+  # Create the white hole in the middle (for a donut chart effect)
+  annotate("rect", xmin = 0, xmax = 1.5, ymin = 0, ymax = sum(Distinct_Transcripts_50_with_kallisto_mod$RelativeProportion),
+           fill = "white", color = NA) +
   theme_void() +
+  labs(fill = "ToxProt Hits") +
   theme(
     legend.position = "right",
-    legend.title = element_blank(),
+    legend.title = element_text(),
     legend.text = element_text(size = 4, color = "#000000"),
     legend.key.size = unit(0.5, "cm"),
     legend.key.height = unit(0.3, "cm"),
-    legend.key.width = unit(0.5, "cm"), 
-    legend.key.border = element_rect(color = "black", size = 1.5, linetype = "solid"),  
-    plot.title = element_text(size = 14, face = "bold", hjust = -0.1, vjust = 1)
+    legend.key.width = unit(0.5, "cm"),
+    legend.key.border = element_rect(color = "black", size = 1, linetype = "solid"),
+    plot.title = element_text(size = 14, face = "bold", hjust = 0.5)
   ) +
-  labs(title = "Relative expression of transcripts with significant uniprot toxin(Evalue cutoff:1e-5)")
-
+  geom_label_repel(data = Distinct_Transcripts_50_with_kallisto_mod,
+                   aes(y = pos ,x = 2, label = label_text),
+                   size = 2, nudge_x = 1.5, show.legend = FALSE, box.padding = 0.5,
+                   point.padding = 0.5, force =5,hjust = 0.5) +
+  annotate("text", x = 0, y = 0, label = label_text2, size = 2, color = "black", fontface = "bold") +
+  labs(title = "Relative expression of ToxProt Hits") +
+  scale_color_manual(values = extended_color_palette)
 
 plot_nolegend <- Plot3 + theme(legend.position = "none")
 legend <- get_legend(Plot3)

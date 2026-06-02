@@ -4,12 +4,15 @@ output:
   html_document:
     css: style.css 
 params:
-  alluvial5: NULL
-  alluvial6: NULL
+  alluvial5P: NULL
+  alluvial5L: NULL
+  alluvial6P: NULL
+  alluvial6L: NULL
   pie9: NULL
   pie10: NULL
   pie11: NULL
-  pie12: NULL
+  pie12P: NULL
+  pie12L: NULL
   topkallisto_signalp: NULL
   AuthorName: NULL
   SampleName: NULL
@@ -51,12 +54,15 @@ library(downloadthis)
 
 ```{r}
 #load files 
-alluvial5 <- params$alluvial5
-alluvial6 <- params$alluvial6
+alluvial5P <- params$alluvial5P
+alluvial6P <- params$alluvial6P
+alluvial5L <- params$alluvial5L
+alluvial6L <- params$alluvial6L
 pie9 <- params$pie9
 pie10 <- params$pie10
 pie11 <- params$pie11
-pie12 <- params$pie12
+pie12P <- params$pie12P
+pie12L <- params$pie12L
 topkallisto <- params$topkallisto_signalp
 Sample_Name <- params$SampleName
 Name <- params$AuthorName
@@ -84,8 +90,8 @@ cat("\n\n Figure 1. Pie chart showing the percentage of Transdecoder transcripts
 ### Most significant uniprot toxin hit per transcript (BitScore >= 50)
 
 ```{r, results='asis'}
-A1 <- readPNG(alluvial5)
-A1 <- grid.raster(A1)
+knitr::include_graphics(alluvial5P)
+knitr::include_graphics(alluvial5L)
 cat("\n\nFigure 2. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 50. On the right is each of the distinct Transdecoder transcripts with predicted signal sequences with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display.\n\n") 
 ```
 
@@ -93,8 +99,8 @@ cat("\n\nFigure 2. Alluvial graph representing the most significant uniprot toxi
 
 
 ```{r, results='asis'}
-A2 <- readPNG(alluvial6)
-A2 <- grid.raster(A2)
+knitr::include_graphics(alluvial6P)
+knitr::include_graphics(alluvial6L)
 cat("\n\nFigure 3. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 250. On the right is each of the distinct Transdecoder transcripts with predicted signal sequences with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display.\n\n") 
 ```
 
@@ -118,8 +124,8 @@ cat("\n\n Figure 5. Pie Chart displaying the kallisto-estimated expression of tr
 ### Relative kallisto-predicted expression of transcripts with uniprot toxin hit 
 
 ```{r, results='asis'}
-P4 <- readPNG(pie12)
-P4 <- grid.raster(P4)
+knitr::include_graphics(pie12P)
+knitr::include_graphics(pie12L)
 cat("\n\n Figure 6. Pie Chart showing the relative kallisto-predicted expression of the transcripts with a uniprot toxin hit(BitScore\\(\\geq 50\\)).\n\n") 
 ```
 
