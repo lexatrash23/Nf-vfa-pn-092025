@@ -2080,7 +2080,7 @@ workflow {
         .join(FigureGenerationTrinity.out.alluvial1Plot)
         .join(FigureGenerationTrinity.out.alluvial1Legend)
         .join(FigureGenerationTrinity.out.alluvial2Plot)
-        join(FigureGenerationTrinity.out.alluvial2Legend)
+        .join(FigureGenerationTrinity.out.alluvial2Legend)
         .join(FigureGenerationTrinity.out.pie1)
         .join(FigureGenerationTrinity.out.pie2)
         .join(FigureGenerationTrinity.out.pie3)
