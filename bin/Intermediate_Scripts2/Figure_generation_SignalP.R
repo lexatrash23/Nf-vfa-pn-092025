@@ -5,6 +5,10 @@ library(dplyr)
 library(ggplot2)
 library(ggalluvial)
 library(grid)
+library(stringr)
+library(ggrepel)
+library(forcats)
+library(cowplot)
 
 args <- commandArgs(trailingOnly = TRUE)
 transdf <- args[1]

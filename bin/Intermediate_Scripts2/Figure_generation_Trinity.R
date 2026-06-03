@@ -5,6 +5,10 @@ library(dplyr)
 library(ggplot2)
 library(ggalluvial)
 library(grid)
+library(stringr)
+library(ggrepel)
+library(forcats)
+library(cowplot)
 
 #check of current working directory. The script assumes the working directory is the
 #locally

@@ -270,7 +270,7 @@ process FigureGenerationTrinity {
     label 'process_bare'
     label 'process_long'
 
-    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
+    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
     container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'
 
 
@@ -311,7 +311,7 @@ process FigureGenerationTransdecoder {
     label 'process_bare'
     label 'process_long'
 
-    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
+    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/HTMLFigures/ORFs/", mode: 'copy'
 
@@ -352,7 +352,7 @@ process FigureGenerationSignalp {
     label 'process_bare'
     label 'process_long'
 
-    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings'
+    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/HTMLFigures/Secreted/", mode: 'copy'
 
