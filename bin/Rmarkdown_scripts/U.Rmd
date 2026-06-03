@@ -101,10 +101,10 @@ yaxis = list(title = "UMAP 2")
 
 ```{r,echo=FALSE, warning=FALSE,results='asis'}
 color_columns <- c(
-  "projection_name",
-  "identifier",
-  "signal_peptide",
-  "xref_pdb"
+  "Domain_Label",
+  "Hit",
+  "Annotation_Source",
+  "Category"
 )
 
 fig_list <- lapply(color_columns, function(col) {
