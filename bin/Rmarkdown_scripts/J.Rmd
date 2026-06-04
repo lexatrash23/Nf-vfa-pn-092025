@@ -11,8 +11,8 @@ params:
   busco_figure3: NULL
   alluvial3P: NULL
   alluvial3L: NULL
-  alluvial3P: NULL
-  alluvial3L: NULL
+  alluvial4P: NULL
+  alluvial4L: NULL
   pie5: NULL
   pie6: NULL
   pie7: NULL
