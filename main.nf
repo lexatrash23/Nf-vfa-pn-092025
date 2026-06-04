@@ -1643,7 +1643,7 @@ process RmarkdownU {
 
     label 'process_bare'
     label 'process_long'
-    conda 'r-base=4.3 r-rmarkdown r-plotly  r-dplyr r-arrow r-umap'
+    conda 'r-base=4.3 r-rmarkdown r-plotly  r-dplyr r-arrow r-umap r-forcats'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 

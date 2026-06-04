@@ -20,6 +20,7 @@ library(dplyr)
 library(arrow)
 library(umap)
 library(htmltools)
+library(forcats)
 # -----------------------------
 # Load data
 # -----------------------------
@@ -52,7 +53,10 @@ values <- df[[color_col]]
 # -----------------------------
 # CATEGORICAL CASE
 # -----------------------------
-df[[color_col]] <- as.factor(values)
+df[[color_col]] <- fct_explicit_na(
+  as.factor(values),
+  na_level = "NA"
+)
 
 fig <- plot_ly(
   data = df,
