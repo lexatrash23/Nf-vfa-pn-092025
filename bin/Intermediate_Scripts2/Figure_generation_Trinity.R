@@ -92,7 +92,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("alluvial1_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("alluvial1_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
 ggsave("alluvial1_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 
 
@@ -116,7 +116,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("alluvial2_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("alluvial2_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
 ggsave("alluvial2_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 
 #those with expression 
@@ -248,5 +248,5 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("pie4_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("pie4_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
 ggsave("pie4_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))

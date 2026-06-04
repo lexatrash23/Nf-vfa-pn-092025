@@ -89,7 +89,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("alluvial3_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("alluvial3_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
 ggsave("alluvial3_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 alluvial4 <- ggplot(data = Distinct_Transcripts_250,
                     aes(axis1 =Transdecoder_ID , axis2 = Hit)) +
@@ -110,7 +110,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("alluvial4_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("alluvial4_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
 ggsave("alluvial4_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 
 
@@ -244,7 +244,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("pie8_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("pie8_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
 ggsave("pie8_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 
 

@@ -96,7 +96,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("alluvial5_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("alluvial5_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
 ggsave("alluvial5_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 
 alluvial6 <- ggplot(data = Distinct_Transcripts_250,
@@ -119,7 +119,7 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("alluvial6_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("alluvial6_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
 ggsave("alluvial6_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 
 
@@ -252,6 +252,6 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("pie12_plot.png", plot_nolegend, plot = alluvial1, width = 8, height = 6, dpi = 600)
+ggsave("pie12_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
 ggsave("pie12_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600))
 
