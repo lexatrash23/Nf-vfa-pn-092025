@@ -62,7 +62,7 @@ pie1 <- ggplot(counts, aes(x = "", y = Count, fill = Category)) +
   )
 
 
-ggsave(filename = file.path("pie1.png"), plot = pie1, width = 8, height = 6, dpi = 600)
+ggsave(filename = file.path("pie1.png"), plot = pie1, width = 8, height = 6, dpi = 600, bg = "white")
 
 
 #alluvial graphs 
@@ -92,8 +92,8 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("alluvial1_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
-ggsave("alluvial1_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600)
+ggsave("alluvial1_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600, bg = "white")
+ggsave("alluvial1_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600, bg = "white")
 
 
 
@@ -116,8 +116,8 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("alluvial2_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
-ggsave("alluvial2_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600)
+ggsave("alluvial2_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600, bg = "white")
+ggsave("alluvial2_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600, bg = "white")
 
 #those with expression 
 sum_of_expression_of_those_with_hits = sum(Distinct_Transcripts_hits$percent)
@@ -144,7 +144,7 @@ pie2 <- ggplot(pie_data, aes(x = "", y = Value, fill = Category)) +
     plot.margin = margin(20, 20, 20, 20)  # Add padding around the plot
   )
 
-ggsave(filename = file.path("pie2.png"), plot = pie2, width = 8, height = 6, dpi = 600)
+ggsave(filename = file.path("pie2.png"), plot = pie2, width = 8, height = 6, dpi = 600, bg = "white")
 
 
 sum_of_expression_of_those_with_hits = sum(Distinct_Transcripts_50$percent)
@@ -169,7 +169,7 @@ pie3 <- ggplot(pie_data2, aes(x = "", y = Value, fill = Category)) +
     legend.text = element_text(color = "black"),
     plot.margin = margin(20, 20, 20, 20)  # Add padding around the plot
   )
-ggsave(filename = file.path("pie3.png"), plot = pie3, width = 8, height = 6, dpi = 600)
+ggsave(filename = file.path("pie3.png"), plot = pie3, width = 8, height = 6, dpi = 600, bg = "white")
 
 #donut graph to show relative expression of each transcript with a uniprot toxin hit 
 Distinct_Transcripts_50_with_kallisto <- Distinct_Transcripts_50[Distinct_Transcripts_50$percent >0 , ]
@@ -248,5 +248,5 @@ legend_plot <- ggdraw(legend)
 w <- convertWidth(sum(legend$widths), "in", valueOnly = TRUE)
 h <- convertHeight(sum(legend$heights), "in", valueOnly = TRUE)
 
-ggsave("pie4_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600)
-ggsave("pie4_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600)
+ggsave("pie4_plot.png", plot = plot_nolegend, width = 8, height = 6, dpi = 600, bg = "white")
+ggsave("pie4_legend.png", legend_plot,width = w + 0.2,height = h + 0.2, dpi = 600, bg = "white")
