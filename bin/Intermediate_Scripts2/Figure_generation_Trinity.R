@@ -207,7 +207,7 @@ threshold <- 5
 #Add relativeproportion column, text labels, and positions for labels
 Distinct_Transcripts_50_with_kallisto_mod <- Distinct_Transcripts_50_with_kallisto %>%
   mutate(RelativeProportion = round(((percent/PercentSum)*100),1)) %>%
-  dplyr::select(Transdecoder_ID,Hit,RelativeProportion ) %>%
+  dplyr::select(Trinity_ID,Hit,RelativeProportion ) %>%
   mutate(label_text = ifelse( RelativeProportion >= threshold, str_wrap(paste0(Hit, ", ", RelativeProportion, "%"), width = 15),"")) %>%
   arrange(Hit) %>%
   mutate(csum = rev(cumsum(rev(RelativeProportion))),
