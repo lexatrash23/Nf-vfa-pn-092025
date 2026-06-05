@@ -88,7 +88,7 @@ alluvial5 <-  ggplot(data = Distinct_Transcripts_50,
                        legend.key.size = unit(0.5, "cm"),  # Make the legend keys (colored boxes) smaller
                        legend.key.height = unit(0.3, "cm"),  # Adjust height of the key
                        legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = -0.5, vjust = 1)) +
-  labs(title = "Most significant unitprot toxin hit per transcript")
+  labs(title = "Most significant unitprot toxin hit per transcript")+theme(plot.background = element_rect(fill = "white", color = NA))
 
 plot_nolegend <- alluvial5 + theme(legend.position = "none")
 legend <- get_legend(alluvial5)
