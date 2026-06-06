@@ -1328,7 +1328,7 @@ process RmarkdownZ {
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
     input:
-    tuple val(sample), val(author), path(Vennlax), path(VennStrict), path(table), path(Genome), val(protspace)
+    tuple val(sample), val(author), path(Vennlax), path(VennStrict), path(table), val(protspace)
 
     output:
     tuple val(sample), path("*.html")
@@ -1339,15 +1339,9 @@ process RmarkdownZ {
     Venn_abs2=\$(readlink -f "${VennStrict}")
     table_abs=\$(readlink -f "${table}")
 
-    if [[ "${Genome}" == "" && "${protspace}" != "TRUE" ]]; then
-        Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V2/Z.Rmd"
-    elif [[ "${Genome}" != "" && "${protspace}" == "TRUE" ]]; then
-        Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V1_PG/Z.Rmd"
-    elif [[ "${Genome}" == "" && "${protspace}" == "TRUE" ]]; then
-        Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V4_P/Z.Rmd"
-    elif [[ "${Genome}" != "" && "${protspace}" != "TRUE" ]]; then
-        Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/V3_G/Z.Rmd"
-    fi
+    Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/$(
+        [[ "${protspace}" == "TRUE" ]] && echo "V1" || echo "V2"
+    )/Z.Rmd"
 
     Rscript -e "rmarkdown::render(
       '\$Rmarkdown',
@@ -2154,7 +2148,6 @@ workflow {
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
         .join(Annotate.out.Annotated_df)
-        .join(Genome)
         .combine(Protspace)
 
     // Rmarkdown Z
