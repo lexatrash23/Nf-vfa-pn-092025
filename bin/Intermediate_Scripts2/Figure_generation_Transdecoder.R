@@ -80,7 +80,7 @@ alluvial3 <-  ggplot(data = Distinct_Transcripts_50,
   theme_void() + theme(legend.position = "right",legend.text = element_text(size = 4, color = "#000000"),  # Smaller text size and colour
                        legend.key.size = unit(0.5, "cm"),  # Make the legend keys (coloured boxes) smaller
                        legend.key.height = unit(0.3, "cm"),  # Adjust height of the key
-                       legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = -0.5, vjust = 1)) +
+                       legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = 0.5, vjust = 1)) +
   labs(title = "Most significant unitprot toxin hit per transcript")
 
 plot_nolegend <- alluvial3 + theme(legend.position = "none")
@@ -99,9 +99,9 @@ alluvial4 <- ggplot(data = Distinct_Transcripts_250,
             aes(label = after_stat(stratum)), size = 2, min.y = 1) +
   scale_x_discrete(limits = c("Transdecoder_ID", "Hit"),
                    expand = c(0.15, 0.05)) +  
-  theme_void() + theme(legend.position = "bottom",legend.text = element_text(size = 8, color = "#000000"),  # Smaller text size and color
-                       legend.key.size = unit(0.5, "cm"),  # Make the legend keys (colored boxes) smaller
-                       legend.key.height = unit(0.5, "cm"),  # Adjust height of the key
+  theme_void() + theme(legend.position = "bottom",legend.text = element_text(size = 8, color = "#000000"),
+                       legend.key.size = unit(0.5, "cm"),
+                       legend.key.height = unit(0.5, "cm"),
                        legend.key.width = unit(0.5, "cm"), plot.title = element_text(size = 14, face = "bold", hjust = 0.5) ) +
   labs(title = "Most significant unitprot toxin hit per transcript")
 plot_nolegend <- alluvial4 + theme(legend.position = "none")

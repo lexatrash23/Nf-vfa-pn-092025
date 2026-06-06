@@ -7,13 +7,11 @@ process kallistoAnalysisTrinity {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     label 'process_bare'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
@@ -41,14 +39,12 @@ process kallistoAnalysisTrans {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
@@ -75,14 +71,12 @@ process ExtractSignalSequences {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     conda 'python=3.8 biopython'
 
@@ -106,14 +100,12 @@ process CreateTrinityDataframe {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
 
@@ -138,8 +130,7 @@ process CreateInterproscanDataframe {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -167,8 +158,7 @@ process CreateTransdecoderDataframe {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -203,8 +193,7 @@ process BUSCOtranscriptome {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -233,8 +222,7 @@ process BUSCOtranslatome {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -263,8 +251,7 @@ process FigureGenerationTrinity {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -304,8 +291,7 @@ process FigureGenerationTransdecoder {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -345,8 +331,7 @@ process FigureGenerationSignalp {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -383,8 +368,7 @@ process TableGenerationTrinity {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -416,8 +400,7 @@ process TableGenerationTransdecoder {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -454,8 +437,7 @@ process ToxinVsNonToxin {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_single'
@@ -489,8 +471,7 @@ process Minimap1 {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_high'
@@ -527,8 +508,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_double'
@@ -572,8 +552,7 @@ process CreateInterproscanFigures {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -619,8 +598,7 @@ process RmarkdownB {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -660,8 +638,7 @@ process CreateSampleSheet {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -689,8 +666,7 @@ process RmarkdownA {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -722,15 +698,13 @@ process RmarkdownCDEGIK {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
 
@@ -763,15 +737,13 @@ process RmarkdownH {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -843,15 +815,13 @@ process RmarkdownJ {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -921,8 +891,7 @@ process RmarkdownL {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -979,8 +948,7 @@ process RmarkdownM {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1020,8 +988,7 @@ process RmarkdownN {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1063,8 +1030,7 @@ process RmarkdownO {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1104,8 +1070,7 @@ process RmarkdownQ {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1145,8 +1110,7 @@ process RmarkdownR {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1188,8 +1152,7 @@ process RmarkdownS {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1231,8 +1194,7 @@ process RmarkdownV {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1272,8 +1234,7 @@ process RmarkdownW {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1315,8 +1276,7 @@ process RmarkdownX {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1356,14 +1316,12 @@ process RmarkdownZ {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     label 'process_bare'
     label 'process_long'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
     conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown r-DT R-dplyr r-knitr r-png r-gridbase r-downloadthis r-gridExtra'
 
@@ -1411,15 +1369,13 @@ process RmarkdownF {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+
 
 
     label 'process_single'
     label 'process_long'
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-png r-gridbase r-rmarkdown'
 
@@ -1486,8 +1442,7 @@ process Blast0Chunks {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1519,8 +1474,7 @@ process Blast0Chunksn {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1552,8 +1506,7 @@ process Annotate {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_single'
@@ -1597,8 +1550,7 @@ process ProtSpace {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_single'
@@ -1637,8 +1589,7 @@ process RmarkdownU {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_bare'
@@ -1680,8 +1631,7 @@ process Minimap {
 
     maxRetries 4
 
-    cpus { 2 * task.attempt }
-    time { 1 * task.attempt }
+  
 
 
     label 'process_high'

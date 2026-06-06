@@ -88,19 +88,31 @@ cat("\n\n Figure 1. Pie chart showing the percentage of Transdecoder transcripts
 
 
 ### Most significant uniprot toxin hit per transcript (BitScore >= 50)
+<div style="background-color: white; padding: 0px; margin: 0px">
 
 ```{r, results='asis'}
 knitr::include_graphics(alluvial5P)
 knitr::include_graphics(alluvial5L)
+```
+</div>
+
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis',}
+
 cat("\n\nFigure 2. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 50. On the right is each of the distinct Transdecoder transcripts with predicted signal sequences with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display.\n\n") 
 ```
 
 ### Most significant uniprot toxin hit per transcript (BitScore >= 250)
 
+<div style="background-color: white; padding: 0px; margin: 0px">
 
 ```{r, results='asis'}
 knitr::include_graphics(alluvial6P)
 knitr::include_graphics(alluvial6L)
+```
+</div>
+
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis',}
+
 cat("\n\nFigure 3. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 250. On the right is each of the distinct Transdecoder transcripts with predicted signal sequences with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display.\n\n") 
 ```
 
@@ -122,10 +134,16 @@ cat("\n\n Figure 5. Pie Chart displaying the kallisto-estimated expression of tr
 
 
 ### Relative kallisto-predicted expression of transcripts with uniprot toxin hit 
+<div style="background-color: white; padding: 0px; margin: 0px">
 
 ```{r, results='asis'}
 knitr::include_graphics(pie12P)
 knitr::include_graphics(pie12L)
+```
+</div>
+
+```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis',}
+
 cat("\n\n Figure 6. Pie Chart showing the relative kallisto-predicted expression of the transcripts with a uniprot toxin hit(BitScore\\(\\geq 50\\)).\n\n") 
 ```
 
