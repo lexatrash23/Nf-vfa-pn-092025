@@ -1339,9 +1339,8 @@ process RmarkdownZ {
     Venn_abs2=\$(readlink -f "${VennStrict}")
     table_abs=\$(readlink -f "${table}")
 
-    Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/(
-        [[ "${protspace}" == "TRUE" ]] && echo "V1" || echo "V2"
-    )/Z.Rmd"
+   version=$([[ "${protspace}" == "TRUE" ]] && echo V1 || echo V2)
+    Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/${version}/Z.Rmd"
 
     Rscript -e "rmarkdown::render(
       '\$Rmarkdown',
