@@ -1339,7 +1339,7 @@ process RmarkdownZ {
     Venn_abs2=\$(readlink -f "${VennStrict}")
     table_abs=\$(readlink -f "${table}")
 
-   version=\$([[ "${protspace}" == "TRUE" ]] && echo V1 || echo V2)
+   version=\$([[ "${protspace}" == "TRUE" || "${protspace}" == "True" || "${protspace}" == "true" ]] && echo V1 || echo V2)
     Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/\${version}/Z.Rmd"
 
 
