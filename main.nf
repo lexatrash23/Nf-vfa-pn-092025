@@ -1342,6 +1342,7 @@ process RmarkdownZ {
    version=\$([[ "${protspace}" == "TRUE" ]] && echo V1 || echo V2)
     Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/\${version}/Z.Rmd"
 
+
     Rscript -e "rmarkdown::render(
       '\$Rmarkdown',
       output_dir='.',
