@@ -12,7 +12,6 @@ params:
   SampleName: NULL
   Path: NULL
 
-
 ---
 <style>
 .dt-button.buttons-columnVisibility {
@@ -112,9 +111,8 @@ datatable(
 
 <div style="display: flex; gap: 25px; justify-content: center;">
 
-  <a href="Y.html" class="button">
+  <a href="U.html" class="button">
     <img src="`r file.path(path, 'New_icons/600ppi/UMAP.png')`" alt="ProtSpace UMAPs">
-    <span>ProtSpace UMAPs</span>
   </a>
 
 </div>
