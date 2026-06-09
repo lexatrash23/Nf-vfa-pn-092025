@@ -1,4 +1,6 @@
-# Annotation Command line 
+#!/usr/bin/env Rscript
+
+# Annotation Command line
 library(rentrez)
 library(xml2)
 library(Biostrings)

@@ -4,12 +4,12 @@ output:
   html_document:
     css: style.css 
 params:
-  IP_2 : NULL
-  IP_2_Legend : NULL
-  MF_2 : NULL
-  MF_2_Legend : NULL
-  BP_2 : NULL 
-  BP_2_Legend : NULL 
+  IP_3 : NULL
+  IP_3_Legend : NULL
+  MF_3 : NULL
+  MF_3_Legend : NULL
+  BP_3 : NULL
+  BP_3_Legend : NULL
   AuthorName: NULL
   SampleName: NULL
 ---
@@ -45,17 +45,14 @@ library(grid)
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
 
-IP_2 <- params$IP_2
-IP_2_Legend <- params$IP_2_Legend
+IP_3 <- params$IP_3
+IP_3_Legend <- params$IP_3_Legend
 
+MF_3 <- params$MF_3
+MF_3_Legend <- params$MF_3_Legend
 
-MF_2 <- params$MF_2
-MF_2_Legend <- params$MF_2_Legend
-
-
-BP_2 <- params$BP_2
-BP_2_Legend <- params$BP_2_Legend
-
+BP_3 <- params$BP_3
+BP_3_Legend <- params$BP_3_Legend
 
 Sample_Name <- params$SampleName
 Name <- params$AuthorName
@@ -71,40 +68,44 @@ Name <- params$AuthorName
 
 <div align="center">
 
-
-### Relative Expression of domains and GOs overrepresented in known toxins
+### Relative expression of all domains and GOs
 <div style="background-color: white; padding: 0px; margin: 0px">
 
 ```{r, results='asis',fig.align='center'}
 
 # Read images
 
-knitr::include_graphics(IP_2)
-knitr::include_graphics(IP_2_Legend)
-cat(" \n\n Figure 4. Relative expression of transcripts based on interproscan domains overrepresented in known toxin.  \n\n ") 
+knitr::include_graphics(IP_3)
+knitr::include_graphics(IP_3_Legend)
+cat(" \n\n Figure 7. Relative expression of transcripts based on interproscan domains.  \n\n ") 
+
+
 ```
 </div>
 
 <div style="background-color: white; padding: 0px; margin: 0px">
 
+
 ```{r, results='asis',fig.align='center'}
 
-# Read images
 
+knitr::include_graphics(MF_3)
+knitr::include_graphics(MF_3_Legend)
+cat(" \n\n Figure 8. Relative expression of transcripts based on Molecular Functions.\n\n ") 
 
-knitr::include_graphics(MF_2)
-knitr::include_graphics(MF_2_Legend)
-cat(" \n\n Figure 5. Relative expression of transcripts based on Molecular Functions overrepresented in known toxin.\n\n ") 
 ```
 </div>
 
 <div style="background-color: white; padding: 0px; margin: 0px">
 
+
 ```{r, results='asis',fig.align='center'}
 
+knitr::include_graphics(BP_3)
+knitr::include_graphics(BP_3_Legend)
+cat(" \n\n Figure 9. Relative expression of transcripts based on Biological Processess.\n\n ") 
 
-knitr::include_graphics(BP_2)
-knitr::include_graphics(BP_2_Legend)
-cat(" \n\n Figure 6. Relative expression of transcripts based on Biological Processess overrepresented in known toxin.\n\n ") 
+
 ```
+
 </div>

@@ -518,7 +518,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Dataframes/Unannotated/", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Fastas", pattern: "*.fasta", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Fastas", pattern: "*.pep", mode: 'copy'
 
     input:
     tuple val(sample), val(species), path(massspec), path(blastn6), path(transdf), path(paf), path(toxvsnontoxIP)
@@ -725,6 +725,7 @@ process RmarkdownCDEGIK {
     Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/G.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
     Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/I.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
     Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/K.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
+    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/P.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
 
 
     """
@@ -1406,23 +1407,39 @@ process RmarkdownF {
       '${workflow.projectDir}/bin/Rmarkdown_scripts/F.Rmd',
       output_dir='.',
       params=list(
-        IP_1='\$IP_1_abs',
         IP_2='\$IP_2_abs',
-        IP_3='\$IP_3_abs',
-        IP_1_Legend='\$IP_1_Legend_abs',
         IP_2_Legend='\$IP_2_Legend_abs',
-        IP_3_Legend='\$IP_3_Legend_abs',
-        MF_1='\$MF_1_abs',
         MF_2='\$MF_2_abs',
-        MF_3='\$MF_3_abs',
-        MF_1_Legend='\$MF_1_Legend_abs',
         MF_2_Legend='\$MF_2_Legend_abs',
-        MF_3_Legend='\$MF_3_Legend_abs',
-        BP_1='\$BP_1_abs',
         BP_2='\$BP_2_abs',
-        BP_3='\$BP_3_abs',
-        BP_1_Legend='\$BP_1_Legend_abs',
         BP_2_Legend='\$BP_2_Legend_abs',
+        AuthorName = '${author}',
+        SampleName = '${sample}'
+      )
+    )"
+        Rscript -e "rmarkdown::render(
+      '${workflow.projectDir}/bin/Rmarkdown_scripts/T.Rmd',
+      output_dir='.',
+      params=list(
+        IP_1='\$IP_1_abs',
+        IP_1_Legend='\$IP_1_Legend_abs',
+        MF_1='\$MF_1_abs',
+        MF_1_Legend='\$MF_1_Legend_abs',
+        BP_1='\$BP_1_abs',
+        BP_1_Legend='\$BP_1_Legend_abs',
+        AuthorName = '${author}',
+        SampleName = '${sample}'
+      )
+    )"
+        Rscript -e "rmarkdown::render(
+      '${workflow.projectDir}/bin/Rmarkdown_scripts/Y.Rmd',
+      output_dir='.',
+      params=list(
+        IP_3='\$IP_3_abs',
+        IP_3_Legend='\$IP_3_Legend_abs',
+        MF_3='\$MF_3_abs',
+        MF_3_Legend='\$MF_3_Legend_abs',
+        BP_3='\$BP_3_abs',
         BP_3_Legend='\$BP_3_Legend_abs',
         AuthorName = '${author}',
         SampleName = '${sample}'
@@ -1571,6 +1588,45 @@ process ProtSpace {
     protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
     protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
     protspace prepare -i embeddings/esm2_3b.h5 -a ${ProtSpaceAnnotatedCSV}
+
+
+
+    """
+}
+
+process ProtSpaceToxin {
+
+    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+
+    maxRetries 4
+
+  
+
+
+    label 'process_single'
+    label 'process_long'
+
+
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/ProtSpace/results/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
+
+    input:
+    tuple val(sample), path(final_filtered_lax), path(table), path(ToxinFasta), path(ToxinMetadata)
+
+    output:
+    tuple val(sample), path("*withtoxins.parquetbundle")
+
+    script:
+    // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
+    """
+    awk -F'|' '/^>/ { print ">" $3 } 1' ${ToxinFasta} > ToxProtFasta.int.fasta 
+    awk '/^>/ {print $1; next} {print}' ToxProtFasta.int.fasta  > ToxProtFasta.cleaned.fasta
+    cat ${final_filtered_lax} ToxProtFasta.cleaned.fasta > ProtspaceInput.fasta
+    Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS17.R ${table} ${ToxinMetadata}
+    protspace embed -i ProtspaceInput.fasta -e esm2_3b -o embeddings/
+    protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
+    protspace prepare -i embeddings/esm2_3b.h5 -a ProtSpaceToxin.csv
+    mv data.parquetbundle data.withtoxins.parquetbundle
 
 
 
@@ -1971,13 +2027,20 @@ workflow {
     // Run Annotate
     Annotate_Input | Annotate
 
-
+    Toxin_fasta_file = file(params.toxprot_fasta, checkIfExists: false).exists()
+        ? file(params.toxprot_fasta)
+        : file(params.Fallback_toxin_fasta)
+    ToxinFasta = Channel.fromPath(Toxin_fasta_file)
+    ToxinFastaAll = Toxin_fasta_file.join(ToxinMetadata)
 
     //Define Input for ProtSpace
     if (params.protspace) {
         ProtSpace_input = Annotate.out.FilteredLaxPep.join(Annotate.out.ProtSpaceAnnotatedCSV)
         //Run Process for ProtSpace
         ProtSpace_input | ProtSpace
+        // Full protspace alongside toxprot
+        ProtSpaceToxinInput = VennCsvLax.join(Annotate.out.Annotated_df).combine(ToxinFastaAll)
+        ProtSpaceToxinInput | ProtSpaceToxin
     }
 
     // Define Sample Metadata

@@ -129,7 +129,7 @@ FINAL_CSV <- FINAL_CSV %>%
   mutate(SP = if_else(is.na(Signal_Sequence), "OTHER", "SP"))
 
 FINAL_CSV <- FINAL_CSV %>%
-  mutate(CysPer = ((str_count(PEP_Sequence, fixed("C"))) / str_length(PEP_Sequence)) * 100 )
+  mutate(CysPer = ((str_count(PEP_Sequence, fixed("C"))) / (str_length(PEP_Sequence)-1)) * 100 )
 #keep only columns of interest
 keeps <- c("Transdecoder_ID", "ORF_type","SP", "PEP_Length", "CDS_Length", "Signal_Length", "Mature_Length","CysPer","est_counts","tpm", "percent", "cumulativepercent", "Code", "Hit", "Percentage_Identity", "E_value", "BitScore", "Hit_species", "InterPro_accession_Names","GO_name","Panther_ID_Name", "Phobius_Name", "TMHMM","Signal_Sequence", "Mature_Sequence", "PEP_Sequence", "CDS_Sequence")
 FINAL_CSV <- FINAL_CSV[keeps]

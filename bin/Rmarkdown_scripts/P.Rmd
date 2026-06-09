@@ -1,55 +1,44 @@
 ---
-title: "Genome"
+title: "Relative Domain and GO expression"
 output: 
   html_document:
-    self_contained: false
     css: style.css 
-params:
-  bam: "/Users/praveena/Desktop/2025/Genomeviz/expanded/minimaptrial.sorted.bam"
-  fasta: "/Users/praveena/Desktop/2025/Genomeviz/expanded/expandedgenomeregions.fa"
-  bami: "/Users/praveena/Desktop/2025/Genomeviz/expanded/minimaptrial.sorted.bam.bai"
-
 
 ---
-```{r, echo = FALSE, warning=FALSE, results='hide'}
-library(JBrowseR)
-out_dir <- getwd()
-data_dir <- file.path(out_dir, "data")
-dir.create(data_dir, showWarnings = FALSE)
-
-# Copy all required files into local bundle
-file.copy(params$fasta, data_dir, overwrite = TRUE)
-file.copy(paste0(params$fasta, ".fai"), data_dir, overwrite = TRUE)
-
-file.copy(params$bam, data_dir, overwrite = TRUE)
-file.copy(paste0(params$bam, ".bai"), data_dir, overwrite = TRUE)
-
-
+```{r, echo=FALSE, results='hide'}
+args <- commandArgs(trailingOnly = TRUE)
+path <- args[1]
+Name <- args[2]
+Sample_Name<- args[3]
 ```
+<!-- get current date --> 
+  `r Sys.Date()` ---
+**`r Name`** ---
+**`r Sample_Name`** 
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Button Layout</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div style="display: flex; gap: 25px; justify-content: center;">
+  <a href="F.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/IP2.png')`" alt="Overrepresented">
+    <span>Toxin-overrepresented domains</span>
+  </a>
+  <a href="T.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/IP1.png')`" alt="Toxins">
+    <span>Toxin expressed domains</span>
+  </a>
+    <a href="Y.html" class="button">
+    <img src="`r file.path(path, 'New_icons/600ppi/IP3.png')`" alt="All">
+    <span>All domains</span>
+  </a>
 
 
-```{r, echo = FALSE, warning=FALSE}
-asm <- assembly("data/expandedgenomeregions.fa")
-bam_track <- track_alignments(
-  track_data = "data/minimaptrial.sorted.bam",
-  assembly = asm
-)
+</div>
 
-dark_theme <- theme(
-  primary = "#000000",
-  secondary = "#0097a7",
-  tertiary = "#f57c00",
-  quaternary = "#d50000"
-)
-
-JBrowseR(
-  view = "View",
-  assembly = asm,
-  tracks = tracks(bam_track),
-  location = "CM042145.1:1..10000",
-  theme = dark_theme
-
-)
-```
-
-
+</body>

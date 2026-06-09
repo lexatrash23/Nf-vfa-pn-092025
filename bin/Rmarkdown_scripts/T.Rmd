@@ -4,12 +4,12 @@ output:
   html_document:
     css: style.css 
 params:
-  IP_2 : NULL
-  IP_2_Legend : NULL
-  MF_2 : NULL
-  MF_2_Legend : NULL
-  BP_2 : NULL 
-  BP_2_Legend : NULL 
+  IP_1 : NULL
+  IP_1_Legend : NULL
+  MF_1 : NULL
+  MF_1_Legend : NULL
+  BP_1 : NULL
+  BP_1_Legend : NULL
   AuthorName: NULL
   SampleName: NULL
 ---
@@ -44,17 +44,15 @@ library(grid)
 ```
 
 ```{r,echo = FALSE, message = FALSE, warning = FALSE, results='asis'}
-
-IP_2 <- params$IP_2
-IP_2_Legend <- params$IP_2_Legend
-
-
-MF_2 <- params$MF_2
-MF_2_Legend <- params$MF_2_Legend
+IP_1 <- params$IP_1
+IP_1_Legend <- params$IP_1_Legend
 
 
-BP_2 <- params$BP_2
-BP_2_Legend <- params$BP_2_Legend
+MF_1 <- params$MF_1
+MF_1_Legend <- params$MF_1_Legend
+
+BP_1 <- params$BP_1
+BP_1_Legend <- params$BP_1_Legend
 
 
 Sample_Name <- params$SampleName
@@ -71,17 +69,17 @@ Name <- params$AuthorName
 
 <div align="center">
 
-
-### Relative Expression of domains and GOs overrepresented in known toxins
+### Relative expression of domains and GOs found in known toxins
 <div style="background-color: white; padding: 0px; margin: 0px">
 
 ```{r, results='asis',fig.align='center'}
 
 # Read images
+knitr::include_graphics(IP_1)
+knitr::include_graphics(IP_1_Legend)
 
-knitr::include_graphics(IP_2)
-knitr::include_graphics(IP_2_Legend)
-cat(" \n\n Figure 4. Relative expression of transcripts based on interproscan domains overrepresented in known toxin.  \n\n ") 
+cat(" \n\n Figure 1. Relative expression of transcripts based on interproscan domains found in known toxins.\n\n ") 
+
 ```
 </div>
 
@@ -91,10 +89,10 @@ cat(" \n\n Figure 4. Relative expression of transcripts based on interproscan do
 
 # Read images
 
+knitr::include_graphics(MF_1)
+knitr::include_graphics(MF_1_Legend)
+cat(" \n\n Figure 2. Relative expression of transcripts based on Molecular Functions found in known toxins.  \n\n ") 
 
-knitr::include_graphics(MF_2)
-knitr::include_graphics(MF_2_Legend)
-cat(" \n\n Figure 5. Relative expression of transcripts based on Molecular Functions overrepresented in known toxin.\n\n ") 
 ```
 </div>
 
@@ -102,9 +100,11 @@ cat(" \n\n Figure 5. Relative expression of transcripts based on Molecular Funct
 
 ```{r, results='asis',fig.align='center'}
 
+# Read images
 
-knitr::include_graphics(BP_2)
-knitr::include_graphics(BP_2_Legend)
-cat(" \n\n Figure 6. Relative expression of transcripts based on Biological Processess overrepresented in known toxin.\n\n ") 
+knitr::include_graphics(BP_1)
+knitr::include_graphics(BP_1_Legend)
+cat(" \n\n Figure 3. Relative expression of transcripts based on Biological Processess found in known toxins.  \n\n ") 
+
 ```
 </div>
