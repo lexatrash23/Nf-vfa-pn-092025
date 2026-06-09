@@ -7,11 +7,11 @@ process kallistoAnalysisTrinity {
 
     maxRetries 4
 
-  
 
-    label 'process_bare'
 
-  
+    label 'process_low'
+
+
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
@@ -39,12 +39,12 @@ process kallistoAnalysisTrans {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
 
-  
+    label 'process_low'
+
+
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
@@ -71,12 +71,12 @@ process ExtractSignalSequences {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
 
-  
+    label 'process_low'
+
+
 
     conda 'python=3.8 biopython'
 
@@ -100,12 +100,12 @@ process CreateTrinityDataframe {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
 
-  
+    label 'process_low'
+
+
 
     conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
 
@@ -130,11 +130,11 @@ process CreateInterproscanDataframe {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base bioconductor-biostrings r-dplyr bioconductor-go.db bioconductor-biomart r-tidyr'
 
@@ -158,11 +158,11 @@ process CreateTransdecoderDataframe {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings r-stringr'
 
@@ -193,11 +193,11 @@ process BUSCOtranscriptome {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
@@ -222,11 +222,11 @@ process BUSCOtranslatome {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
@@ -251,11 +251,11 @@ process FigureGenerationTrinity {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
     container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'
@@ -291,11 +291,11 @@ process FigureGenerationTransdecoder {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
 
@@ -331,11 +331,11 @@ process FigureGenerationSignalp {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
 
@@ -368,11 +368,11 @@ process TableGenerationTrinity {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-dplyr r-DT'
 
@@ -400,11 +400,11 @@ process TableGenerationTransdecoder {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-dplyr r-DT r-stringr'
 
@@ -437,11 +437,11 @@ process ToxinVsNonToxin {
 
     maxRetries 4
 
-  
 
 
-    label 'process_single'
-    label 'process_long'
+
+    label 'process_low'
+
 
 
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
@@ -471,11 +471,11 @@ process Minimap1 {
 
     maxRetries 4
 
-  
+
 
 
     label 'process_high'
-    label 'process_long'
+
 
 
 
@@ -508,11 +508,11 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     maxRetries 4
 
-  
 
 
-    label 'process_double'
-    label 'process_long'
+
+    label 'process_medium'
+
 
     conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr'
 
@@ -522,7 +522,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     input:
     tuple val(sample), val(species), path(massspec), path(blastn6), path(transdf), path(paf), path(toxvsnontoxIP)
-        
+
     output:
     tuple val(sample), path("*_Venn_strict.png"), emit: VennPngStrict
     tuple val(sample), path("*filtered_strict.csv"), emit: VennCsvStrict
@@ -534,11 +534,10 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     //unfiltered
     path "*final_unfiltered.csv"
 
-
     script:
-    def ms_arg  = massspec.name != 'NO_FILE' ? "${massspec}" : "NULL"
-    def bn6_arg = blastn6.name  != 'NO_FILE' ? "${blastn6}"  : "NULL"
-    def paf_arg = paf.name      != 'NO_FILE' ? "${paf}"      : "NULL"
+    def ms_arg = massspec.name != 'NO_FILE' ? "${massspec}" : "NULL"
+    def bn6_arg = blastn6.name != 'NO_FILE' ? "${blastn6}" : "NULL"
+    def paf_arg = paf.name != 'NO_FILE' ? "${paf}" : "NULL"
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" \
         "${sample}" "${species}" ${transdf} ${toxvsnontoxIP} \
@@ -552,11 +551,11 @@ process CreateInterproscanFigures {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
 
@@ -598,11 +597,11 @@ process RmarkdownB {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis r-rmarkdown'
 
@@ -638,11 +637,10 @@ process CreateSampleSheet {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
 
     input:
     tuple val(sample_name), val(author_name), val(csv_content)
@@ -666,11 +664,11 @@ process RmarkdownA {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
 
@@ -698,13 +696,13 @@ process RmarkdownCDEGIK {
 
     maxRetries 4
 
-  
 
 
-    label 'process_single'
-    label 'process_long'
 
-  
+    label 'process_low'
+
+
+
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
 
@@ -738,20 +736,20 @@ process RmarkdownH {
 
     maxRetries 4
 
-  
 
 
-    label 'process_single'
-    label 'process_long'
 
-  
+    label 'process_low'
+
+
+
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
     input:
-    tuple val(sample), val(author), path(kallistotop20graphtrinity), path(kallistotop500graphtrinity), path(alluvial1plot), path(alluvial1legend), path(alluvial2plot), path(alluvial2legend), path(pie1), path(pie2), path(pie3), path(pie4plot), path(pie4legend),path(topkallisto), path(busco_figure)
+    tuple val(sample), val(author), path(kallistotop20graphtrinity), path(kallistotop500graphtrinity), path(alluvial1plot), path(alluvial1legend), path(alluvial2plot), path(alluvial2legend), path(pie1), path(pie2), path(pie3), path(pie4plot), path(pie4legend), path(topkallisto), path(busco_figure)
 
     output:
     tuple val(sample), path("*.html")
@@ -816,20 +814,20 @@ process RmarkdownJ {
 
     maxRetries 4
 
-  
 
 
-    label 'process_single'
-    label 'process_long'
 
-  
+    label 'process_low'
+
+
+
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
     input:
-    tuple val(sample), val(author), path(kallistotop20graphtransdecoder), path(kallistotop500graphtransdecoder), path(alluvial3plot),path(alluvial3legend), path(alluvial4plot),path(alluvial4legend), path(pie5), path(pie6), path(pie7), path(pie8plot),path(pie8legend), path(topkallisto_transdecoder), path(busco_figure_transdecoder)
+    tuple val(sample), val(author), path(kallistotop20graphtransdecoder), path(kallistotop500graphtransdecoder), path(alluvial3plot), path(alluvial3legend), path(alluvial4plot), path(alluvial4legend), path(pie5), path(pie6), path(pie7), path(pie8plot), path(pie8legend), path(topkallisto_transdecoder), path(busco_figure_transdecoder)
 
     output:
     tuple val(sample), path("*.html")
@@ -892,18 +890,18 @@ process RmarkdownL {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
     input:
-    tuple val(sample), val(author), path(alluvial5plot), path(alluvial5legend), path(alluvial6plot), path(alluvial6legend), path(pie9), path(pie10), path(pie11), path(pie12plot),path(pie12legend), path(topkallisto_signalp)
+    tuple val(sample), val(author), path(alluvial5plot), path(alluvial5legend), path(alluvial6plot), path(alluvial6legend), path(pie9), path(pie10), path(pie11), path(pie12plot), path(pie12legend), path(topkallisto_signalp)
 
     output:
     tuple val(sample), path("*.html")
@@ -949,11 +947,11 @@ process RmarkdownM {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -989,11 +987,11 @@ process RmarkdownN {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1031,11 +1029,11 @@ process RmarkdownO {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1071,11 +1069,11 @@ process RmarkdownQ {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1111,11 +1109,11 @@ process RmarkdownR {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1153,11 +1151,11 @@ process RmarkdownS {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1195,11 +1193,11 @@ process RmarkdownV {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1235,11 +1233,11 @@ process RmarkdownW {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1277,11 +1275,11 @@ process RmarkdownX {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
@@ -1317,12 +1315,12 @@ process RmarkdownZ {
 
     maxRetries 4
 
-  
 
-    label 'process_bare'
-    label 'process_long'
 
-  
+    label 'process_low'
+
+
+
 
     conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown r-DT R-dplyr r-knitr r-png r-gridbase r-downloadthis r-gridExtra'
 
@@ -1367,8 +1365,8 @@ process RmarkdownF {
 
 
 
-    label 'process_single'
-    label 'process_long'
+    label 'process_low'
+
 
 
 
@@ -1453,11 +1451,11 @@ process Blast0Chunks {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3'
 
@@ -1485,11 +1483,11 @@ process Blast0Chunksn {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
 
@@ -1517,11 +1515,11 @@ process Annotate {
 
     maxRetries 4
 
-  
 
 
-    label 'process_single'
-    label 'process_long'
+
+    label 'process_low'
+
 
     conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
 
@@ -1561,11 +1559,11 @@ process ProtSpace {
 
     maxRetries 4
 
-  
 
 
-    label 'process_single'
-    label 'process_long'
+
+    label 'process_low'
+
 
 
 
@@ -1600,11 +1598,9 @@ process ProtSpaceToxin {
 
     maxRetries 4
 
-  
 
+    label 'process_low'
 
-    label 'process_single'
-    label 'process_long'
 
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
@@ -1619,8 +1615,8 @@ process ProtSpaceToxin {
     script:
     // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
     """
-    awk -F'|' '/^>/ { print ">" $3 } 1' ${ToxinFasta} > ToxProtFasta.int.fasta 
-    awk '/^>/ {print $1; next} {print}' ToxProtFasta.int.fasta  > ToxProtFasta.cleaned.fasta
+    awk -F'|' '/^>/ { print ">" \$3 } 1' ${ToxinFasta} > ToxProtFasta.int.fasta 
+    awk '/^>/ {print \$1; next} {print}' ToxProtFasta.int.fasta  > ToxProtFasta.cleaned.fasta
     cat ${final_filtered_lax} ToxProtFasta.cleaned.fasta > ProtspaceInput.fasta
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS17.R ${table} ${ToxinMetadata}
     protspace embed -i ProtspaceInput.fasta -e esm2_3b -o embeddings/
@@ -1639,11 +1635,11 @@ process RmarkdownU {
 
     maxRetries 4
 
-  
 
 
-    label 'process_bare'
-    label 'process_long'
+
+    label 'process_low'
+
     conda 'r-base=4.3 r-rmarkdown r-plotly  r-dplyr r-arrow r-umap r-forcats'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
@@ -1681,11 +1677,11 @@ process Minimap {
 
     maxRetries 4
 
-  
+
 
 
     label 'process_high'
-    label 'process_long'
+
 
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
@@ -2031,7 +2027,7 @@ workflow {
         ? file(params.toxprot_fasta)
         : file(params.Fallback_toxin_fasta)
     ToxinFasta = Channel.fromPath(Toxin_fasta_file)
-    ToxinFastaAll = Toxin_fasta_file.join(ToxinMetadata)
+    ToxinFastaAll = ToxinFasta.join(ToxinMetadata)
 
     //Define Input for ProtSpace
     if (params.protspace) {
@@ -2202,9 +2198,6 @@ workflow {
     // Rmarkdown F
     RmarkdownF_input | RmarkdownF
     // Input RmarkdownZ 
-    def Genome = venomflowfiles.map { row ->
-        [row[0], row[41] ? row[41] : ""]
-    }
     def Protspace = channel.value(params.protspace ?: "FALSE")
 
     def RmarkdownZ_input = RmarkdownCDEGIKInput
