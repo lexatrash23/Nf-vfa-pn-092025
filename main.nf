@@ -15,7 +15,7 @@ process kallistoAnalysisTrinity {
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Kallisto/Transcriptome/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Kallisto/Transcriptome/", mode: 'copy'
 
     input:
     tuple val(sample), path(kallisto_file_trinity)
@@ -48,7 +48,7 @@ process kallistoAnalysisTrans {
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Kallisto/ORFs/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Kallisto/ORFs/", mode: 'copy'
 
     input:
     tuple val(sample), path(kallisto_file_transdecoder)
@@ -80,7 +80,7 @@ process ExtractSignalSequences {
 
     conda 'python=3.8 biopython'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/SignalSequences/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/SignalSequences/", mode: 'copy'
 
     input:
     tuple val(sample), path(secreted_pep), path(mature_fasta)
@@ -109,7 +109,7 @@ process CreateTrinityDataframe {
 
     conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Dataframes/Transcriptome/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/Transcriptome/", mode: 'copy'
 
     input:
     tuple val(sample), path(trinity_fasta), path(blastx_file), path(kallisto_csv)
@@ -138,7 +138,7 @@ process CreateInterproscanDataframe {
 
     conda 'r-base bioconductor-biostrings r-dplyr bioconductor-go.db bioconductor-biomart r-tidyr'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Dataframes/ORFs/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/ORFs/", mode: 'copy'
 
     input:
     tuple val(sample), path(Interproscan), path(ListFile), path(PantherFile)
@@ -167,8 +167,8 @@ process CreateTransdecoderDataframe {
     conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings r-stringr'
 
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Dataframes/ORFs/", pattern: "*.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Fastas/ORFs/", pattern: "*.fasta", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/ORFs/", pattern: "*.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Fastas/ORFs/", pattern: "*.fasta", mode: 'copy'
 
     input:
     tuple val(sample), path(transdecoder_pep), path(transdecoder_cds), path(blastp_file), path(mature_fasta), path(signalsequences), path(Interproscan_dataframe), path(kallistotrans)
@@ -202,7 +202,7 @@ process BUSCOtranscriptome {
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/busco/transcriptome/${count}/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/busco/transcriptome/${count}/", mode: 'copy'
 
     input:
     tuple val(sample), path(buscodirtr), val(count)
@@ -231,7 +231,7 @@ process BUSCOtranslatome {
     conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/busco/translatome/${count}/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/busco/translatome/${count}/", mode: 'copy'
 
     input:
     tuple val(sample), path(buscodirtl), val(count)
@@ -261,7 +261,7 @@ process FigureGenerationTrinity {
     container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'
 
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
 
     input:
     tuple val(sample), path(TBK)
@@ -299,7 +299,7 @@ process FigureGenerationTransdecoder {
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/HTMLFigures/ORFs/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/ORFs/", mode: 'copy'
 
     input:
     tuple val(sample), path(transdf)
@@ -339,7 +339,7 @@ process FigureGenerationSignalp {
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/HTMLFigures/Secreted/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Secreted/", mode: 'copy'
 
     input:
     tuple val(sample), path(transdf)
@@ -376,7 +376,7 @@ process TableGenerationTrinity {
 
     conda 'r-base=4.3 r-dplyr r-DT'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
 
     input:
     tuple val(sample), path(TBK), val(genome_id), val(species)
@@ -408,8 +408,8 @@ process TableGenerationTransdecoder {
 
     conda 'r-base=4.3 r-dplyr r-DT r-stringr'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/HTMLFigures/ORFs/", pattern: "*{5,6,7,8}.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/HTMLFigures/Secreted/", pattern: "*{9,10,11,12}.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/ORFs/", pattern: "*{5,6,7,8}.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Secreted/", pattern: "*{9,10,11,12}.csv", mode: 'copy'
 
     input:
     tuple val(sample), path(transdf), val(genome_id), val(species)
@@ -481,7 +481,7 @@ process Minimap1 {
 
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Minimap/AllCompleteORFs", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Minimap/AllCompleteORFs", mode: 'copy'
 
     input:
     tuple val(sample), path(genome), path(transdecoder_cds)
@@ -516,9 +516,9 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Dataframes/Unannotated/", pattern: "*.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Fastas", pattern: "*.pep", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Unannotated/", pattern: "*.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Fastas", pattern: "*.pep", mode: 'copy'
 
     input:
     tuple val(sample), val(species), path(massspec), path(blastn6), path(transdf), path(paf), path(toxvsnontoxIP)
@@ -560,7 +560,7 @@ process CreateInterproscanFigures {
 
     conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/HTMLFigures/Interproscan/", pattern: "*.png", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Interproscan/", pattern: "*.png", mode: 'copy'
 
     input:
     tuple val(sample), path(transdf_distinct_csv), path(toxvsnontoxIP), path(toxvsnontoxMF), path(toxvsnontoxBP)
@@ -1461,7 +1461,7 @@ process Blast0Chunks {
 
     conda 'r-base=4.3'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Blast0/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Blast0/", mode: 'copy'
 
     input:
     tuple val(sample), path(blastx0), path(blastp0)
@@ -1493,7 +1493,7 @@ process Blast0Chunksn {
 
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Blast0/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Blast0/", mode: 'copy'
 
     input:
     tuple val(sample), path(blastx0), path(blastp0), path(blastn0)
@@ -1525,9 +1525,9 @@ process Annotate {
 
     conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/Overview/Dataframes/Annotated/", pattern: "*Annotated_df.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/ProtSpace/Input/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/ProtSpace/Input/", pattern: "*.fasta", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Annotated/", pattern: "*Annotated_df.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/Input/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/Input/", pattern: "*.fasta", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*Select_Annotated_df.csv", mode: 'copy'
 
     input:
@@ -1570,7 +1570,7 @@ process ProtSpace {
 
 
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/ProtSpace/results/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
 
     input:
@@ -1607,7 +1607,7 @@ process ProtSpaceToxin {
     label 'process_long'
 
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/ProtSpace/results/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
 
     input:
@@ -1689,7 +1689,7 @@ process Minimap {
 
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/results/IntermediateFiles/Minimap/CandidateToxins/", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Minimap/CandidateToxins/", mode: 'copy'
 
     input:
     tuple val(sample), path(genome), path(FilteredLaxcds)
