@@ -3,6 +3,10 @@
 
 library(Biostrings)
 library(dplyr)
+if (!requireNamespace("BiocManager"))
+    install.packages("BiocManager")
+
+BiocManager::install("GO.db")
 library(GO.db)
 library(biomaRt)
 library(tidyr)

@@ -136,7 +136,7 @@ process CreateInterproscanDataframe {
     label 'process_low'
 
 
-    conda 'r-base bioconductor-biostrings r-dplyr bioconductor-go.db bioconductor-biomart r-tidyr'
+    conda 'r-base bioconductor-biostrings r-dplyr bioconductor-biostrings bioconductor-biomart r-tidyr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/ORFs/", mode: 'copy'
 
