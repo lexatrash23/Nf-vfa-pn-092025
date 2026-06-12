@@ -1,12 +1,7 @@
 #!/usr/bin/env Rscript
 #load pacakages
 options(repos = c(CRAN = "https://cloud.r-project.org"))
-library(Biostrings)
 library(dplyr)
-install.packages("BiocManager")
-library(BiocManager)
-
-BiocManager::install("GO.db")
 library(GO.db)
 library(biomaRt)
 library(tidyr)
