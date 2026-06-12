@@ -3,8 +3,9 @@
 options(repos = c(CRAN = "https://cloud.r-project.org"))
 library(Biostrings)
 library(dplyr)
+install.packages("BiocManager")
 library(BiocManager)
-install.packages("BiocManager", repos = "https://cloud.r-project.org")
+
 BiocManager::install("GO.db")
 library(GO.db)
 library(biomaRt)

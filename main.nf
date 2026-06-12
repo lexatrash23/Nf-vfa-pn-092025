@@ -130,13 +130,9 @@ process CreateInterproscanDataframe {
 
     maxRetries 4
 
-
-
-
     label 'process_low'
 
-
-    conda 'r-base bioconductor-biostrings r-dplyr bioconductor-biostrings bioconductor-biomart r-biocmanager r-tidyr'
+    conda 'r-base bioconductor-biostrings r-dplyr bioconductor-biostrings bioconductor-biomart bioconda::bioconductor-go.db r-tidyr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/ORFs/", mode: 'copy'
 
