@@ -208,7 +208,7 @@ parse_protein_xml <- function(xml_doc) {
 
 if (!is.na(Diamondblast6) && Diamondblast6 != "NULL" && Diamondblast6 != "") {
   Diamond <- read.delim(Diamondblast6, sep = "\t", header = FALSE)
-  colnames(Diamond) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qframe","qcovs")
+  colnames(Diamond) <- c("Transdecoder_ID", "AccessionNo", "pident", "length", "mismatch", "gapopen", "qstart","qend","sstart","send","evalue","bitscore","qcovs")
   Diamond <- Diamond %>%
     arrange(desc(bitscore), desc(qcovs),desc(pident)) %>%
     distinct(Transdecoder_ID, .keep_all = TRUE) %>%
@@ -441,12 +441,12 @@ Annotationdf <- Annotationdf %>%
 (GenomeSupportScore >= 2 |is.na(GenomeSupportScore)) &(AnnotationScore == 1 | BlastScore == 2) ~ "Category 1",
 (GenomeSupportScore >= 2 |is.na(GenomeSupportScore)) & ToxinDomainScore == 2 ~ "Category 2",
     (is.na(Annotation_Source) | Annotation_Source == "NCBInr") &
-      (GenomeSupportScore >= 2 |is.na(GenomeSupportScore)) &
+      (GenomeSupportScore >= 1 |is.na(GenomeSupportScore)) &
       (CysPerScore > 0 |
          KallistoExpressionScore > 0 |
          ProteomicCoverageScore > 0 | GenomeSupportScore == 3 ) ~ "Category 3",
 (Annotation_Source == "NonToxUniProt")  ~ "Putative non-toxins",
-    TRUE ~ "Lower genome alignment transcripts"
+    TRUE ~ "Lower genome support transcripts"
   ))
 
 Annotationdf$Protein_Name <- gsub("\\[.*?\\]", "", Annotationdf$Protein_Name)
