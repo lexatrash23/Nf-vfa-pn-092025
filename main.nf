@@ -5,14 +5,8 @@ process kallistoAnalysisTrinity {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
     label 'process_low'
-
-
-
     conda 'python=3.8 pandas seaborn matplotlib'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Kallisto/Transcriptome/", mode: 'copy'
@@ -37,14 +31,9 @@ process kallistoAnalysisTrans {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
-
-
 
     conda 'python=3.8 pandas seaborn matplotlib'
 
@@ -69,14 +58,9 @@ process kallistoAnalysisTrans {
 process ExtractSignalSequences {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
-
-
 
     conda 'python=3.8 biopython'
 
@@ -98,15 +82,9 @@ process ExtractSignalSequences {
 process CreateTrinityDataframe {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
-
-
-
     conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/Transcriptome/", mode: 'copy'
@@ -128,7 +106,7 @@ process CreateTrinityDataframe {
 process CreateInterproscanDataframe {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
     label 'process_low'
 
@@ -152,18 +130,11 @@ process CreateInterproscanDataframe {
 process CreateTransdecoderDataframe {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
 
-
-    conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings r-stringr'
-
-
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/ORFs/", pattern: "*.csv", mode: 'copy'
+    conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings r-stringr'    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/ORFs/", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Fastas/ORFs/", pattern: "*.fasta", mode: 'copy'
 
     input:
@@ -180,22 +151,13 @@ process CreateTransdecoderDataframe {
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS5.R ${transdecoder_pep} ${transdecoder_cds} ${blastp_file} ${mature_fasta} ${signalsequences} ${Interproscan_dataframe} ${kallistotrans} ${sample}
     """
 }
-
-
-
 // Process 8: Create BUSCOgraphtranscriptome  
 process BUSCOtranscriptome {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda "busco=5.8.3"
+    label 'process_low'    conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/busco/transcriptome/${count}/", mode: 'copy'
@@ -216,15 +178,9 @@ process BUSCOtranscriptome {
 process BUSCOtranslatome {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda "busco=5.8.3"
+    label 'process_low'    conda "busco=5.8.3"
     container "docker://ezlabgva/busco:v5.8.2_cv1"
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/busco/translatome/${count}/", mode: 'copy'
@@ -245,19 +201,10 @@ process BUSCOtranslatome {
 process FigureGenerationTrinity {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
-    container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'
-
-
-    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
+    label 'process_low'    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
+    container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'    publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
 
     input:
     tuple val(sample), path(TBK)
@@ -285,15 +232,9 @@ process FigureGenerationTrinity {
 process FigureGenerationTransdecoder {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
+    label 'process_low'    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/ORFs/", mode: 'copy'
 
@@ -318,22 +259,13 @@ process FigureGenerationTransdecoder {
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Figure_generation_Transdecoder.R" ${transdf} "${workflow.projectDir}/bin/Intermediate_Scripts2/color_palette.rds"
     """
 }
-
-
-
 // Process 13: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
+    label 'process_low'    conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Secreted/", mode: 'copy'
 
@@ -362,15 +294,9 @@ process FigureGenerationSignalp {
 process TableGenerationTrinity {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-dplyr r-DT'
+    label 'process_low'    conda 'r-base=4.3 r-dplyr r-DT'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
 
@@ -394,15 +320,9 @@ process TableGenerationTrinity {
 process TableGenerationTransdecoder {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-dplyr r-DT r-stringr'
+    label 'process_low'    conda 'r-base=4.3 r-dplyr r-DT r-stringr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/ORFs/", pattern: "*{5,6,7,8}.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Secreted/", pattern: "*{9,10,11,12}.csv", mode: 'copy'
@@ -424,22 +344,13 @@ process TableGenerationTransdecoder {
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts2/Generating_Tables_Transdecoder_SignalP.R" ${transdf} ${genome_id} ${species} 
     """
-}
-
-
-process ToxinVsNonToxin {
+}process ToxinVsNonToxin {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
-
-
-
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
 
     publishDir "CommonIntermediateFiles/Pipelines/Analysis/ToxinVsNonToxinMetaData/", mode: 'copy'
@@ -465,15 +376,9 @@ process Minimap1 {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_high'
-
-
-
 
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
@@ -502,15 +407,9 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_medium'
-
-
-    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr'
+    label 'process_medium'    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Unannotated/", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
@@ -545,15 +444,9 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 process CreateInterproscanFigures {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
+    label 'process_low'    conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Interproscan/", pattern: "*.png", mode: 'copy'
 
@@ -591,15 +484,9 @@ process CreateInterproscanFigures {
 process RmarkdownB {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -631,10 +518,7 @@ process CreateSampleSheet {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
 
@@ -651,22 +535,13 @@ process CreateSampleSheet {
     EOF
     """
 }
-
-
-
 // Process 20: RmarkdownA
 process RmarkdownA {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -683,22 +558,13 @@ process RmarkdownA {
 
     """
 }
-
-
-
 // Process 22:
 process RmarkdownCDEGIK {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
-
-
-
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
 
@@ -719,26 +585,14 @@ process RmarkdownCDEGIK {
     Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/G.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
     Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/I.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
     Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/K.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
-    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/P.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}
-
-
-    """
-}
-
-
-// Process 23:
+    Rscript -e "rmarkdown::render('${workflow.projectDir}/bin/Rmarkdown_scripts/P.Rmd', output_dir = '.')" '${workflow.projectDir}/bin/Rmarkdown_scripts/' ${sample} ${author}    """
+}// Process 23:
 process RmarkdownH {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
-
-
-
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -774,10 +628,7 @@ process RmarkdownH {
     # Get absolute paths only for files that exist
     [ -n "\$busco_figure1_abs" ] && busco_figure1_abs=\$(readlink -f "\$busco_figure1_abs")
     [ -n "\$busco_figure2_abs" ] && busco_figure2_abs=\$(readlink -f "\$busco_figure2_abs")
-    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")
-
-
-    Rscript -e "rmarkdown::render(
+    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/H.Rmd',
       output_dir='.',
       params=list(
@@ -801,22 +652,13 @@ process RmarkdownH {
       )
     )"
     """
-}
-
-
-// Process 24:
+}// Process 24:
 process RmarkdownJ {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
-
-
-
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -851,10 +693,7 @@ process RmarkdownJ {
     # Get absolute paths only for files that exist
     [ -n "\$busco_figure1_abs" ] && busco_figure1_abs=\$(readlink -f "\$busco_figure1_abs")
     [ -n "\$busco_figure2_abs" ] && busco_figure2_abs=\$(readlink -f "\$busco_figure2_abs")
-    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")
-
-
-    Rscript -e "rmarkdown::render(
+    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/J.Rmd',
       output_dir='.',
       params=list(
@@ -884,15 +723,9 @@ process RmarkdownJ {
 process RmarkdownL {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -941,15 +774,9 @@ process RmarkdownL {
 process RmarkdownM {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -962,10 +789,7 @@ process RmarkdownM {
     script:
     """
 
-    Table1_abs=\$(readlink -f "${Table1}")
-
-
-    Rscript -e "rmarkdown::render(
+    Table1_abs=\$(readlink -f "${Table1}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/M.Rmd',
       output_dir='.',
       params=list(
@@ -981,15 +805,9 @@ process RmarkdownM {
 process RmarkdownN {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1003,10 +821,7 @@ process RmarkdownN {
     """
 
     Table2_abs=\$(readlink -f "${Table2}")
-    Table3_abs=\$(readlink -f "${Table3}")
-
-
-    Rscript -e "rmarkdown::render(
+    Table3_abs=\$(readlink -f "${Table3}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/N.Rmd',
       output_dir='.',
       params=list(
@@ -1023,15 +838,9 @@ process RmarkdownN {
 process RmarkdownO {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1044,10 +853,7 @@ process RmarkdownO {
     script:
     """
 
-    Table4_abs=\$(readlink -f "${Table4}")
-
-
-    Rscript -e "rmarkdown::render(
+    Table4_abs=\$(readlink -f "${Table4}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/O.Rmd',
       output_dir='.',
       params=list(
@@ -1063,15 +869,9 @@ process RmarkdownO {
 process RmarkdownQ {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1084,10 +884,7 @@ process RmarkdownQ {
     script:
     """
 
-    Table5_abs=\$(readlink -f "${Table5}")
-
-
-    Rscript -e "rmarkdown::render(
+    Table5_abs=\$(readlink -f "${Table5}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/Q.Rmd',
       output_dir='.',
       params=list(
@@ -1103,15 +900,9 @@ process RmarkdownQ {
 process RmarkdownR {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1125,10 +916,7 @@ process RmarkdownR {
     """
 
     Table6_abs=\$(readlink -f "${Table6}")
-    Table7_abs=\$(readlink -f "${Table7}")
-
-
-    Rscript -e "rmarkdown::render(
+    Table7_abs=\$(readlink -f "${Table7}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/R.Rmd',
       output_dir='.',
       params=list(
@@ -1145,15 +933,9 @@ process RmarkdownR {
 process RmarkdownS {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1166,10 +948,7 @@ process RmarkdownS {
     script:
     """
 
-    Table8_abs=\$(readlink -f "${Table8}")
-
-
-    Rscript -e "rmarkdown::render(
+    Table8_abs=\$(readlink -f "${Table8}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/S.Rmd',
       output_dir='.',
       params=list(
@@ -1180,22 +959,13 @@ process RmarkdownS {
     )"
     """
 }
-
-
-
 // Process 32:
 process RmarkdownV {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1208,10 +978,7 @@ process RmarkdownV {
     script:
     """
 
-    Table9_abs=\$(readlink -f "${Table9}")
-
-
-    Rscript -e "rmarkdown::render(
+    Table9_abs=\$(readlink -f "${Table9}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/V.Rmd',
       output_dir='.',
       params=list(
@@ -1227,15 +994,9 @@ process RmarkdownV {
 process RmarkdownW {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1249,10 +1010,7 @@ process RmarkdownW {
     """
 
     Table10_abs=\$(readlink -f "${Table10}")
-    Table11_abs=\$(readlink -f "${Table11}")
-
-
-    Rscript -e "rmarkdown::render(
+    Table11_abs=\$(readlink -f "${Table11}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/W.Rmd',
       output_dir='.',
       params=list(
@@ -1269,15 +1027,9 @@ process RmarkdownW {
 process RmarkdownX {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1290,10 +1042,7 @@ process RmarkdownX {
     script:
     """
 
-    Table12_abs=\$(readlink -f "${Table12}")
-
-
-    Rscript -e "rmarkdown::render(
+    Table12_abs=\$(readlink -f "${Table12}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/X.Rmd',
       output_dir='.',
       params=list(
@@ -1309,14 +1058,8 @@ process RmarkdownX {
 process RmarkdownZ {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
     label 'process_low'
-
-
-
 
     conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown r-DT R-dplyr r-knitr r-png r-gridbase r-downloadthis r-gridExtra'
 
@@ -1335,10 +1078,7 @@ process RmarkdownZ {
     table_abs=\$(readlink -f "${table}")
 
    version=\$([[ "${protspace}" == "TRUE" || "${protspace}" == "True" || "${protspace}" == "true" ]] && echo V1 || echo V2)
-    Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/\${version}/Z.Rmd"
-
-
-    Rscript -e "rmarkdown::render(
+    Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/\${version}/Z.Rmd"    Rscript -e "rmarkdown::render(
       '\$Rmarkdown',
       output_dir='.',
       params=list(
@@ -1356,15 +1096,9 @@ process RmarkdownZ {
 process RmarkdownF {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
-
-
-
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-png r-gridbase r-rmarkdown'
 
@@ -1445,15 +1179,9 @@ process RmarkdownF {
 process Blast0Chunks {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3'
+    label 'process_low'    conda 'r-base=4.3'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Blast0/", mode: 'copy'
 
@@ -1470,22 +1198,13 @@ process Blast0Chunks {
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${sample} ${blastx0} ${blastp0}
     """
 }
-
-
-
 process Blast0Chunksn {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
+    label 'process_low'    conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Blast0/", mode: 'copy'
 
@@ -1502,22 +1221,13 @@ process Blast0Chunksn {
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS11.R" ${sample} ${blastx0} ${blastp0} ${blastn0}
     """
 }
-
-
-
 process Annotate {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-    conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
+    label 'process_mediun'    conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Annotated/", pattern: "*Annotated_df.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/Input/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
@@ -1542,10 +1252,7 @@ process Annotate {
         BLASTN_ARG="${Diamondblast6}"
     else
         BLASTN_ARG="NULL"
-    fi
-
-
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS16.R" ${final_filtered_lax} ${toxprotblast6} ${toxprotblastmetadata} ${nontoxprotblast6} ${nontoxprotmetadata} ${toxvsnontoxIP} ${toxvsnontoxMF} ${toxvsnontoxBP} ${sample} ${Diamondblast6}
+    fi    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS16.R" ${final_filtered_lax} ${toxprotblast6} ${toxprotblastmetadata} ${nontoxprotblast6} ${nontoxprotmetadata} ${toxvsnontoxIP} ${toxvsnontoxMF} ${toxvsnontoxBP} ${sample} ${Diamondblast6}
     """
 }
 
@@ -1553,17 +1260,9 @@ process ProtSpace {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_low'
-
-
-
-
-
+    label 'process_medium'   
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
 
@@ -1582,9 +1281,6 @@ process ProtSpace {
     protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
     protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
     protspace prepare -i embeddings/esm2_3b.h5 -a ${ProtSpaceAnnotatedCSV}
-
-
-
     """
 }
 
@@ -1592,13 +1288,8 @@ process ProtSpaceToxin {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-    label 'process_low'
-
-
-
+    maxRetries 3    
+    label 'process_medium'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
 
@@ -1619,9 +1310,6 @@ process ProtSpaceToxin {
     protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
     protspace prepare -i embeddings/esm2_3b.h5 -a ProtSpaceToxin.csv
     mv data.parquetbundle data.withtoxins.parquetbundle
-
-
-
     """
 }
 
@@ -1629,10 +1317,7 @@ process ProtSpaceToxin {
 process RmarkdownU {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
-
-
-
+    maxRetries 3
 
     label 'process_low'
 
@@ -1650,10 +1335,7 @@ process RmarkdownU {
     """
 
     parquet_abs=\$(readlink -f "${parquet}")
-    metadata_abs=\$(readlink -f "${metadata}")
-
-
-    Rscript -e "rmarkdown::render(
+    metadata_abs=\$(readlink -f "${metadata}")    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/U.Rmd',
       output_dir='.',
       params=list(
@@ -1671,15 +1353,9 @@ process Minimap {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 3
 
-
-
-
-    label 'process_high'
-
-
-    conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
+    label 'process_high'    conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Minimap/CandidateToxins/", mode: 'copy'
 
@@ -1711,9 +1387,6 @@ process Minimap {
     """
 }
 // Define input file patterns via parameters
-
-
-
 workflow {
 
     //Define CSV channel.. channel factory creates the channel from a csv file. can be defined in the config or command line 
@@ -1830,16 +1503,10 @@ workflow {
     def nontoxin_metadata_file = file(params.input_nontoxin_metadata, checkIfExists: false).exists()
         ? file(params.input_nontoxin_metadata)
         : file(params.Fallback_nontoxin_metadata)
-    NonToxinMetadata = Channel.fromPath(nontoxin_metadata_file)
-
-
-    // Process 1: Define Inputs for kallistoanalysistrinity  sample id + kallisto_file trinity tuple 
+    NonToxinMetadata = Channel.fromPath(nontoxin_metadata_file)    // Process 1: Define Inputs for kallistoanalysistrinity  sample id + kallisto_file trinity tuple 
     kallistoanalysistrinityinput = venomflowfiles.map { [it[0], it[1]] }
     //Run process kallistoAnalysisTrinity
-    kallistoanalysistrinityinput | kallistoAnalysisTrinity
-
-
-    //Process 2: Define Inputs for kallistoanalysistrans sample id + kallisto_file trans tuple 
+    kallistoanalysistrinityinput | kallistoAnalysisTrinity    //Process 2: Define Inputs for kallistoanalysistrans sample id + kallisto_file trans tuple 
     kallistoanalysistransinput = venomflowfiles.map { [it[0], it[2]] }
     //Run process kallistoanalysistrans
     kallistoanalysistransinput | kallistoAnalysisTrans
@@ -1851,10 +1518,7 @@ workflow {
         [item[0], item[30], maturefasta]
     }
     //Run process ExtractSignalSequences
-    ExtractSignalSequencesinput | ExtractSignalSequences
-
-
-    //Process 4: Define Inputs for ExtractCreateTrinityDataframe  sample + trinity_fasta + blastx_file + kallisto_csv  tuple 
+    ExtractSignalSequencesinput | ExtractSignalSequences    //Process 4: Define Inputs for ExtractCreateTrinityDataframe  sample + trinity_fasta + blastx_file + kallisto_csv  tuple 
 
     CreateTrinityDataframeinput_single = venomflowfiles
         .filter { !it[28] }
@@ -1868,10 +1532,7 @@ workflow {
 
     CreateTrinityDataframeinput = CreateTrinityDataframeinput_single.mix(CreateTrinityDataframeinput_combined)
     //Run process ExtractCreateTrinityDataframe
-    CreateTrinityDataframeinput | CreateTrinityDataframe
-
-
-    //Process 5: Define Inputs for CreateInterproscanDataframe  sample + Interproscan + ListFile + PantherFile  tuple 
+    CreateTrinityDataframeinput | CreateTrinityDataframe    //Process 5: Define Inputs for CreateInterproscanDataframe  sample + Interproscan + ListFile + PantherFile  tuple 
     CreateInterproscanDataframeinput = venomflowfiles
         .map {
             return [it[0], it[8]]
@@ -1879,10 +1540,7 @@ workflow {
         .combine(InterproscanMetadata)
         .combine(PantherMetadata)
     //Run process CreateInterproscanDataframe
-    CreateInterproscanDataframeinput | CreateInterproscanDataframe
-
-
-    //Process 6: Define Inputs for CreateTransdecoderDataframe  sample + transdecoder_pep + transdecoder_cds + blastp6_file  mature_fasta, Signalp_summary, signalsequences, Interproscan_dataframe, kallistotrans
+    CreateInterproscanDataframeinput | CreateInterproscanDataframe    //Process 6: Define Inputs for CreateTransdecoderDataframe  sample + transdecoder_pep + transdecoder_cds + blastp6_file  mature_fasta, Signalp_summary, signalsequences, Interproscan_dataframe, kallistotrans
     CreateTransdecoderDataframeinput = venomflowfiles
         .map { item ->
             def maturefasta = item[32] && item[32] != '' ? item[32] : item[5]
@@ -1898,10 +1556,7 @@ workflow {
         .join(CreateInterproscanDataframe.out.Interproscan_dataframe)
         .join(kallistoAnalysisTrans.out.trans_all_csv)
     //Run process ExtractCreateTrinityDataframe
-    CreateTransdecoderDataframeinput | CreateTransdecoderDataframe
-
-
-    //Process 8: Define Input BUSCOtranscriptome
+    CreateTransdecoderDataframeinput | CreateTransdecoderDataframe    //Process 8: Define Input BUSCOtranscriptome
     BUSCOtranscriptomeinput_1 = venomflowfiles.map { [it[0], it[15], "1"] }
     BUSCOtranscriptomeinput_2 = venomflowfiles.filter { it[28] }.map { [it[0], it[23], "2"] }
     BUSCOtranscriptomeinput_C = venomflowfiles.filter { it[28] }.map { [it[0], it[24], "C"] }
@@ -1916,10 +1571,7 @@ workflow {
     BUSCOtranslatomeinput = BUSCOtranslatomeinput_1.mix(BUSCOtranslatomeinput_2).mix(BUSCOtranslatomeinput_C)
 
     //Run Process BUSCOtranslatome
-    BUSCOtranslatomeinput | BUSCOtranslatome
-
-
-    //Process 10: Define Input for TableGenerationTrinity sample+TBK + genomeid + species 
+    BUSCOtranslatomeinput | BUSCOtranslatome    //Process 10: Define Input for TableGenerationTrinity sample+TBK + genomeid + species 
     def genome = venomflowfiles.map {
         return [it[0], it[17]]
     }
@@ -1931,31 +1583,19 @@ workflow {
     }
     def TableGenerationTrinityinput = CreateTrinityDataframe.out.TBK.join(genome).join(species)
     //Run Process TableGenerationTrinity
-    TableGenerationTrinityinput | TableGenerationTrinity
-
-
-    //Process 12: Define Input for FigureGenerationTrinity 
+    TableGenerationTrinityinput | TableGenerationTrinity    //Process 12: Define Input for FigureGenerationTrinity 
     def FigureGenerationTrinityinput = CreateTrinityDataframe.out.TBK
     // Run process FigureGenerationTrinity
-    FigureGenerationTrinityinput | FigureGenerationTrinity
-
-
-    //Process 13: Define Input FigureGenerationTransdecoder
+    FigureGenerationTrinityinput | FigureGenerationTrinity    //Process 13: Define Input FigureGenerationTransdecoder
     def FigureGenerationTransdecoderinput = CreateTransdecoderDataframe.out.transdf
     // Run Process FigureGenerationTransdecoder
     FigureGenerationTransdecoderinput | FigureGenerationTransdecoder
 
     // Run Process14:  FigureGenerationSignalp
-    FigureGenerationTransdecoderinput | FigureGenerationSignalp
-
-
-    //Process 11: Define 4 possible sample types for table generation transdecoder sample+transdf + genomeid + species 
+    FigureGenerationTransdecoderinput | FigureGenerationSignalp    //Process 11: Define 4 possible sample types for table generation transdecoder sample+transdf + genomeid + species 
     SampleGenomeSpecies = venomflowfiles.map {
         return [it[0], it[17], it[18]]
-    }
-
-
-    TableGenerationTransdecoderInput = CreateTransdecoderDataframe.out.transdf.join(SampleGenomeSpecies)
+    }    TableGenerationTransdecoderInput = CreateTransdecoderDataframe.out.transdf.join(SampleGenomeSpecies)
     //Run Process TableGenerationTrinity
     TableGenerationTransdecoderInput | TableGenerationTransdecoder
 
@@ -2044,10 +1684,7 @@ workflow {
         def author_name = row.AnalysisdataAuth
         def csv_content = header_line + '\n' + row.collect { _k, v -> v }.join(',')
         tuple(sample_name, author_name, csv_content)
-    }
-
-
-    samplesheets = CreateSampleSheet(MetadataInput)
+    }    samplesheets = CreateSampleSheet(MetadataInput)
     // Then pass to RmarkdownB
     samplesheets | RmarkdownB
 
@@ -2159,17 +1796,11 @@ workflow {
     RmarkdownWInput | RmarkdownW
     // RmarkdownX
     RmarkdownXInput = RmarkdownCDEGIKInput.join(TableGenerationTransdecoder.out.Table12)
-    RmarkdownXInput | RmarkdownX
-
-
-    RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
+    RmarkdownXInput | RmarkdownX    RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
     RmarkdownUInput | RmarkdownU
 
     /*
-    Rmarkdown
-
-
-*/
+    Rmarkdown*/
     // Input RmarkdownF
     def RmarkdownF_input = RmarkdownCDEGIKInput
         .join(CreateInterproscanFigures.out.IP_1)
