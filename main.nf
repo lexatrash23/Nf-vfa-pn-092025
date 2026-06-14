@@ -644,7 +644,9 @@ process RmarkdownH {
     # Get absolute paths only for files that exist
     [ -n "\$busco_figure1_abs" ] && busco_figure1_abs=\$(readlink -f "\$busco_figure1_abs")
     [ -n "\$busco_figure2_abs" ] && busco_figure2_abs=\$(readlink -f "\$busco_figure2_abs")
-    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")    Rscript -e "rmarkdown::render(
+    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")    
+    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/H.Rmd',
       output_dir='.',
       params=list(
@@ -710,7 +712,8 @@ process RmarkdownJ {
     # Get absolute paths only for files that exist
     [ -n "\$busco_figure1_abs" ] && busco_figure1_abs=\$(readlink -f "\$busco_figure1_abs")
     [ -n "\$busco_figure2_abs" ] && busco_figure2_abs=\$(readlink -f "\$busco_figure2_abs")
-    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")    Rscript -e "rmarkdown::render(
+    [ -n "\$busco_figure3_abs" ] && busco_figure3_abs=\$(readlink -f "\$busco_figure3_abs")    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/J.Rmd',
       output_dir='.',
       params=list(
@@ -808,7 +811,8 @@ process RmarkdownM {
     script:
     """
 
-    Table1_abs=\$(readlink -f "${Table1}")    Rscript -e "rmarkdown::render(
+    Table1_abs=\$(readlink -f "${Table1}")    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/M.Rmd',
       output_dir='.',
       params=list(
@@ -841,7 +845,8 @@ process RmarkdownN {
     """
 
     Table2_abs=\$(readlink -f "${Table2}")
-    Table3_abs=\$(readlink -f "${Table3}")    Rscript -e "rmarkdown::render(
+    Table3_abs=\$(readlink -f "${Table3}")    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/N.Rmd',
       output_dir='.',
       params=list(
@@ -874,7 +879,8 @@ process RmarkdownO {
     script:
     """
 
-    Table4_abs=\$(readlink -f "${Table4}")    Rscript -e "rmarkdown::render(
+    Table4_abs=\$(readlink -f "${Table4}")    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/O.Rmd',
       output_dir='.',
       params=list(
@@ -906,7 +912,8 @@ process RmarkdownQ {
     script:
     """
 
-    Table5_abs=\$(readlink -f "${Table5}")    Rscript -e "rmarkdown::render(
+    Table5_abs=\$(readlink -f "${Table5}")   
+     Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/Q.Rmd',
       output_dir='.',
       params=list(
@@ -939,7 +946,8 @@ process RmarkdownR {
     """
 
     Table6_abs=\$(readlink -f "${Table6}")
-    Table7_abs=\$(readlink -f "${Table7}")    Rscript -e "rmarkdown::render(
+    Table7_abs=\$(readlink -f "${Table7}")   
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/R.Rmd',
       output_dir='.',
       params=list(
@@ -972,7 +980,8 @@ process RmarkdownS {
     script:
     """
 
-    Table8_abs=\$(readlink -f "${Table8}")    Rscript -e "rmarkdown::render(
+    Table8_abs=\$(readlink -f "${Table8}")    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/S.Rmd',
       output_dir='.',
       params=list(
@@ -1003,7 +1012,8 @@ process RmarkdownV {
     script:
     """
 
-    Table9_abs=\$(readlink -f "${Table9}")    Rscript -e "rmarkdown::render(
+    Table9_abs=\$(readlink -f "${Table9}")    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/V.Rmd',
       output_dir='.',
       params=list(
@@ -1036,7 +1046,8 @@ process RmarkdownW {
     """
 
     Table10_abs=\$(readlink -f "${Table10}")
-    Table11_abs=\$(readlink -f "${Table11}")    Rscript -e "rmarkdown::render(
+    Table11_abs=\$(readlink -f "${Table11}")    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/W.Rmd',
       output_dir='.',
       params=list(
@@ -1069,7 +1080,8 @@ process RmarkdownX {
     script:
     """
 
-    Table12_abs=\$(readlink -f "${Table12}")    Rscript -e "rmarkdown::render(
+    Table12_abs=\$(readlink -f "${Table12}")    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/X.Rmd',
       output_dir='.',
       params=list(
@@ -1105,7 +1117,9 @@ process RmarkdownZ {
     table_abs=\$(readlink -f "${table}")
 
    version=\$([[ "${protspace}" == "TRUE" || "${protspace}" == "True" || "${protspace}" == "true" ]] && echo V1 || echo V2)
-    Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/\${version}/Z.Rmd"    Rscript -e "rmarkdown::render(
+    Rmarkdown="${workflow.projectDir}/bin/Rmarkdown_scripts/\${version}/Z.Rmd"    
+    
+    Rscript -e "rmarkdown::render(
       '\$Rmarkdown',
       output_dir='.',
       params=list(
@@ -1172,7 +1186,8 @@ process RmarkdownF {
         SampleName = '${sample}'
       )
     )"
-        Rscript -e "rmarkdown::render(
+
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/T.Rmd',
       output_dir='.',
       params=list(
@@ -1186,7 +1201,8 @@ process RmarkdownF {
         SampleName = '${sample}'
       )
     )"
-        Rscript -e "rmarkdown::render(
+    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/Y.Rmd',
       output_dir='.',
       params=list(
@@ -1365,7 +1381,8 @@ process RmarkdownU {
     """
 
     parquet_abs=\$(readlink -f "${parquet}")
-    metadata_abs=\$(readlink -f "${metadata}")    Rscript -e "rmarkdown::render(
+    metadata_abs=\$(readlink -f "${metadata}")    
+    Rscript -e "rmarkdown::render(
       '${workflow.projectDir}/bin/Rmarkdown_scripts/U.Rmd',
       output_dir='.',
       params=list(
