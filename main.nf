@@ -1272,7 +1272,7 @@ process Annotate {
 
     maxRetries 3
 
-    label 'process_mediun'
+    label 'process_medium'
     conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Annotated/", pattern: "*Annotated_df.csv", mode: 'copy'
