@@ -1731,7 +1731,7 @@ workflow {
         //Run Process for ProtSpace
         ProtSpace_input | ProtSpace
         // Full protspace alongside toxprot
-        ProtSpaceToxinInput = VennCsvLax.join(Annotate.out.Annotated_df).combine(ToxinFastaAll)
+        ProtSpaceToxinInput = ProtSpace_input.combine(ToxinFastaAll)
         ProtSpaceToxinInput | ProtSpaceToxin
     }
 
