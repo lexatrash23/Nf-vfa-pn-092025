@@ -1723,7 +1723,7 @@ workflow {
         ? file(params.toxprot_fasta)
         : file(params.Fallback_toxin_fasta)
     ToxinFasta = Channel.fromPath(Toxin_fasta_file)
-    ToxinFastaAll = ToxinFasta.join(ToxinMetadata)
+    ToxinFastaAll = ToxinFasta.combine(ToxinMetadata)
 
     //Define Input for ProtSpace
     if (params.protspace) {
