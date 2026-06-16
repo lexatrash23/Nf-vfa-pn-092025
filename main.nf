@@ -1,7 +1,7 @@
 #!/usr/bin/env nextflow
 def printhead() {
     log.info("")
-    log.info("════════════════════════════════════════════════════════════")
+    log.info("════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════")
     log.info(" __ __    ___  ____    ___   ___ ___  _____  _       ___   __    __   ____  ____    ____  _      __ __  _____ ____ _____")
     log.info("|  |  |  /  _]|    \  /   \ |   |   ||     || |     /   \ |  |__|  | /    ||    \  /    || |    |  |  |/ ___/|    / ___/")
     log.info("|  |  | /  [_ |  _  ||     || _   _ ||   __|| |    |     ||  |  |  ||  o  ||  _  ||  o  || |    |  |  (   \_  |  (   \_ ")
@@ -9,7 +9,7 @@ def printhead() {
     log.info("|  :  ||   [_ |  |  ||     ||   |   ||   _] |     ||     ||  `  '  ||  _  ||  |  ||  _  ||     ||___, |/  \ | |  |/  \ |")
     log.info(" \   / |     ||  |  ||     ||   |   ||  |   |     ||     | \      / |  |  ||  |  ||  |  ||     ||     |\    | |  |\    |")
     log.info("  \_/  |_____||__|__| \___/ |___|___||__|   |_____| \___/   \_/\_/  |__|__||__|__||__|__||_____||____/  \___||____|\___|")
-    log.info("════════════════════════════════════════════════════════════")
+    log.info("════════════════════════════════════════════════════════════════════════════════════════════════════════════════════════")
     log.info("")
     log.info("Author:                          ${workflow.manifest.author}")
     log.info("README:                          ${workflow.manifest.homePage}")
@@ -1350,7 +1350,7 @@ process ProtSpace {
     ProtSpaceAnnotatedCSV_abs=\$(readlink -f "${ProtSpaceAnnotatedCSV}")
 
     protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
-    protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
+    protspace project -i embeddings/esm2_3b.h5 -m pca2,umap2 -o projections/
     protspace prepare -i embeddings/esm2_3b.h5 -a ${ProtSpaceAnnotatedCSV}
     """
 }
@@ -1463,7 +1463,8 @@ process Minimap {
 }
 // Define input file patterns via parameters
 workflow {
-
+     // Print head 
+    printhead()
     //Define CSV channel.. channel factory creates the channel from a csv file. can be defined in the config or command line 
     csv_channel = channel.fromPath(params.input_csv).splitCsv(header: true, sep: ',').map { row -> row.collectEntries { key, value -> [key.replaceAll('"', ''), value?.toString()?.replaceAll('"', '')] } }
     //Define results folder from the Venomflow 
