@@ -9,7 +9,7 @@ library(stringr)
 
 args <- commandArgs(trailingOnly = TRUE)
 ProtSpaceAnnotatedCSV <- args[1]
-ToxinToxinData <- args[2]
+ToxinMetaddata <- args[2]
 
 #Enyme class labels 
 ec_class_map <- c(
