@@ -10,9 +10,6 @@ library(stringr)
 args <- commandArgs(trailingOnly = TRUE)
 ProtSpaceAnnotatedCSV <- args[1]
 ToxinToxinData <- args[2]
-ToxinMetaddata <- "/Users/praveena/Desktop/PhD_all/2025/github/Nf-vfa-pn-092025/MetadataFiles/Toxin_Domains.tsv.gz"
-ProtSpaceAnnotatedCSV <- "/Users/praveena/Desktop/PhD_all/2026/Todd/Pipelines/Analysis/results/Overview/Dataframes/Annotated/CV_TL_all_Annotated_df.csv"
-
 
 #Enyme class labels 
 ec_class_map <- c(
