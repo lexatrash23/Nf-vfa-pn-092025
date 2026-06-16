@@ -361,7 +361,7 @@ process ToxinVsNonToxin {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
 
     publishDir "CommonIntermediateFiles/Pipelines/Analysis/ToxinVsNonToxinMetaData/", mode: 'copy'
@@ -1337,6 +1337,9 @@ process ProtSpaceToxin {
 
     maxRetries 3
     label 'process_medium'
+
+    conda 'r-base=4.3 r-dplyr r-tidyr r-stringr r-readr'
+
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
 
