@@ -1,5 +1,29 @@
 #!/usr/bin/env nextflow
+def printhead() {
+    log.info("")
+    log.info("════════════════════════════════════════════════════════════")
+    log.info(" __ __    ___  ____    ___   ___ ___  _____  _       ___   __    __   ____  ____    ____  _      __ __  _____ ____ _____")
+    log.info("|  |  |  /  _]|    \  /   \ |   |   ||     || |     /   \ |  |__|  | /    ||    \  /    || |    |  |  |/ ___/|    / ___/")
+    log.info("|  |  | /  [_ |  _  ||     || _   _ ||   __|| |    |     ||  |  |  ||  o  ||  _  ||  o  || |    |  |  (   \_  |  (   \_ ")
+    log.info("|  |  ||    _]|  |  ||  O  ||  \_/  ||  |_  | |___ |  O  ||  |  |  ||     ||  |  ||     || |___ |  ~  |\__  | |  |\__  |")
+    log.info("|  :  ||   [_ |  |  ||     ||   |   ||   _] |     ||     ||  `  '  ||  _  ||  |  ||  _  ||     ||___, |/  \ | |  |/  \ |")
+    log.info(" \   / |     ||  |  ||     ||   |   ||  |   |     ||     | \      / |  |  ||  |  ||  |  ||     ||     |\    | |  |\    |")
+    log.info("  \_/  |_____||__|__| \___/ |___|___||__|   |_____| \___/   \_/\_/  |__|__||__|__||__|__||_____||____/  \___||____|\___|")
+    log.info("════════════════════════════════════════════════════════════")
+    log.info("")
+    log.info("Author:                          ${workflow.manifest.author}")
+    log.info("README:                          ${workflow.manifest.homePage}")
+    log.info("Description:                     ${workflow.manifest.description}")
+    log.info("Version:                         ${workflow.manifest.version}")
+    log.info("DeepTMHMM:                       ${params.protspace}")
+    log.info("Profile:                         ${workflow.profile}")
+    log.info("Start:                           ${workflow.start}")
+    log.info("")
+    log.info("────────────────────────────────────────────────────────────")
+    log.info("")
+}
 
+                                                                                                                        
 // Process 1: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrinity {
 
@@ -1356,10 +1380,9 @@ process ProtSpaceToxin {
     awk '/^>/ {print \$1; next} {print}' ToxProtFasta.int.fasta  > ToxProtFasta.cleaned.fasta
     cat ${final_filtered_lax} ToxProtFasta.cleaned.fasta > ProtspaceInput.fasta
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS17.R ${table} ${ToxinMetadata}
-    protspace embed -i ProtspaceInput.fasta -e esm2_3b -o embeddings/
-    protspace project -i embeddings/esm2_3b.h5 -m umap2 -o projections/
-    protspace prepare -i embeddings/esm2_3b.h5 -a ProtSpaceToxin.csv
+    protspace prepare -i ProtspaceInput.fasta  -m pca2,umap2 -a ProtSpaceToxin.csv
     mv data.parquetbundle data.withtoxins.parquetbundle
+
     """
 }
 
