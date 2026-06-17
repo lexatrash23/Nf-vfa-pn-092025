@@ -458,7 +458,7 @@ Annotationdf <- Annotationdf %>%
 write.csv(Annotationdf, paste0(sample, "_all_Annotated_df.csv"), row.names = FALSE)
 
 Annotationdf <- Annotationdf %>%
-  filter(Category != "Lower genome alignment transcripts" & Category != "Putative non-toxins")
+  filter(Category != "Lower genome support transcripts" & Category != "Putative non-toxins")
   
 write.csv(Annotationdf, paste0(sample, "_Select_Annotated_df.csv"), row.names = FALSE)
 
