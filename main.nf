@@ -1347,11 +1347,10 @@ process ProtSpace {
     script:
     // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
     """
-    ProtSpaceAnnotatedCSV_abs=\$(readlink -f "${ProtSpaceAnnotatedCSV}")
 
     protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
     protspace project -i embeddings/esm2_3b.h5 -m pca2,umap2 -o projections/
-    protspace prepare -i embeddings/esm2_3b.h5 -a ${ProtSpaceAnnotatedCSV}
+    protspace prepare -i ${filteredlaxfasta} -a ${ProtSpaceAnnotatedCSV} -m pca2,umap2
     """
 }
 
