@@ -1376,9 +1376,7 @@ process ProtSpaceToxin {
     script:
     // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
     """
-    awk -F'|' '/^>/ { print ">" \$3 } 1' ${ToxinFasta} > ToxProtFasta.int.fasta 
-    awk '/^>/ {print \$1; next} {print}' ToxProtFasta.int.fasta  > ToxProtFasta.cleaned.fasta
-    cat ${final_filtered_lax} ToxProtFasta.cleaned.fasta > ProtspaceInput.fasta
+    cat ${final_filtered_lax} ${ToxinFasta} > ProtspaceInput.fasta
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS17.R ${table} ${ToxinMetadata}
     protspace prepare -i ProtspaceInput.fasta  -m pca2,umap2 -a ProtSpaceToxin.csv
     mv data.parquetbundle data.withtoxins.parquetbundle
