@@ -112,7 +112,7 @@ cat(" \n\n Figure 1. BUSCO score of translatome(s). \n\n ")
 ```{r, results='asis'}
 Trinity_Top500_read <- readPNG(kallistotop500graphtransdecoder)
 top500 <- grid.raster(Trinity_Top500_read)
-cat(" \n\n Figure 2. Kallisto Distribution of Top 500 expressed transcripts. Kallisto was run using Transdecoder file as an index and trimmomatic files as inputs with bootstraps.Y axis shows the transcript per million(tpm) counts per target id. X shows each target id (Transdecoder sequence). \n\n ")
+cat(" \n\n Figure 2. Kallisto Distribution of Top 500 expressed transcripts. Kallisto was run using ORF fasta as an index and trimmed files as inputs with bootstraps.Y axis shows the transcript per million(tpm) counts per target id. X shows each target id (ORF sequence). \n\n ")
 ```
 
 ### Kallisto Distribution of Top 20 expressed transcripts 
@@ -121,7 +121,7 @@ cat(" \n\n Figure 2. Kallisto Distribution of Top 500 expressed transcripts. Kal
 ```{r, results='asis'}
 Trinity_Top200_read <- readPNG(kallistotop20graphtransdecoder)
 top200 <- grid.raster(Trinity_Top200_read)
-cat(" \n\n Figure 3. Kallisto Distribution of Top 20 expressed transcripts. Kallisto was run using transcoder file as an index and trimmomatic files as inputs with bootstraps. Left Y axis shows the transcript per million(tpm) counts per target id. Right Y axis shows the cumulative percent of expression the top 20 most expressed transcripts. X shows each target id (transcoder sequence). \n\n ")
+cat(" \n\n Figure 3. Kallisto Distribution of Top 20 expressed transcripts. Right Y axis shows the cumulative percent of expression the top 20 most expressed transcripts. X shows each target id (ORF sequence). \n\n ")
 ```
 
 ### % of with a significant hit to a unitprot toxin 
@@ -129,7 +129,7 @@ cat(" \n\n Figure 3. Kallisto Distribution of Top 20 expressed transcripts. Kall
 ```{r, results='asis'}
 P1 <- readPNG(pie5)
 P1 <- grid.raster(P1)
-cat("\n\n Figure 4. Pie chart showing the percentage of Transdecoder transcripts that showed a significant hit to annotated uniprot toxin. Blastp was done using the Transdecoder pep  file as the query and the annotated toxin database from uniprot as the database.Pie chart represents what percentage of distinct trinity transcripts had at least one uniprot toxin match with a BitScore of at least 50. \n\n") 
+cat("\n\n Figure 4. Pie chart showing the percentage of Transdecoder transcripts that showed a significant hit to annotated uniprot toxin. Blastp was done using the Transdecoder pep  file as the query and the annotated toxin database from uniprot as the database.Pie chart represents what percentage of distinct ORFs had at least one uniprot toxin match. \n\n") 
 ```
 
 
@@ -142,7 +142,7 @@ knitr::include_graphics(alluvial3L)
 ```
 </div>
 ```{r, results='asis'}
-cat(" \n\n Figure 5. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 50. On the right is each of the distinct transdecoder transcripts with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display. \n\n") 
+cat(" \n\n Figure 5. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 50. On the right is each of the distinct transdecoder transcripts with at least one significant uniprot toxin hit. On the left are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were too many transcripts to display.) \n\n") 
 ```
 
 ### Most significant uniprot toxin hit per transcript (BitScore >= 250)
@@ -156,7 +156,7 @@ knitr::include_graphics(alluvial4L)
 </div>
 ```{r, results='asis'}
 
-cat("\n\n Figure 6. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 250. On the right is each of the distinct transdecoder transcripts with at least one significant uniprot toxin hit. One the left is are the uniprot toxin hits.  The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were simply too many transcripts to display. \n\n") 
+cat("\n\n Figure 6. Alluvial graph representing the most significant uniprot toxin hit per transcript with at least one significant uniprot toxin hit. Significance threshold for this graph is a Bitscore of at least 250. On the right is each of the distinct transdecoder transcripts with at least one significant uniprot toxin hit. On the left are the uniprot toxin hits. The coloured lines connecting the right bar to left indicate which hit was most significant for each transcript. (Note:if the bar on the right is completely black in colour, this indicates that there were too many transcripts to display.) \n\n") 
 ```
 
 ### % of Relative kallisto-predicted expression of transcripts with and without uniprot toxin hit (Evalue < 1e^-5)
