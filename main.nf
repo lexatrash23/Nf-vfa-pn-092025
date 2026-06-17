@@ -1350,7 +1350,7 @@ process ProtSpace {
 
     protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
     protspace project -i embeddings/esm2_3b.h5 -m pca2,umap2 -o projections/
-    protspace prepare -i ${filteredlaxfasta} -a ${ProtSpaceAnnotatedCSV} -m pca2,umap2
+    protspace prepare -i ${filteredlaxfasta} -a ${ProtSpaceAnnotatedCSV} -e prot_t5,esm2_650m -m pca2,umap2
     """
 }
 
@@ -1377,7 +1377,7 @@ process ProtSpaceToxin {
     """
     cat ${final_filtered_lax} ${ToxinFasta} > ProtspaceInput.fasta
     Rscript ${workflow.projectDir}/bin/Intermediate_Scripts/IS17.R ${table} ${ToxinMetadata}
-    protspace prepare -i ProtspaceInput.fasta  -m pca2,umap2 -a ProtSpaceToxin.csv
+    protspace prepare -i ProtspaceInput.fasta  -m pca2,umap2 -e prot_t5,esm2_650m -a ProtSpaceToxin.csv
     mv data.parquetbundle data.withtoxins.parquetbundle
 
     """
