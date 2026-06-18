@@ -143,10 +143,16 @@ FINAL_CSV_filtered <- FINAL_CSV %>%
     TMHMM == FALSE #only select those where tmhmm equals to false as well
   )
 
-#write full df to csv
-write.csv(FINAL_CSV_filtered, paste0(sample_name, "_transdf.csv"), row.names = FALSE)
+#for the html reports complete orfs sectoin
+CompleteORFsDf <- FINAL_CSV %>%
+  filter(
+    grepl("complete", ORF_type, ignore.case = TRUE) #ORF has to be completed
+  )
 
-#creating df of distinct transcripts only keeping the highest scoring hit for each transcript
+#write full df to csv
+write.csv(CompleteORFsDf, paste0(sample_name, "_transdf.csv"), row.names = FALSE)
+
+#creating df of distinct transcripts only keeping the highest scoring hit for each transcript # this is only for secreted ORFs used used for interproscan figure generation.
 FINAL_CSV_distinct <- FINAL_CSV_filtered[order(FINAL_CSV_filtered$BitScore, decreasing = TRUE), ]
 FINAL_CSV_distinct <- distinct(FINAL_CSV_distinct, Transdecoder_ID, .keep_all = TRUE)
 

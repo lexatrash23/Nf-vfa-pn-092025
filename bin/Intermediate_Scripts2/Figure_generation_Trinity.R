@@ -78,7 +78,7 @@ alluvial1 <-  ggplot(data = Distinct_Transcripts_50,
   geom_alluvium(aes(fill = Hit)) +
   geom_stratum(aes(fill = Hit)) +
   geom_text(stat = "stratum",
-            aes(label = after_stat(stratum)), size = 2, min.y = 5) +
+            aes(label = after_stat(stratum)), size = 2, min.y = 10) +
   scale_x_discrete(limits = c("Trinity_ID", "Hit"),
                    expand = c(0.15, 0.05)) +  
   theme_void() + theme(legend.position = "right",legend.text = element_text(size = 4, color = "#000000"),  # Smaller text size and color
