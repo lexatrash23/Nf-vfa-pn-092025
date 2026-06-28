@@ -1518,31 +1518,31 @@ workflow {
         //23
         def busco_transcriptome_dir3 = results_path ? file("${results_path}/BUSCO/transcriptome/Combined") : ''
         //24
-        def busco_translatome_dir2 = results_path ? file("${results_path}/BUSCO/translatome/TD2/") : ''
+        def busco_translatome_dir2 = results_path ? ({ def p = file("${results_path}/BUSCO/translatome/TD2/"); p.exists() ? p : '' }()) : ''    
         //25
-        def busco_translatome_dir3 = results_path ? file("${results_path}/BUSCO/translatome/Combined/") : ''
+        def busco_translatome_dir3 = results_path ? ({ def p = file("${results_path}/BUSCO/translatome/Combined/"); p.exists() ? p : '' }()) : '' //26
         //26
         def Transcriptome1 = row.Transcriptome1 ? file(row.Transcriptome1) : ''
         //27
         def Transcriptome2 = row.Transcriptome2 ? file(row.Transcriptome2) : ''
         //28
-        def TranscriptomeC = results_path ? file("${results_path}/Combined_Transcriptome/*.cdhit95.fasta") : ''
+        def TranscriptomeC = row.Transcriptome2 ? file("${results_path}/Combined_Transcriptome/*.cdhit95.fasta") : ''
         //29
-        def complete_pep = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.pep") : ''
+        def complete_pep = (results_path && results_path.resolve("ORFprediction/Combined/Complete").exists()) ? file("${results_path}/ORFprediction/Combined/Complete/*.pep") : ''
         //30
-        def complete_cds = results_path ? file("${results_path}/ORFprediction/Combined/Complete/*.cds") : ''
+        def complete_cds = (results_path && results_path.resolve("ORFprediction/Combined/Complete").exists()) ? file("${results_path}/ORFprediction/Combined/Complete/*.cds") : ''
         //31
-        def combined_mature = results_path ? file("${results_path}/Secreted/Mature/Combined/*.combined.mature.deduplicated.pep.fasta") : ''
+        def combined_mature = (results_path && results_path.resolve("Secreted/Mature/Combined").exists()) ? file("${results_path}/Secreted/Mature/Combined/*.combined.mature.deduplicated.pep.fasta") : ''
         //32
         def SampleURL = row.SearchAndDownloadURL ?: ''
         //33
-        def TD_pep = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.pep") : ''
+        def TD_pep = (results_path && results_path.resolve("ORFprediction/Transdecoder").exists()) ? file("${results_path}/ORFprediction/Transdecoder/*.pep") : ''
         //34
-        def TD2_pep = results_path ? file("${results_path}/ORFprediction/TD2/*.pep") : ''
+        def TD2_pep = (results_path && results_path.resolve("ORFprediction/TD2").exists()) ? file("${results_path}/ORFprediction/TD2/*.pep") : ''
         //35
-        def TD_cds = results_path ? file("${results_path}/ORFprediction/Transdecoder/*.cds") : ''
+        def TD_cds = (results_path && results_path.resolve("ORFprediction/Transdecoder").exists()) ? file("${results_path}/ORFprediction/Transdecoder/*.cds") : ''
         //36
-        def TD2_cds = results_path ? file("${results_path}/ORFprediction/TD2/*.cds") : ''
+        def TD2_cds = (results_path && results_path.resolve("ORFprediction/TD2").exists()) ? file("${results_path}/ORFprediction/TD2/*.cds") : ''
         //37
         def Diamondblast6 = row.Diamondblast6Path ? file(row.Diamondblast6Path) : ''
         //38

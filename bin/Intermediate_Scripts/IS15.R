@@ -155,7 +155,7 @@ filter_and_venn <- function(Base, pattern, pattern2, mass = FALSE, strict = TRUE
     if(!is.na(mass_spec_file) && mass_spec_file != "NULL") {
     sets <- list(
       TD = matching_rows$Transdecoder_ID,
-      MS = Base[Base$Coverage >= 0 & Base$Top == TRUE,]$Transdecoder_ID,
+      MS = Base[Base$Unique >= 0 & Base$Top == TRUE,]$Transdecoder_ID,
       TP = Base[Base$BitScore >= 50,]$Transdecoder_ID,
       KE = Base[Base$percent >= 0,]$Transdecoder_ID,
       CP = Base[Base$CysPer >= 1,]$Transdecoder_ID
