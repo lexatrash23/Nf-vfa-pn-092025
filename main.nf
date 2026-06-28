@@ -1496,7 +1496,7 @@ workflow {
         //12
         def blastp0txt = results_path ? file("${results_path}/Blast/Blastp_Toxin/*.blastp.db.0.txt") : ''
         //13
-        def basename = row.basename
+        def basename = row.Basename
         //14
         def busco_transcriptome_dir = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome1") : ''
         //15
