@@ -1500,7 +1500,7 @@ workflow {
         //14
         def busco_transcriptome_dir = results_path ? file("${results_path}/BUSCO/transcriptome/Transcriptome1") : ''
         //15
-        def busco_translatome_dir = results_path ? file("${results_path}/BUSCO/translatome/Transdecoder/") : ''
+        def busco_translatome_dir = (results_path && results_path.resolve("BUSCO/translatome/Transdecoder").exists()) ? file("${results_path}/BUSCO/translatome/Transdecoder/") : ''
         //16
         def genomeid = row.NCBI_Genome_id ?: ''
         //17
