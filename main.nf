@@ -445,7 +445,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     maxRetries 3
 
     label 'process_medium'
-    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase onda-forge::r-ggvenn bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr'
+    conda 'r-base=4.3 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn=0.1.19 bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr ipykernel'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Unannotated/", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
