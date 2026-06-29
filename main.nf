@@ -1752,7 +1752,7 @@ workflow {
         return [it[0], it[40]]
     })
     RmarkdownCDEGIKInput | RmarkdownCDEGIK
-    
+
     //Define Input for ProtSpace
     if (params.protspace) {
         ProtSpace_input = Annotate.out.FilteredLaxPep.join(Annotate.out.ProtSpaceAnnotatedCSV)
@@ -1775,8 +1775,10 @@ workflow {
 
     } else {
         def Protspace = channel.value(params.protspace ?: "FALSE")
+        ch_null  = Channel.of([null])
 
-        RmarkdownUInput = RmarkdownCDEGIKInput.combine("NULL").combine("Null")
+
+        RmarkdownUInput = RmarkdownCDEGIKInput.combine(ch_null).combine(ch_null)
         def RmarkdownZ_input = RmarkdownCDEGIKInput
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
