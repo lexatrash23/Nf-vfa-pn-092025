@@ -1748,7 +1748,11 @@ workflow {
         : file(params.Fallback_toxin_fasta)
     ToxinFasta = Channel.fromPath(Toxin_fasta_file)
     ToxinFastaAll = ToxinFasta.combine(ToxinMetadata)
-
+    RmarkdownCDEGIKInput = (venomflowfiles.map {
+        return [it[0], it[40]]
+    })
+    RmarkdownCDEGIKInput | RmarkdownCDEGIK
+    
     //Define Input for ProtSpace
     if (params.protspace) {
         ProtSpace_input = Annotate.out.FilteredLaxPep.join(Annotate.out.ProtSpaceAnnotatedCSV)
@@ -1807,10 +1811,7 @@ workflow {
     }
     RmarkdownAInput | RmarkdownA
     //IntermediateHTMLS
-    RmarkdownCDEGIKInput = (venomflowfiles.map {
-        return [it[0], it[40]]
-    })
-    RmarkdownCDEGIKInput | RmarkdownCDEGIK
+
     groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome.groupTuple()
     groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome.groupTuple()
     //groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome
