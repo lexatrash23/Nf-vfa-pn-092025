@@ -41,7 +41,13 @@ ToxnontoxIP <- args[4]
 Blastn_result <- args[5]
 mass_spec_file <- args[6]
 Minimap_result <- args[7]
-
+head(Sample_name)
+head(species_name)
+head(Transdf_distinct_file)
+head(ToxnontoxIP)
+head(Blastn_result)
+head(mass_spec_file)
+head(Minimap_result)
 # Function to read in transdf and make transdf_distinct, filter for complete ORF with signal P //slightly different from other transdf distincct
 read_transdf <- function(file) {
   df <- read.csv(file, header = TRUE)
