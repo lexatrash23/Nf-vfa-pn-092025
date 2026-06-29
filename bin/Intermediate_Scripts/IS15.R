@@ -42,7 +42,6 @@ Blastn_result <- args[5]
 mass_spec_file <- args[6]
 Minimap_result <- args[7]
 
-
 # Function to read in transdf and make transdf_distinct, filter for complete ORF with signal P //slightly different from other transdf distincct
 read_transdf <- function(file) {
   df <- read.csv(file, header = TRUE)

@@ -471,8 +471,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     def paf_arg = paf.name != 'NO_FILE' ? "${paf}" : "NULL"
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" \
-        "${sample}" "${species}" ${transdf} ${toxvsnontoxIP} \
-        "${bn6_arg}" "${ms_arg}" "${paf_arg}"
+        "${sample}" "${species}" "${transdf}" "${toxvsnontoxIP}" "${bn6_arg}" "${ms_arg}" "${paf_arg}"
     """
 }
 
