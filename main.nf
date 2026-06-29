@@ -1785,7 +1785,7 @@ workflow {
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
         .join(Annotate.out.Annotated_df)
-        .combine(ch_null)
+        .combine(Protspace)
         
         RmarkdownZ_input | RmarkdownZ
 
