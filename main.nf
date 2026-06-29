@@ -1760,19 +1760,24 @@ workflow {
         ProtSpaceToxinInput = ProtSpace_input.combine(ToxinFastaAll)
         ProtSpaceToxinInput | ProtSpaceToxin
 
+        def Protspace = channel.value(params.protspace ?: "FALSE")
+
         def RmarkdownZ_input = RmarkdownCDEGIKInput
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
         .join(Annotate.out.Annotated_df)
         .combine(Protspace)
+        
 
     } else {
+        def Protspace = channel.value(params.protspace ?: "FALSE")
+
         RmarkdownUInput = RmarkdownCDEGIKInput.combine("NULL").combine("Null")
         def RmarkdownZ_input = RmarkdownCDEGIKInput
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
         .join(Annotate.out.Annotated_df)
-        .combine("Null")
+        .combine(Protspace)
     }
 
     // Define Sample Metadata
@@ -1926,7 +1931,6 @@ workflow {
     // Rmarkdown F
     RmarkdownF_input | RmarkdownF
     // Input RmarkdownZ 
-    def Protspace = channel.value(params.protspace ?: "FALSE")
 
 
     // Rmarkdown Z
