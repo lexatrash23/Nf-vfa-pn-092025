@@ -1758,13 +1758,16 @@ workflow {
         ProtSpace_input = Annotate.out.FilteredLaxPep.join(Annotate.out.ProtSpaceAnnotatedCSV)
         //Run Process for ProtSpace
         ProtSpace_input | ProtSpace
-        RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
 
         // Full protspace alongside toxprot
         ProtSpaceToxinInput = ProtSpace_input.combine(ToxinFastaAll)
         ProtSpaceToxinInput | ProtSpaceToxin
 
         def Protspace = channel.value(params.protspace ?: "FALSE")
+
+        RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
+
+        RmarkdownUInput | RmarkdownU
 
         def RmarkdownZ_input = RmarkdownCDEGIKInput
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
@@ -1777,10 +1780,8 @@ workflow {
 
     } else {
         def Protspace = channel.value(params.protspace ?: "FALSE")
-        ch_null  = Channel.of([null])
 
 
-        RmarkdownUInput = RmarkdownCDEGIKInput.combine(ch_null).combine(ch_null)
         def RmarkdownZ_input = RmarkdownCDEGIKInput
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
@@ -1911,7 +1912,6 @@ workflow {
     // RmarkdownX
     RmarkdownXInput = RmarkdownCDEGIKInput.join(TableGenerationTransdecoder.out.Table12)
     RmarkdownXInput | RmarkdownX
-    RmarkdownUInput | RmarkdownU
 
     /*
     Rmarkdown*/
