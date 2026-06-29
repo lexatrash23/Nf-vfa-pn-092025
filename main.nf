@@ -466,9 +466,9 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     path "*final_unfiltered.csv"
 
     script:
-    def ms_arg = massspec.name != 'NO_FILE' ? "${massspec}" : "NULL"
-    def bn6_arg = blastn6.name != 'NO_FILE' ? "${blastn6}" : "NULL"
-    def paf_arg = paf.name != 'NO_FILE' ? "${paf}" : "NULL"
+    def ms_arg = massspec.name != 'NO_MS' ? "${massspec}" : "NULL"
+    def bn6_arg = blastn6.name != 'NO_GENOME' ? "${blastn6}" : "NULL"
+    def paf_arg = paf.name != 'NO_Minimap' ? "${paf}" : "NULL"
     """
     Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" \
         "${sample}" "${species}" "${transdf}" "${toxvsnontoxIP}" "${bn6_arg}" "${ms_arg}" "${paf_arg}"
