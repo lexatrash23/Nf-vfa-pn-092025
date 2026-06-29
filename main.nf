@@ -1715,10 +1715,10 @@ workflow {
     // Overview 
 
     AddMSGenomeIfAvailableAndCreateOverviewInput = venomflowfiles
-        .map { it -> [it[0], it[18], it[19] ?: file('NO_FILE'), it[10] ?: file('NO_FILE')] }
+        .map { it -> [it[0], it[18], it[19] ?: file('NO_MS'), it[10] ?: file('NO_GENOME')] }
         .join(CreateTransdecoderDataframe.out.transdf_distinct)
         .join(Minimap1.out.completecdspaf, remainder: true)
-        .map { it -> it[0..-2] + [it[-1] ?: file('NO_FILE')] }
+        .map { it -> it[0..-2] + [it[-1] ?: file('NO_Minimap')] }
         .combine(ToxinVsNonToxin.out.toxvsnontoxIP)
 
     AddMSGenomeIfAvailableAndCreateOverviewInput | AddMSGenomeIfAvailableAndCreateOverview
