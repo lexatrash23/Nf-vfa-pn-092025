@@ -1754,9 +1754,25 @@ workflow {
         ProtSpace_input = Annotate.out.FilteredLaxPep.join(Annotate.out.ProtSpaceAnnotatedCSV)
         //Run Process for ProtSpace
         ProtSpace_input | ProtSpace
+        RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
+
         // Full protspace alongside toxprot
         ProtSpaceToxinInput = ProtSpace_input.combine(ToxinFastaAll)
         ProtSpaceToxinInput | ProtSpaceToxin
+
+        def RmarkdownZ_input = RmarkdownCDEGIKInput
+        .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
+        .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
+        .join(Annotate.out.Annotated_df)
+        .combine(Protspace)
+
+    } else {
+        RmarkdownUInput = RmarkdownCDEGIKInput.combine("NULL").combine("Null")
+        def RmarkdownZ_input = RmarkdownCDEGIKInput
+        .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
+        .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
+        .join(Annotate.out.Annotated_df)
+        .combine("Null")
     }
 
     // Define Sample Metadata
@@ -1882,7 +1898,6 @@ workflow {
     // RmarkdownX
     RmarkdownXInput = RmarkdownCDEGIKInput.join(TableGenerationTransdecoder.out.Table12)
     RmarkdownXInput | RmarkdownX
-    RmarkdownUInput = RmarkdownCDEGIKInput.join(ProtSpace.out.ProtSpaceParquet).join(Annotate.out.ProtSpaceAnnotatedCSV)
     RmarkdownUInput | RmarkdownU
 
     /*
@@ -1913,11 +1928,6 @@ workflow {
     // Input RmarkdownZ 
     def Protspace = channel.value(params.protspace ?: "FALSE")
 
-    def RmarkdownZ_input = RmarkdownCDEGIKInput
-        .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
-        .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
-        .join(Annotate.out.Annotated_df)
-        .combine(Protspace)
 
     // Rmarkdown Z
     RmarkdownZ_input | RmarkdownZ
