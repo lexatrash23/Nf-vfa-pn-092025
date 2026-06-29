@@ -470,8 +470,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     def bn6_arg = blastn6.name != 'NO_GENOME' ? "${blastn6}" : "NULL"
     def paf_arg = paf.name != 'NO_Minimap' ? "${paf}" : "NULL"
     """
-    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" \
-        "${sample}" "${species}" "${transdf}" "${toxvsnontoxIP}" "${bn6_arg}" "${ms_arg}" "${paf_arg}"
+    Rscript "${workflow.projectDir}/bin/Intermediate_Scripts/IS15.R" "${sample}" "${species}" "${transdf}" "${toxvsnontoxIP}" "${bn6_arg}" "${ms_arg}" "${paf_arg}"
     """
 }
 
