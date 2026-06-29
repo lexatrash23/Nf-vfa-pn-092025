@@ -1772,6 +1772,8 @@ workflow {
         .join(Annotate.out.Annotated_df)
         .combine(Protspace)
         
+        RmarkdownZ_input | RmarkdownZ
+
 
     } else {
         def Protspace = channel.value(params.protspace ?: "FALSE")
@@ -1783,7 +1785,10 @@ workflow {
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngLax)
         .join(AddMSGenomeIfAvailableAndCreateOverview.out.VennPngStrict)
         .join(Annotate.out.Annotated_df)
-        .combine(Protspace)
+        .combine(ch_null)
+        
+        RmarkdownZ_input | RmarkdownZ
+
     }
 
     // Define Sample Metadata
@@ -1937,7 +1942,6 @@ workflow {
 
 
     // Rmarkdown Z
-    RmarkdownZ_input | RmarkdownZ
     BlastChunksInput = venomflowfiles.map { [it[0], it[12], it[13], it[11] ? it[11] : []] }
 
     BlastChunksInput | Blast0Chunksn
