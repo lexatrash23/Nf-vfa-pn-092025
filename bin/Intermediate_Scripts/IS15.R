@@ -236,6 +236,9 @@ if (!is.na(Minimap_result) && Minimap_result != "NULL") {
   
 }
 
+transdf_unfiltered <- transdf_unfiltered %>%
+distinct(Transdecoder_ID, .keep_all = TRUE)
+
 write.csv(transdf_unfiltered, paste0(Sample_name,"_transdf_distinct_final_unfiltered.csv"), row.names = FALSE)
 
 #Join mass spec and blast filtered
@@ -318,7 +321,8 @@ if (!is.na(Minimap_result) && Minimap_result != "NULL") {
 Base <- transdf_filtered
 # strict filter
 Base_strict <- filter_and_venn(Base, patterns$pattern, patterns$pattern2, mass = !is.null(mass_spec), strict = TRUE, Sample_name = Sample_name)
-
+Base_strict <- Base_strict %>%
+distinct(Transdecoder_ID, .keep_all = TRUE)
 write.csv(Base_strict, paste0(Sample_name,"_transdf_distinct_final_filtered_strict.csv"), row.names = FALSE)
 
 # lax filter
@@ -338,6 +342,7 @@ Filterdf <- left_join(Base_lax_filter,Base_strict_filter, by = "Transdecoder_ID"
   dplyr::select(Transdecoder_ID,Filter)
 Base_lax <- Base_lax %>%
   dplyr::select(-Filter) %>%
-  left_join(Filterdf, by = "Transdecoder_ID")
+  left_join(Filterdf, by = "Transdecoder_ID") %>%
+distinct(Transdecoder_ID, .keep_all = TRUE)
 
 write.csv(Base_lax, paste0(Sample_name,"_transdf_distinct_final_filtered_lax.csv"), row.names = FALSE)
