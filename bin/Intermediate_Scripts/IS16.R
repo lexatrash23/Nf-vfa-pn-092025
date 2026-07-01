@@ -317,7 +317,8 @@ Annotationdf$NCBInr_Name <- gsub("\\[.*?\\]", "", Annotationdf$NCBInr_Name)
 }
 
 Annotationdf <- Annotationdf %>%
-  dplyr::select(Transdecoder_ID,UniqueSequenceName, ORF_type,	SP,Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,Mature_Length,PEP_Length,CDS_Length,tpm, est_counts,percent,percent_aggregates,cumulativepercent,Signal_Sequence,Mature_Sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Phobius_Name,TMHMM,Domain_Rank,everything())
+  dplyr::select(Transdecoder_ID,UniqueSequenceName, ORF_type,	SP,Sample_name,Species,Protein_Name,Gene_Name,Enzyme_Class,Annotation_Source,Domain_Label, Molecular_Function, Biological_Process,CysPer,Signal_Length,Mature_Length,PEP_Length,CDS_Length,tpm, est_counts,percent,percent_aggregates,cumulativepercent,Signal_Sequence,Mature_Sequence,PEP_Sequence,CDS_Sequence,InterPro_accession_Names, GO_name,Panther_ID_Name,Phobius_Name,TMHMM,Domain_Rank,everything()) %>%
+distinct(UniqueSequenceName, .keep_all = TRUE)
 
 
 
@@ -453,8 +454,7 @@ Annotationdf$Protein_Name <- gsub("\\[.*?\\]", "", Annotationdf$Protein_Name)
 
 Annotationdf <- Annotationdf %>%
   mutate(across(everything(), ~str_remove_all(., ","))) %>%
-  select(-Code,	-Percentage_Identity,	-E_value,	-BitScore,	-Hit_species) %>%
-    distinct(UniqueSequenceName, .keep_all = TRUE) %>%
+  select(-Code,	-Percentage_Identity,	-E_value,	-BitScore,	-Hit_species)
 
 write.csv(Annotationdf, paste0(sample, "_all_Annotated_df.csv"), row.names = FALSE)
 
