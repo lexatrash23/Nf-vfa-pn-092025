@@ -26,6 +26,7 @@ def printhead() {
                                                                                                                         
 // Process 1: For kallistoanalysistrinity.py python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrinity {
+    tag "$sample"
 
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
@@ -53,6 +54,7 @@ process kallistoAnalysisTrinity {
 
 // Process 2: For kallistoanalysistrans.py dependencies:python,pandas,seaborn,matplotlib
 process kallistoAnalysisTrans {
+    tag "$sample"
 
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
@@ -82,6 +84,7 @@ process kallistoAnalysisTrans {
 
 // Process 3: Extract Signal Sequences dependencies python biopython
 process ExtractSignalSequences {
+    tag "$sample"
 
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
@@ -108,6 +111,7 @@ process ExtractSignalSequences {
 
 // Process 4: Create Trinity Dataframe dependecies : R, biocmanager 
 process CreateTrinityDataframe {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -158,6 +162,7 @@ process CreateInterproscanDataframe {
 
 // Process 6: Create Transdecoder Dataframe dependecies : R, biocmanager 
 process CreateTransdecoderDataframe {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -185,6 +190,7 @@ process CreateTransdecoderDataframe {
 }
 // Process 8: Create BUSCOgraphtranscriptome  
 process BUSCOtranscriptome {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -210,7 +216,8 @@ process BUSCOtranscriptome {
 
 // Process 9: Create BUSCOgraphtranslatome 
 process BUSCOtranslatome {
-    
+    tag "$sample"
+   
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -235,6 +242,7 @@ process BUSCOtranslatome {
 
 // Process 10: Create FigureGenerationTrinity
 process FigureGenerationTrinity {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -270,6 +278,7 @@ process FigureGenerationTrinity {
 
 // Process 11: Create FigureGenerationTransdecoder
 process FigureGenerationTransdecoder {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -303,6 +312,7 @@ process FigureGenerationTransdecoder {
 }
 // Process 13: Create FigureGenerationSignalp
 process FigureGenerationSignalp {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -336,7 +346,8 @@ process FigureGenerationSignalp {
 
 // Process 12: Create TableGenerationTrinity
 process TableGenerationTrinity {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -364,7 +375,8 @@ process TableGenerationTrinity {
 
 // Process 11: Create TableGenerationTransdecoder  
 process TableGenerationTransdecoder {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -400,7 +412,7 @@ process ToxinVsNonToxin {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
 
     publishDir "CommonIntermediateFiles/Pipelines/Analysis/ToxinVsNonToxinMetaData/", mode: 'copy'
@@ -424,6 +436,7 @@ process ToxinVsNonToxin {
 //Process Minimap2: For all complete ORFs if genome is available, just to get alignment statistics
 process Minimap1 {
 
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -456,6 +469,7 @@ process Minimap1 {
 
 process AddMSGenomeIfAvailableAndCreateOverview {
 
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -493,7 +507,8 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
 // Process 7: Create CreateInterproscanFigures
 process CreateInterproscanFigures {
-    
+    tag "$sample"
+   
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -535,6 +550,7 @@ process CreateInterproscanFigures {
 
 // Process 21: RmarkdownB
 process RmarkdownB {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -570,6 +586,7 @@ process RmarkdownB {
 }
 
 process CreateSampleSheet {
+    tag "$sample"
 
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
@@ -593,6 +610,7 @@ process CreateSampleSheet {
 }
 // Process 20: RmarkdownA
 process RmarkdownA {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -618,7 +636,8 @@ process RmarkdownA {
 }
 // Process 22:
 process RmarkdownCDEGIK {
-    
+    tag "$sample"
+   
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -648,6 +667,7 @@ process RmarkdownCDEGIK {
 }
 // Process 23:
 process RmarkdownH {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -718,6 +738,7 @@ process RmarkdownH {
 }
 // Process 24:
 process RmarkdownJ {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -787,6 +808,7 @@ process RmarkdownJ {
 
 // Process 25:
 process RmarkdownL {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -840,6 +862,7 @@ process RmarkdownL {
 
 // Process 26:
 process RmarkdownM {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -874,7 +897,8 @@ process RmarkdownM {
 
 // Process 27:
 process RmarkdownN {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -910,7 +934,8 @@ process RmarkdownN {
 
 // Process 28:
 process RmarkdownO {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -944,7 +969,8 @@ process RmarkdownO {
 
 // Process 29:
 process RmarkdownQ {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -978,7 +1004,8 @@ process RmarkdownQ {
 
 // Process 30:
 process RmarkdownR {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -1014,7 +1041,8 @@ process RmarkdownR {
 
 // Process 31:
 process RmarkdownS {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -1047,7 +1075,8 @@ process RmarkdownS {
 }
 // Process 32:
 process RmarkdownV {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -1081,7 +1110,8 @@ process RmarkdownV {
 
 // Process 33:
 process RmarkdownW {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -1117,7 +1147,8 @@ process RmarkdownW {
 
 // Process 34:
 process RmarkdownX {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -1151,7 +1182,8 @@ process RmarkdownX {
 
 // Process 35 STRICT:
 process RmarkdownZ {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -1192,7 +1224,8 @@ process RmarkdownZ {
 }
 
 process RmarkdownF {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -1278,7 +1311,8 @@ process RmarkdownF {
 }
 // Process 36:
 process Blast0Chunks {
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -1303,7 +1337,8 @@ process Blast0Chunks {
 }
 process Blast0Chunksn {
 
-    
+    tag "$sample"
+
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
@@ -1333,7 +1368,7 @@ process Annotate {
 
     maxRetries 3
 
-    label 'process_medium'
+    label 'process_annotate'
     conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Annotated/", pattern: "*Annotated_df.csv", mode: 'copy'
@@ -1366,6 +1401,7 @@ process Annotate {
 
 process ProtSpace {
 
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -1394,6 +1430,7 @@ process ProtSpace {
 
 process ProtSpaceToxin {
 
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -1424,6 +1461,7 @@ process ProtSpaceToxin {
 
 // Process 35 ProtSpace Page // Optional:
 process RmarkdownU {
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
@@ -1462,6 +1500,7 @@ process RmarkdownU {
 //Minimap for just our candidates that fall in category to visualise against genome 
 process Minimap {
 
+    tag "$sample"
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
