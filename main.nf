@@ -586,7 +586,7 @@ process RmarkdownB {
 }
 
 process CreateSampleSheet {
-    tag "$sample"
+    tag "$sample_name"
 
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
