@@ -798,7 +798,6 @@ process RmarkdownL {
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
     input:
-    val(sample)
     tuple val(sample), val(author), path(alluvial5plot), path(alluvial5legend), path(alluvial6plot), path(alluvial6legend), path(pie9), path(pie10), path(pie11), path(pie12plot), path(pie12legend), path(topkallisto_signalp)
 
     output:
