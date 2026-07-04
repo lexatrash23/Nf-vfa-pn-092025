@@ -113,7 +113,7 @@ process CreateTrinityDataframe {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/Transcriptome/", mode: 'copy'
@@ -138,7 +138,7 @@ process CreateInterproscanDataframe {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
 
     conda 'r-base bioconductor-biostrings r-dplyr bioconductor-biostrings bioconductor-biomart bioconda::bioconductor-go.db r-tidyr'
 
@@ -163,7 +163,7 @@ process CreateTransdecoderDataframe {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
 
     conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings r-stringr'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/ORFs/", pattern: "*.csv", mode: 'copy'
@@ -240,7 +240,7 @@ process FigureGenerationTrinity {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
     container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'
 
@@ -308,7 +308,7 @@ process FigureGenerationSignalp {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Secreted/", mode: 'copy'
@@ -341,7 +341,7 @@ process TableGenerationTrinity {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-DT'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
@@ -369,7 +369,7 @@ process TableGenerationTransdecoder {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-DT r-stringr'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/ORFs/", pattern: "*{5,6,7,8}.csv", mode: 'copy'
@@ -400,7 +400,7 @@ process ToxinVsNonToxin {
 
     maxRetries 3
 
-    label 'process_medium'
+    label 'process_low'
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
 
     publishDir "CommonIntermediateFiles/Pipelines/Analysis/ToxinVsNonToxinMetaData/", mode: 'copy'
@@ -461,7 +461,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     maxRetries 3
 
-    label 'process_medium'
+    label 'process_low'
     conda 'r-base=4.4 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn=0.1.19 bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr ipykernel'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Unannotated/", pattern: "*.csv", mode: 'copy'
@@ -498,7 +498,7 @@ process CreateInterproscanFigures {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Interproscan/", pattern: "*.png", mode: 'copy'
@@ -653,7 +653,7 @@ process RmarkdownH {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -723,7 +723,7 @@ process RmarkdownJ {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
@@ -792,13 +792,13 @@ process RmarkdownL {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
     input:
-    tuple val(sample), val(author), path(alluvial5plot), path(alluvial5legend), path(alluvial6plot), path(alluvial6legend), path(pie9), path(pie10), path(pie11), path(pie12plot), path(pie12legend), path(topkallisto_signalp)
+     tuple val(sample), val(author), path(alluvial5plot), path(alluvial5legend), path(alluvial6plot), path(alluvial6legend), path(pie9), path(pie10), path(pie11), path(pie12plot), path(pie12legend), path(topkallisto_signalp)
 
     output:
     tuple val(sample), path("*.html")
@@ -879,7 +879,7 @@ process RmarkdownN {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
@@ -983,7 +983,7 @@ process RmarkdownR {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
@@ -1052,7 +1052,7 @@ process RmarkdownV {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
@@ -1086,7 +1086,7 @@ process RmarkdownW {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
