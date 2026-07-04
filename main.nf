@@ -457,9 +457,9 @@ process Minimap1 {
 
     script:
     """
-    minimap2 -cx splice:hq -uf ${genome} ${transdecoder_cds} > completecdsalignment.paf
-    minimap2 -ax splice:hq -uf ${genome} ${transdecoder_cds} > completecdsminimap.sam
-    samtools view -bS completecdsminimap.sam > completecdsminimap.bam
+    minimap2 -cx splice:hq -uf ${genome} ${transdecoder_cds} -t ${task.cpus} > completecdsalignment.paf
+    minimap2 -ax splice:hq -uf ${genome} ${transdecoder_cds} -t ${task.cpus} > completecdsminimap.sam
+    samtools view -bS completecdsminimap.sam -@ ${task.cpus} > completecdsminimap.bam
     rm -r *.sam
 
     """
@@ -1523,18 +1523,18 @@ process Minimap {
 
     script:
     """
-    minimap2 -ax splice:hq -uf ${genome} ${FilteredLaxcds} > minimaptrial.sam
-    samtools view -bS minimaptrial.sam > minimaptrial.bam
-    samtools sort minimaptrial.bam -o minimaptrial.sorted.bam
-    stringtie -o minimaptrial.gtf minimaptrial.sorted.bam
-    bedtools bamtobed -split -i minimaptrial.bam > minimaptrial.bed
+    minimap2 -ax splice:hq -uf ${genome} ${FilteredLaxcds} -t ${task.cpus} > minimaptrial.sam
+    samtools view -bS minimaptrial.sam -@ ${task.cpus} > minimaptrial.bam
+    samtools sort minimaptrial.bam -o minimaptrial.sorted.bam -@ ${task.cpus}
+    stringtie -o minimaptrial.gtf minimaptrial.sorted.bam -p ${task.cpus}
+    bedtools bamtobed -split -i minimaptrial.bam  > minimaptrial.bed
     rm -r minimaptrial.sam
     samtools faidx ${genome}
     cut -f 1,2 ${genome}.fai > chrom.sizes
     bedtools slop -i minimaptrial.bed -g chrom.sizes -b 500 > minimaptrial.slop.bed
     bedtools getfasta -fi ${genome} -bed minimaptrial.slop.bed -s -name -split -fo expandedgenomeregions.fa
-    samtools faidx expandedgenomeregions.fa
-    samtools index minimaptrial.sorted.bam
+    samtools faidx -@ ${task.cpus} expandedgenomeregions.fa
+    samtools index -@ ${task.cpus} minimaptrial.sorted.bam
 
     """
 }
