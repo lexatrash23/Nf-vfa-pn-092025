@@ -34,6 +34,7 @@ process kallistoAnalysisTrinity {
     maxRetries 3
     label 'process_low'
     conda 'python=3.8 pandas seaborn matplotlib'
+    container 'oras://community.wave.seqera.io/library/python_pandas_seaborn_matplotlib:4ecf95a625cbfd1d'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Kallisto/Transcriptome/", mode: 'copy'
 
@@ -64,6 +65,7 @@ process kallistoAnalysisTrans {
     label 'process_low'
 
     conda 'python=3.8 pandas seaborn matplotlib'
+    container 'oras://community.wave.seqera.io/library/python_pandas_seaborn_matplotlib:4ecf95a625cbfd1d'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Kallisto/ORFs/", mode: 'copy'
 
@@ -94,6 +96,7 @@ process ExtractSignalSequences {
     label 'process_low'
 
     conda 'python=3.8 biopython'
+    container 'oras://community.wave.seqera.io/library/python_biopython:63e7454f196ff6a4'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/SignalSequences/", mode: 'copy'
 
@@ -119,6 +122,7 @@ process CreateTrinityDataframe {
 
     label 'process_medium'
     conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
+    container 'oras://community.wave.seqera.io/library/r-base_bioconductor-biostrings_r-tidyr_r-dplyr:17adb2baf0b17abc'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/Transcriptome/", mode: 'copy'
 
@@ -144,7 +148,8 @@ process CreateInterproscanDataframe {
 
     label 'process_medium'
 
-    conda 'r-base bioconductor-biostrings r-dplyr bioconductor-biostrings bioconductor-biomart bioconda::bioconductor-go.db r-tidyr'
+    conda 'r-base bioconductor-biostrings r-dplyr bioconductor-biomart bioconda::bioconductor-go.db r-tidyr'
+    container 'oras://community.wave.seqera.io/library/r-base_bioconductor-biostrings_r-dplyr_bioconductor-biomart_pruned:220750724a338345'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/ORFs/", mode: 'copy'
 
@@ -171,6 +176,8 @@ process CreateTransdecoderDataframe {
     label 'process_medium'
 
     conda 'r-base=4.3 r-dplyr r-tidyr bioconductor-biostrings r-stringr'
+    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-tidyr_bioconductor-biostrings_r-stringr:5cf560764fd7087f'
+
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Dataframes/ORFs/", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Fastas/ORFs/", pattern: "*.fasta", mode: 'copy'
 
@@ -198,7 +205,7 @@ process BUSCOtranscriptome {
 
     label 'process_low'
     conda "busco=5.8.3"
-    container "docker://ezlabgva/busco:v5.8.2_cv1"
+    container 'oras://community.wave.seqera.io/library/busco:5.8.3--20b6c03aeddd038a'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/busco/transcriptome/${count}/", mode: 'copy'
 
@@ -224,7 +231,7 @@ process BUSCOtranslatome {
 
     label 'process_low'
     conda "busco=5.8.3"
-    container "docker://ezlabgva/busco:v5.8.2_cv1"
+    container 'oras://community.wave.seqera.io/library/busco:5.8.3--20b6c03aeddd038a'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/busco/translatome/${count}/", mode: 'copy'
 
@@ -250,7 +257,7 @@ process FigureGenerationTrinity {
 
     label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
-    container 'community.wave.seqera.io/library/bioconductor-biostrings_r-base_r-dplyr_r-ggalluvial_pruned:77dba7ba8dae5174'
+    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-tidyr_r-ggplot2_pruned:f043bd85bbd7032f'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
 
@@ -286,6 +293,7 @@ process FigureGenerationTransdecoder {
 
     label 'process_low'
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
+    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-tidyr_r-ggplot2_pruned:f043bd85bbd7032f'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/ORFs/", mode: 'copy'
 
@@ -320,6 +328,7 @@ process FigureGenerationSignalp {
 
     label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
+    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-tidyr_r-ggplot2_pruned:f043bd85bbd7032f'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Secreted/", mode: 'copy'
 
@@ -354,6 +363,8 @@ process TableGenerationTrinity {
 
     label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-DT'
+    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-dt:c556dc2114bae116'
+
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Transcriptome/", mode: 'copy'
 
@@ -383,6 +394,7 @@ process TableGenerationTransdecoder {
 
     label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-DT r-stringr'
+    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-dt_r-stringr:beb93781dfd66430'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/ORFs/", pattern: "*{5,6,7,8}.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Secreted/", pattern: "*{9,10,11,12}.csv", mode: 'copy'
@@ -414,6 +426,7 @@ process ToxinVsNonToxin {
 
     label 'process_medium'
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
+    container 'oras://community.wave.seqera.io/library/r-base_bioconductor-go.db_r-dplyr_r-tidyr_pruned:0c1ea35e74991b24'
 
     publishDir "CommonIntermediateFiles/Pipelines/Analysis/ToxinVsNonToxinMetaData/", mode: 'copy'
 
@@ -445,6 +458,7 @@ process Minimap1 {
     label 'process_high'
 
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
+    container 'oras://community.wave.seqera.io/library/minimap2_samtools_stringtie_bedtools:c90e145d21435e2c'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Minimap/AllCompleteORFs", mode: 'copy'
 
@@ -477,6 +491,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     label 'process_low'
     conda 'r-base=4.4 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn=0.1.19 bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr ipykernel'
+    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-ggplot2_r-ggalluvial_pruned:b20ee9a3f7821961'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Unannotated/", pattern: "*.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/VennDiagrams", pattern: "*.png", mode: 'copy'
@@ -515,6 +530,7 @@ process CreateInterproscanFigures {
 
     label 'process_medium'
     conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
+    container 'oras://community.wave.seqera.io/library/r-dplyr_r-gridbase_r-ggplot2_r-ggrepel_pruned:25dabe2259a9666d'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/HTMLFigures/Interproscan/", pattern: "*.png", mode: 'copy'
 
@@ -558,6 +574,7 @@ process RmarkdownB {
 
     label 'process_low'
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-readr_r-tidyr_r-knitr_pruned:1a0d76e089cb517a'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -618,6 +635,7 @@ process RmarkdownA {
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-rmarkdown:ab93b1b4afe8ae12'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -645,6 +663,7 @@ process RmarkdownCDEGIK {
     label 'process_low'
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-rmarkdown:ab93b1b4afe8ae12'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -676,6 +695,7 @@ process RmarkdownH {
     label 'process_medium'
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-readr_r-tidyr_r-knitr_pruned:10fa9a764681cbcd'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -747,6 +767,7 @@ process RmarkdownJ {
     label 'process_medium'
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-readr_r-tidyr_r-knitr_pruned:10fa9a764681cbcd'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -816,6 +837,7 @@ process RmarkdownL {
 
     label 'process_medium'
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-readr_r-tidyr_r-knitr_pruned:10fa9a764681cbcd'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -870,6 +892,7 @@ process RmarkdownM {
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_pruned:f7ebc178ea3ffb3e'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -905,6 +928,7 @@ process RmarkdownN {
 
     label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_pruned:f7ebc178ea3ffb3e'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -942,6 +966,7 @@ process RmarkdownO {
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_pruned:f7ebc178ea3ffb3e'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -977,6 +1002,7 @@ process RmarkdownQ {
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_pruned:f7ebc178ea3ffb3e'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1012,6 +1038,7 @@ process RmarkdownR {
 
     label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_pruned:f7ebc178ea3ffb3e'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1049,6 +1076,7 @@ process RmarkdownS {
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_pruned:f7ebc178ea3ffb3e'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1083,6 +1111,7 @@ process RmarkdownV {
 
     label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_pruned:f7ebc178ea3ffb3e'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1118,6 +1147,7 @@ process RmarkdownW {
 
     label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_pruned:f7ebc178ea3ffb3e'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1155,6 +1185,7 @@ process RmarkdownX {
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_pruned:f7ebc178ea3ffb3e'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1190,6 +1221,7 @@ process RmarkdownZ {
     label 'process_low'
 
     conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown r-DT R-dplyr r-knitr r-png r-gridbase r-downloadthis r-gridExtra'
+    container 'oras://community.wave.seqera.io/library/r-base_r-rmarkdown_r-dt_r-dplyr_pruned:b64ad01d69e89630'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1233,6 +1265,7 @@ process RmarkdownF {
     label 'process_low'
 
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-png r-gridbase r-rmarkdown'
+    container 'oras://community.wave.seqera.io/library/r-base_r-readr_r-tidyr_r-knitr_pruned:ae1c824b7211e792'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1319,6 +1352,7 @@ process Blast0Chunks {
 
     label 'process_low'
     conda 'r-base=4.3'
+    container 'oras://community.wave.seqera.io/library/r-base:4.3.3--9722e215810f584f'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Blast0/", mode: 'copy'
 
@@ -1345,6 +1379,7 @@ process Blast0Chunksn {
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_r-dplyr:4a7d1dc6cf0e6acd'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Blast0/", mode: 'copy'
 
@@ -1370,6 +1405,7 @@ process Annotate {
 
     label 'process_annotate'
     conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-dplyr_bioconductor-biostrings_pruned:27fd906dc5d7e9f7'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/Overview/Dataframes/Annotated/", pattern: "*Annotated_df.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/Input/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
@@ -1438,6 +1474,7 @@ process ProtSpaceToxin {
     label 'process_medium'
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-stringr r-readr'
+    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-tidyr_r-stringr_r-readr:c0d2c7aa3e661847'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
@@ -1470,6 +1507,7 @@ process RmarkdownU {
     label 'process_low'
 
     conda 'r-base=4.3 r-rmarkdown r-plotly  r-dplyr r-arrow r-umap r-forcats'
+    container 'oras://community.wave.seqera.io/library/r-base_r-rmarkdown_r-plotly_r-dplyr_pruned:4f515b5a03355fca'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
@@ -1508,6 +1546,7 @@ process Minimap {
 
     label 'process_high'
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
+    container 'oras://community.wave.seqera.io/library/minimap2_samtools_stringtie_bedtools:c90e145d21435e2c'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Minimap/CandidateToxins/", mode: 'copy'
 
