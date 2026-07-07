@@ -1941,6 +1941,10 @@ workflow {
 
     groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome.groupTuple()
     groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome.groupTuple()
+
+    groupedbuscotranscriptome.view { sample, files ->
+    "${sample}\n" + files.collect { "  $it" }.join('\n')
+}
     //groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome
     //groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome
     // RmarkdownH
