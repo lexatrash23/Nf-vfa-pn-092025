@@ -204,7 +204,7 @@ process BUSCOtranscriptome {
     maxRetries 3
 
     label 'process_low'
-    conda "busco=5.8.3"
+    conda "bioconda::busco=5.8.3"
     container 'oras://community.wave.seqera.io/library/busco:5.8.3--20b6c03aeddd038a'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/busco/transcriptome/${count}/", mode: 'copy'
@@ -230,7 +230,7 @@ process BUSCOtranslatome {
     maxRetries 3
 
     label 'process_low'
-    conda "busco=5.8.3"
+    conda "bioconda::busco=5.8.3"
     container 'oras://community.wave.seqera.io/library/busco:5.8.3--20b6c03aeddd038a'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/busco/translatome/${count}/", mode: 'copy'
