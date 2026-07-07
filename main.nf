@@ -1379,7 +1379,7 @@ process Blast0Chunksn {
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
-    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_r-dplyr:4a7d1dc6cf0e6acd'
+    container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_r-dplyr:5b8f3a9a182fe12e'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/Blast0/", mode: 'copy'
 
@@ -1474,7 +1474,7 @@ process ProtSpaceToxin {
     label 'process_medium'
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-stringr r-readr'
-    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-tidyr_r-stringr_r-readr:c0d2c7aa3e661847'
+    container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-tidyr_r-stringr_r-readr:d87ba0cfc2c038f3'
 
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
@@ -1507,7 +1507,7 @@ process RmarkdownU {
     label 'process_low'
 
     conda 'r-base=4.3 r-rmarkdown r-plotly  r-dplyr r-arrow r-umap r-forcats'
-    container 'oras://community.wave.seqera.io/library/r-base_r-rmarkdown_r-plotly_r-dplyr_pruned:4f515b5a03355fca'
+    container 'oras://community.wave.seqera.io/library/r-base_r-rmarkdown_r-plotly_r-dplyr_pruned:a2336babb3d46848'
 
     publishDir "${params.outdir}/${sample}/FinalOutputs/htmls/", mode: 'copy'
 
