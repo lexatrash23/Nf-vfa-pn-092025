@@ -146,7 +146,7 @@ process CreateInterproscanDataframe {
 
     maxRetries 3
 
-    label 'process_medium'
+    label 'process_annotate'
 
     conda 'r-base bioconductor-biostrings r-dplyr bioconductor-biomart bioconda::bioconductor-go.db r-tidyr'
     container 'oras://community.wave.seqera.io/library/r-base_bioconductor-biostrings_r-dplyr_bioconductor-biomart_pruned:220750724a338345'
