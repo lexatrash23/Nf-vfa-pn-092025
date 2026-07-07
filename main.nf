@@ -425,7 +425,7 @@ process ToxinVsNonToxin {
     maxRetries 3
 
     label 'process_medium'
-    conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconductor-annotationdbi conda-forge::r-archive r-readr'
+    conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconda::bioconductor-annotationdbi conda-forge::r-archive r-readr'
     container 'oras://community.wave.seqera.io/library/r-base_bioconductor-go.db_r-dplyr_r-tidyr_pruned:0c1ea35e74991b24'
 
     publishDir "CommonIntermediateFiles/Pipelines/Analysis/ToxinVsNonToxinMetaData/", mode: 'copy'
