@@ -32,7 +32,7 @@ process kallistoAnalysisTrinity {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 3
-    label 'process_low'
+    label 'process_medium'
     conda 'python=3.8 pandas seaborn matplotlib'
     container 'oras://community.wave.seqera.io/library/python_pandas_seaborn_matplotlib:4ecf95a625cbfd1d'
 
@@ -62,7 +62,7 @@ process kallistoAnalysisTrans {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
 
     conda 'python=3.8 pandas seaborn matplotlib'
     container 'oras://community.wave.seqera.io/library/python_pandas_seaborn_matplotlib:4ecf95a625cbfd1d'
@@ -660,7 +660,7 @@ process RmarkdownCDEGIK {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_medium'
 
     conda 'r-base=4.3 r-knitr r-rmarkdown'
     container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-rmarkdown:ab93b1b4afe8ae12'
