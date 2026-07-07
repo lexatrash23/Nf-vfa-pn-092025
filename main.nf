@@ -1350,7 +1350,7 @@ process Blast0Chunks {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_annotate'
     conda 'r-base=4.3'
     container 'oras://community.wave.seqera.io/library/r-base:4.3.3--9722e215810f584f'
 
@@ -1377,7 +1377,7 @@ process Blast0Chunksn {
 
     maxRetries 3
 
-    label 'process_low'
+    label 'process_annotate'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
     container 'oras://community.wave.seqera.io/library/r-base_r-knitr_r-kableextra_r-dt_r-dplyr:5b8f3a9a182fe12e'
 
