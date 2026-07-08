@@ -31,7 +31,7 @@ process kallistoAnalysisTrinity {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
     label 'process_medium'
     conda 'python=3.8 pandas seaborn matplotlib'
     container 'oras://community.wave.seqera.io/library/python_pandas_seaborn_matplotlib:4ecf95a625cbfd1d'
@@ -60,7 +60,7 @@ process kallistoAnalysisTrans {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
 
@@ -91,7 +91,7 @@ process ExtractSignalSequences {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
 
@@ -118,7 +118,7 @@ process CreateTrinityDataframe {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base bioconductor-biostrings r-tidyr r-dplyr'
@@ -144,7 +144,7 @@ process CreateInterproscanDataframe {
     tag "$sample"
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_annotate'
 
@@ -171,7 +171,7 @@ process CreateTransdecoderDataframe {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
 
@@ -201,7 +201,7 @@ process BUSCOtranscriptome {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda "bioconda::busco=5.8.3"
@@ -227,7 +227,7 @@ process BUSCOtranslatome {
    
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda "bioconda::busco=5.8.3"
@@ -253,7 +253,7 @@ process FigureGenerationTrinity {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
@@ -289,7 +289,7 @@ process FigureGenerationTransdecoder {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
@@ -324,7 +324,7 @@ process FigureGenerationSignalp {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-tidyr r-ggplot2 r-ggalluvial bioconductor-biostrings r-ggrepel r-cowplot r-stringr r-forcats'
@@ -359,7 +359,7 @@ process TableGenerationTrinity {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-DT'
@@ -390,7 +390,7 @@ process TableGenerationTransdecoder {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 r-dplyr r-DT r-stringr'
@@ -422,7 +422,7 @@ process ToxinVsNonToxin {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 bioconductor-go.db r-dplyr r-tidyr r-stringr bioconda::bioconductor-annotationdbi conda-forge::r-archive r-readr'
@@ -453,7 +453,7 @@ process Minimap1 {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_high'
 
@@ -487,7 +487,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda 'r-base=4.4 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn=0.1.19 bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr ipykernel'
@@ -526,7 +526,7 @@ process CreateInterproscanFigures {
    
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-dplyr r-gridbase  r-ggplot2 r-ggrepel r-cowplot r-stringr r-forcats'
@@ -570,7 +570,7 @@ process RmarkdownB {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-downloadthis r-rmarkdown'
@@ -608,7 +608,7 @@ process CreateSampleSheet {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
 
@@ -631,7 +631,7 @@ process RmarkdownA {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-rmarkdown'
@@ -658,7 +658,7 @@ process RmarkdownCDEGIK {
    
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
 
@@ -690,7 +690,7 @@ process RmarkdownH {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
 
@@ -762,7 +762,7 @@ process RmarkdownJ {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
 
@@ -833,7 +833,7 @@ process RmarkdownL {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 r-readr r-tidyr r-knitr r-gridExtra r-kableExtra r-png r-gridbase r-DT r-downloadthis r-rmarkdown'
@@ -888,7 +888,7 @@ process RmarkdownM {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
@@ -924,7 +924,7 @@ process RmarkdownN {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
@@ -962,7 +962,7 @@ process RmarkdownO {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
@@ -998,7 +998,7 @@ process RmarkdownQ {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
@@ -1034,7 +1034,7 @@ process RmarkdownR {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
@@ -1072,7 +1072,7 @@ process RmarkdownS {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
@@ -1107,7 +1107,7 @@ process RmarkdownV {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
@@ -1143,7 +1143,7 @@ process RmarkdownW {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
@@ -1181,7 +1181,7 @@ process RmarkdownX {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr r-downloadthis r-rmarkdown'
@@ -1217,7 +1217,7 @@ process RmarkdownZ {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
     label 'process_low'
 
     conda 'conda-forge::r-base=4.3 conda-forge::r-rmarkdown r-DT R-dplyr r-knitr r-png r-gridbase r-downloadthis r-gridExtra'
@@ -1260,7 +1260,7 @@ process RmarkdownF {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
 
@@ -1348,7 +1348,7 @@ process Blast0Chunks {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_annotate'
     conda 'r-base=4.3'
@@ -1375,7 +1375,7 @@ process Blast0Chunksn {
 
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_annotate'
     conda 'r-base=4.3 r-knitr r-kableExtra r-DT r-dplyr'
@@ -1401,7 +1401,7 @@ process Annotate {
     tag "$sample"
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_annotate'
     conda 'r-base=4.3 r-knitr r-dplyr bioconductor-biostrings r-rentrez r-stringr r-xml2 r-tidyr conda-forge::r-archive r-readr r-purrr'
@@ -1441,7 +1441,7 @@ process ProtSpace {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_medium'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
@@ -1470,7 +1470,7 @@ process ProtSpaceToxin {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
     label 'process_medium'
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-stringr r-readr'
@@ -1502,7 +1502,7 @@ process RmarkdownU {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_low'
 
@@ -1542,7 +1542,7 @@ process Minimap {
     
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 4
 
     label 'process_high'
     conda 'minimap2 bioconda::samtools bioconda::stringtie bioconda::bedtools'
