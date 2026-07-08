@@ -21,12 +21,10 @@ transdf <- read.csv(transdf, header = TRUE)
 keeps <- c("Transdecoder_ID", "ORF_type", "SP","percent", "cumulativepercent", "Code", "Hit", "BitScore")
 transdf <- transdf[keeps]
 head(transdf)
-transdf <- transdf[
-transdf$SP == "SP" &
-  !is.na(transdf$SP) &
-  grepl("complete", transdf$ORF_type, ignore.case = TRUE),
-] #only keeping signalp +complete ORFs
-
+trans_filtered <- transdf[transdf$SP == "SP" &
+                          !is.na(transdf$SP) &
+                          grepl("complete", transdf$ORF_type, ignore.case = TRUE) &
+                          (transdf$TMHMM == FALSE | is.na(transdf$TMHMM)), ] 
 # distinct Transcripts
 Distinct_Transcripts <- transdf %>%
   distinct(Transdecoder_ID, .keep_all = TRUE)

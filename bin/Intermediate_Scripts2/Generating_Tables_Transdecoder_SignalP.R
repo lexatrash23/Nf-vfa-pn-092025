@@ -109,8 +109,9 @@ Table8 <- Trans_hyperlinks_Distinct_Transcripts_increasingcumulativepercent[1:10
 #filter only for those with signalp
 Trans_hyperlinks_signalp <- Trans_hyperlinks[
   Trans_hyperlinks$SP == "SP" &
-    !is.na(Trans_hyperlinks$SP) &
-    grepl("complete", Trans_hyperlinks$ORF_type, ignore.case = TRUE),
+  !is.na(Trans_hyperlinks$SP) &
+  grepl("complete", Trans_hyperlinks$ORF_type, ignore.case = TRUE) &
+  (Trans_hyperlinks$TMHMM == FALSE | is.na(Trans_hyperlinks$TMHMM)), # Keep the comma here!
 ]
 #Table9
 Table9 <-head(Trans_hyperlinks_signalp, n = 100)

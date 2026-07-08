@@ -66,7 +66,7 @@ read_transdf <- function(file) {
     distinct(Transdecoder_ID, CDS_Sequence, .keep_all = TRUE)
   df <- df %>% filter(grepl("complete", ORF_type, ignore.case = TRUE),
                       grepl("SP", SP, ignore.case = TRUE),
-                      TMHMM %in% c(FALSE, "FALSE"))
+                      TMHMM %in% c(FALSE, "FALSE") | is.na(TMHMM))
   for(col in c("BitScore","percent","CysPer","Coverage")) if(col %in% names(df)) df[[col]] <- as.numeric(df[[col]])
 
   return(df)
@@ -121,7 +121,7 @@ read_PAF <- function(file) {
 prepare_base <- function(df) {
   df <- df %>% filter(grepl("complete", ORF_type, ignore.case = TRUE),
                       grepl("SP", SP, ignore.case = TRUE),
-                      TMHMM == FALSE)
+                      TMHMM == FALSE | is.na(TMHMM))
   for(col in c("BitScore","percent","CysPer","Coverage")) if(col %in% names(df)) df[[col]] <- as.numeric(df[[col]])
   return(df)
 }
