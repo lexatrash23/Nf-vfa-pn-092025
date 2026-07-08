@@ -1942,11 +1942,7 @@ workflow {
     groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome.groupTuple()
     groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome.groupTuple()
 
-    groupedbuscotranscriptome.view { sample, files ->
-    "${sample}\n" + files.collect { "  $it" }.join('\n')
-}
-    //groupedbuscotranscriptome = BUSCOtranscriptome.out.busco_transcriptome
-    //groupedbuscotranslatome = BUSCOtranslatome.out.busco_translatome
+
     // RmarkdownH
     RmarkdownHInput = RmarkdownCDEGIKInput
         .join(kallistoAnalysisTrinity.out.trin_top20_png)
@@ -1962,7 +1958,7 @@ workflow {
         .join(FigureGenerationTrinity.out.pie4Legend)
         .join(FigureGenerationTrinity.out.Table13)
         .join(groupedbuscotranscriptome)
-
+    RmarkdownHInput.view()
     RmarkdownHInput | RmarkdownH
     // RmarkdownJ
     RmarkdownJInput = RmarkdownCDEGIKInput
@@ -1979,7 +1975,7 @@ workflow {
         .join(FigureGenerationTransdecoder.out.pie8Legend)
         .join(FigureGenerationTransdecoder.out.Table14)
         .join(groupedbuscotranslatome)
-
+    RmarkdownJInput.view()
     RmarkdownJInput | RmarkdownJ
     // RmarkdownL
     RmarkdownLInput = RmarkdownCDEGIKInput
