@@ -1958,7 +1958,6 @@ workflow {
         .join(FigureGenerationTrinity.out.pie4Legend)
         .join(FigureGenerationTrinity.out.Table13)
         .join(groupedbuscotranscriptome)
-    RmarkdownHInput.view()
     RmarkdownHInput | RmarkdownH
     // RmarkdownJ
     RmarkdownJInput = RmarkdownCDEGIKInput
@@ -1975,7 +1974,6 @@ workflow {
         .join(FigureGenerationTransdecoder.out.pie8Legend)
         .join(FigureGenerationTransdecoder.out.Table14)
         .join(groupedbuscotranslatome)
-    RmarkdownJInput.view()
     RmarkdownJInput | RmarkdownJ
     // RmarkdownL
     RmarkdownLInput = RmarkdownCDEGIKInput

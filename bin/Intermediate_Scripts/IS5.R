@@ -140,7 +140,7 @@ FINAL_CSV_filtered <- FINAL_CSV %>%
   filter(
     grepl("complete", ORF_type, ignore.case = TRUE), #ORF has to be completed
     grepl("SP", SP, ignore.case = TRUE), #only select those with positive signalp result
-    TMHMM == FALSE #only select those where tmhmm equals to false as well
+    TMHMM != TRUE #only select those where tmhmm doesnt equals to true as well
   )
 
 #for the html reports complete orfs sectoin
