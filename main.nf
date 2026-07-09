@@ -485,9 +485,9 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     tag "$sample"
     
-    errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 8 ? 'retry' : 'ignore' }
 
-    maxRetries 4
+    maxRetries 8
 
     label 'process_annotate'
     conda 'r-base=4.4 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn=0.1.19 bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr ipykernel'
@@ -1443,7 +1443,7 @@ process ProtSpace {
 
     maxRetries 4
 
-    label 'process_medium'
+    label 'process_annotate'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
 
@@ -1471,7 +1471,7 @@ process ProtSpaceToxin {
     errorStrategy { task.attempt <= 4 ? 'retry' : 'ignore' }
 
     maxRetries 4
-    label 'process_medium'
+    label 'process_annotate'
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-stringr r-readr'
     container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-tidyr_r-stringr_r-readr:d87ba0cfc2c038f3'
