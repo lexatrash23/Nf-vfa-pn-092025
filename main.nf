@@ -203,7 +203,7 @@ process BUSCOtranscriptome {
 
     maxRetries 4
 
-    label 'process_low'
+    label 'process_medium'
     conda "bioconda::busco=5.8.3"
     container 'oras://community.wave.seqera.io/library/busco:5.8.3--20b6c03aeddd038a'
 
@@ -229,7 +229,7 @@ process BUSCOtranslatome {
 
     maxRetries 4
 
-    label 'process_low'
+    label 'process_medium'
     conda "bioconda::busco=5.8.3"
     container 'oras://community.wave.seqera.io/library/busco:5.8.3--20b6c03aeddd038a'
 
@@ -446,7 +446,7 @@ process ToxinVsNonToxin {
     """
 }
 
-//Process Minimap2: For all complete ORFs if genome is available, just to get alignment statistics
+//Process sp2: For all complete ORFs if genome is available, just to get alignment statistics
 process Minimap1 {
 
     tag "$sample"
@@ -489,7 +489,7 @@ process AddMSGenomeIfAvailableAndCreateOverview {
 
     maxRetries 4
 
-    label 'process_low'
+    label 'process_annotate'
     conda 'r-base=4.4 r-dplyr r-ggplot2 r-ggalluvial r-gridbase r-ggvenn=0.1.19 bioconductor-genomicranges r-igraph bioconductor-biostrings r-pafr ipykernel'
     container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-ggplot2_r-ggalluvial_pruned:b20ee9a3f7821961'
 
