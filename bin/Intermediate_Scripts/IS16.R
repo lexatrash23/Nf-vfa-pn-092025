@@ -476,4 +476,11 @@ cdsseq <- DNAStringSet(Annotationdf$CDS_Sequence)
 names(cdsseq) <- Annotationdf$Transdecoder_ID
 writeXStringSet(cdsseq, paste0(sample,"_ProtSpaceCDS.fasta"))
 
+Pepseq <- AAStringSet(Annotationdf$PEP_Sequence)
+names(Pepseq) <- Annotationdf$UniqueSequenceName
+writeXStringSet(Pepseq, paste0(sample,"_Putative_Toxins.pep"))
+
+cdsseq <- DNAStringSet(Annotationdf$CDS_Sequence)
+names(cdsseq) <- Annotationdf$UniqueSequenceName
+writeXStringSet(cdsseq, paste0(sample,"_Putative_Toxins.cds"))
 

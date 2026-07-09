@@ -1411,6 +1411,8 @@ process Annotate {
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/Input/", pattern: "*ProtSpaceAnnotation.csv", mode: 'copy'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/Input/", pattern: "*.fasta", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*Select_Annotated_df.csv", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.pep", mode: 'copy'
+    publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.cds", mode: 'copy'
 
     input:
     tuple val(sample), path(final_filtered_lax), path(toxprotblast6), path(nontoxprotblast6), path(Diamondblast6), path(toxprotblastmetadata), path(nontoxprotmetadata), path(toxvsnontoxIP), path(toxvsnontoxMF), path(toxvsnontoxBP)
@@ -1421,6 +1423,10 @@ process Annotate {
     tuple val(sample), path("*ProtSpaceAnnotation.csv"), emit: ProtSpaceAnnotatedCSV
     tuple val(sample), path("*_ProtSpacePEP.fasta"), emit: FilteredLaxPep
     tuple val(sample), path("*_ProtSpaceCDS.fasta"), emit: FilteredLaxcds
+    tuple val(sample), path("*.cds")
+    tuple val(sample), path("*.pep")
+
+
 
     script:
 
