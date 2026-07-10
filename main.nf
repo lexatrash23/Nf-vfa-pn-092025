@@ -142,11 +142,11 @@ process CreateTrinityDataframe {
 // Process 5: Create Interproscan Dataframe dependecies : R, biocmanager 
 process CreateInterproscanDataframe {
     tag "$sample"
-    errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
+    errorStrategy { task.attempt <= 5 ? 'retry' : 'ignore' }
 
-    maxRetries 3
+    maxRetries 5
 
-    label 'process_annotate'
+    label 'process_medium'
 
     conda 'r-base bioconductor-biostrings r-dplyr bioconductor-biomart bioconda::bioconductor-go.db r-tidyr'
     container 'oras://community.wave.seqera.io/library/r-base_bioconductor-biostrings_r-dplyr_bioconductor-biomart_pruned:220750724a338345'
@@ -1449,7 +1449,7 @@ process ProtSpace {
 
     maxRetries 3
 
-    label 'process_annotate'
+    label 'process_medium'
     publishDir "${params.outdir}/${sample}/Pipelines/Analysis/IntermediateFiles/ProtSpace/", mode: 'copy'
     publishDir "${params.outdir}/${sample}/FinalOutputs/", pattern: "*.parquetbundle", mode: 'copy'
 
@@ -1477,7 +1477,7 @@ process ProtSpaceToxin {
     errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
 
     maxRetries 3
-    label 'process_annotate'
+    label 'process_medium'
 
     conda 'r-base=4.3 r-dplyr r-tidyr r-stringr r-readr'
     container 'oras://community.wave.seqera.io/library/r-base_r-dplyr_r-tidyr_r-stringr_r-readr:d87ba0cfc2c038f3'
