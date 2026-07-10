@@ -1464,7 +1464,7 @@ process ProtSpace {
     // esm2_650m is used instead of prot_t5 as there are permission errors when prot_t5 is used on the test cluster
     """
 
-    protspace embed -i ${filteredlaxfasta} -e esm2_3b -o embeddings/
+    protspace embed -i ${filteredlaxfasta} -e esm2_650m -o embeddings/
     protspace project -i embeddings/esm2_3b.h5 -m pca2,umap2 -o projections/
     protspace prepare -i ${filteredlaxfasta} -a ${ProtSpaceAnnotatedCSV} -e esm2_650m -m pca2,umap2
     """
