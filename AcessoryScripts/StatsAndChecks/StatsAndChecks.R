@@ -87,7 +87,7 @@ number_sequences_lowgenome <- nrow(anntoatedall[anntoatedall$Category == "Lower 
 #Checks 
 Check1 <- number_sequences_transdffile == num_completesequences
 Check2 <- number_sequences_transdfdistinct + number_filteredout == num_secretedsequences
-Check3 <- number_sequences_unfiltered == number_sequences_unfiltered
+Check3 <- number_sequences_unfiltered == number_sequences_transdfdistinct
 Check4 <-number_sequences_strictonly+ number_sequences_laxonly == number_sequences_totallax
 Check5 <-number_sequences_totalstrict == number_sequences_strictonly
 Check6 <-number_sequences_cat1 + number_sequences_cat2 + number_sequences_cat3 == putativetoxinstotal
